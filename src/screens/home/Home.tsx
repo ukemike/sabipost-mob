@@ -1,0 +1,32 @@
+import { StyleSheet } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import StatusBar from "../../components/StatusBar";
+import { colors } from "../../constants";
+import DashboardMenu from "../../components/ui/DashboardMenu";
+import HomeTabs from "../../stacks/HomeTabs";
+import { VStack } from "@gluestack-ui/themed";
+
+const Home = ({ navigation }: any) => {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
+
+  return (
+    <>
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+      <SafeAreaProvider style={styles.container}>
+        <DashboardMenu openDrawer={openDrawer} />
+        <HomeTabs />
+      </SafeAreaProvider>
+    </>
+  );
+};
+
+export default Home;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background10,
+  },
+});

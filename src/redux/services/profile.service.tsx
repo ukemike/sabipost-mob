@@ -6,18 +6,6 @@ export const profileApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
   tagTypes: ["PROFILE"],
   endpoints: (builder) => ({
-    getMyProfile: builder.query({
-      query: (token) => ({
-        url: `profile`,
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-      providesTags: ["PROFILE"],
-    }),
-
     updateProfile: builder.mutation({
       query: ({ token, data }) => ({
         url: `user/profile`,
@@ -32,4 +20,4 @@ export const profileApi = createApi({
   }),
 });
 
-export const { useGetMyProfileQuery, useUpdateProfileMutation } = profileApi;
+export const { useUpdateProfileMutation } = profileApi;

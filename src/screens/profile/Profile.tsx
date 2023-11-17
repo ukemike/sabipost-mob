@@ -20,7 +20,7 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import StatusBar from "../../components/StatusBar";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
+import Button from "../../components/ui/Button";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { logOut } from "../../redux/slices/authSlice";
 

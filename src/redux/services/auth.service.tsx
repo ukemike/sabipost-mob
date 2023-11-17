@@ -6,9 +6,21 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
   tagTypes: ["Auth"],
   endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (body) => ({
+        url: `api/auth/register`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
     login: builder.mutation({
       query: (body) => ({
-        url: `user/login`,
+        url: `api/auth/login`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -17,9 +29,10 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
-    signUp: builder.mutation({
+
+    verifyEmail: builder.mutation({
       query: (body) => ({
-        url: `user/confirm-account-creation`,
+        url: `api/auth/verify-email`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,9 +41,10 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
-    preSignUp: builder.mutation({
+
+    resendCode: builder.mutation({
       query: (body) => ({
-        url: `user/presignup`,
+        url: `api/auth/resend-verify-code`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,9 +53,10 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
-    confirmOtp: builder.mutation({
+
+    requestResetPassword: builder.mutation({
       query: (body) => ({
-        url: `user/confirm-otp`,
+        url: `api/auth/request-reset-password`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,31 +65,10 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
-    forgotPassword: builder.mutation({
+    
+    resetPassword: builder.mutation({
       query: (body) => ({
-        url: `user/request-forgot`,
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: body,
-      }),
-      invalidatesTags: ["Auth"],
-    }),
-    confirmForgotPassword: builder.mutation({
-      query: (body) => ({
-        url: `creative/confirm-forgot-password`,
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: body,
-      }),
-      invalidatesTags: ["Auth"],
-    }),
-    socialAuth: builder.mutation({
-      query: (body) => ({
-        url: `social-signup-login`,
+        url: `api/auth/reset-password`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,11 +81,10 @@ export const authApi = createApi({
 });
 
 export const {
+  useRegisterMutation,
   useLoginMutation,
-  useSignUpMutation,
-  usePreSignUpMutation,
-  useConfirmOtpMutation,
-  useForgotPasswordMutation,
-  useConfirmForgotPasswordMutation,
-  useSocialAuthMutation,
+  useVerifyEmailMutation,
+  useResendCodeMutation,
+  useRequestResetPasswordMutation,
+  useResetPasswordMutation,
 } = authApi;

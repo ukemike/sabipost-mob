@@ -1,1 +1,1 @@
-export const baseUrl = 'https://autofix-api.onrender.com/';
+export const baseUrl = 'https://backend.sabipost.com/';

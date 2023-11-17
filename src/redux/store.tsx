@@ -23,9 +23,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 // services
 import { authApi } from "./services/auth.service";
 import { profileApi } from "./services/profile.service";
+import { generalApi } from "./services/general.service";
+import { postApi } from "./services/post.service";
+import { productApi } from "./services/product.service";
 
 // reducers
 import authReducer from "./slices/authSlice";
+
 
 const persistConfig = {
   key: "root",
@@ -37,6 +41,9 @@ const rootReducer = combineReducers({
   auth: authReducer,
   [authApi.reducerPath]: authApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
+  [generalApi.reducerPath]: generalApi.reducer,
+  [postApi.reducerPath]: postApi.reducer,
+  [productApi.reducerPath]: productApi.reducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -45,6 +52,9 @@ export const store: any = configureStore({
     app: persistedReducer,
     [authApi.reducerPath]: authApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
+    [generalApi.reducerPath]: generalApi.reducer,
+    [postApi.reducerPath]: postApi.reducer,
+    [productApi.reducerPath]: productApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -54,6 +64,9 @@ export const store: any = configureStore({
     }).concat([
       authApi.middleware,
       profileApi.middleware,
+      generalApi.middleware,
+      postApi.middleware,
+      productApi.middleware,
     ]),
 });
 

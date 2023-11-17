@@ -8,6 +8,9 @@ import * as SplashScreen from "expo-splash-screen";
 import { useAppSelector } from "../redux/store";
 import EditProfile from "../screens/profile/EditProfile";
 import ChangePassword from "../screens/profile/ChangePassword";
+import PostCategory from "../screens/posts/PostCategory";
+import ProductCategory from "../screens/products/ProductCategory";
+import ProductDetail from "../screens/products/ProductDetail";
 
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -38,7 +41,7 @@ function MainNavigation() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        {userInfo ? (
+        {!userInfo ? (
           <AuthStack />
         ) : (
           <Stack.Navigator
@@ -50,6 +53,9 @@ function MainNavigation() {
             <Stack.Screen name="Main" component={MainStack} />
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen name="PostCategory" component={PostCategory} />
+            <Stack.Screen name="ProductCategory" component={ProductCategory} />
+            <Stack.Screen name="ProductDetail" component={ProductDetail} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

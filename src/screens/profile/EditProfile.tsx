@@ -1,13 +1,13 @@
 import { StyleSheet } from "react-native";
 import { VStack, Text } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
+import Button from "../../components/ui/Button";
 import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import Header from "../../components/Header";
-import Input from "../../components/Input";
-import Select from "../../components/Select";
+import Input from "../../components/ui/Input";
+import Select from "../../components/ui/Select";
 import { nigerian_states } from "../../utils/states";
 import { setCredentials } from "../../redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";

@@ -10,17 +10,25 @@ import {
   CheckIcon,
 } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
+import Button from "../../components/ui/Button";
 import StatusBar from "../../components/StatusBar";
-import Input from "../../components/Input";
+import Input from "../../components/ui/Input";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as WebBrowser from "expo-web-browser";
 import { useState, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { setSignupData } from "../../redux/slices/authSlice";
-import { usePreSignUpMutation } from "../../redux/services/auth.service";
+import { useRegisterMutation } from "../../redux/services/auth.service";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Header from "../../components/Header";
+import {
+  useGetStatesQuery,
+  useGetCategoriesQuery,
+} from "../../redux/services/general.service";
+import Loader from "../../components/ui/Loader";
+import Select from "../../components/ui/Select";
+import MultSelect from "../../components/ui/MultSelect";
 
 const Register = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
@@ -28,73 +36,88 @@ const Register = ({ navigation }: any) => {
 
   const { signupData } = useAppSelector((state) => state.app.auth);
 
-  const [preSignUp, { isLoading }] = usePreSignUpMutation();
+  const { data: statesData, isLoading: statesLoading } = useGetStatesQuery("");
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const allStates = statesData?.data.map((state: any) => {
+    return {
+      value: state.stateID,
+      label: state.stateName,
+    };
+  });
+
+  const { data: categoriesData, isLoading: categoriesLoading } =
+    useGetCategoriesQuery("");
+
+  const allCategories = categoriesData?.data.map((category: any) => {
+    return {
+      value: category.categoryID,
+      label: category.name,
+    };
+  });
+
+  const [register, { isLoading }] = useRegisterMutation();
+
+  const [firstname, setFirstname] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [seller_category, setSeller_category] = useState<Array<string>>([]);
+  const [business_state_id, setBusiness_state_id] = useState<string>("");
   const [formErrors, setFormErrors] = useState<any>({});
   const [checked, setChecked] = useState<any>(false);
 
-  useEffect(() => {
-    if (signupData) {
-      setFirstName(signupData?.firstName);
-      setLastName(signupData?.lastName);
-      setPhoneNumber(signupData?.phoneNumber);
-      setEmail(signupData?.email);
-      setPassword(signupData?.password);
-    }
-  }, [signupData]);
-
-  const onPreSignUp = async () => {
-    if (!firstName || !lastName || !phoneNumber || !email || !password) {
+  const onSignUp = async () => {
+    if (!firstname || !lastname || !phone || !email || !password) {
       setFormErrors({
-        firstName: !firstName ? "First name is required" : "",
-        lastName: !lastName ? "Last name is required" : "",
-        phoneNumber: !phoneNumber ? "Phone number is required" : "",
+        firstname: !firstname ? "First name is required" : "",
+        lastname: !lastname ? "Last name is required" : "",
         email: !email ? "Email is required" : "",
+        phone: !phone ? "Phone number is required" : "",
         password: !password ? "Password is required" : "",
       });
       return;
-    } else {
-      setFormErrors({
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        email: "",
-        password: "",
-      });
     }
+
+    if (signupData?.role === "seller") {
+      if (!business_state_id || !seller_category.length) {
+        setFormErrors({
+          business_state_id: !business_state_id ? "Location is required" : "",
+          seller_category: !seller_category.length
+            ? "Category is required"
+            : "",
+        });
+        return;
+      }
+    }
+
     if (!checked) {
       toast.show("Please accept the terms and conditions", {
         type: "danger",
       });
       return;
     }
-    const body = {
-      phoneNumber,
+
+    const data = {
+      firstname,
+      lastname,
       email,
+      phone,
+      password,
+      role: signupData?.role,
+      ...(signupData?.role === "seller" && {
+        business_state_id,
+        seller_category,
+      }),
     };
 
-    await preSignUp(body)
+    await register(data)
       .unwrap()
       .then((res) => {
-        dispatch(
-          setSignupData({
-            ...signupData,
-            firstName,
-            lastName,
-            phoneNumber,
-            email,
-            password,
-          })
-        );
         toast.show("OTP sent successfully", {
           type: "success",
         });
-        navigation.navigate("Verify");
+        navigation.navigate("Verify", { email: email });
       })
       .catch((err) => {
         toast.show(`${err?.data?.message}`, {
@@ -106,192 +129,217 @@ const Register = ({ navigation }: any) => {
   const handlePressButtonAsync = async () => {
     await WebBrowser.openBrowserAsync("https://expo.dev/");
   };
-  
+
   return (
     <SafeAreaProvider style={styles.constainer}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background2} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <Header backgroundColor={colors.white} />
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <VStack
-          p={"$5"}
-          justifyContent="space-between"
-          width="100%"
-          height="100%"
-          space={"4xl"}
-          flex={1}
-        >
-          <VStack space={"xl"} flex={1}>
-            <Image
-              source={require("../../../assets/images/logo-dark.png")}
-              alt="logo"
-              width={200}
-              height={79}
-            />
-
-            <VStack space={"xs"}>
-              <Text
-                color={colors.darkBlue}
-                fontSize={22}
-                textAlign="left"
-                fontFamily="Urbanist-Bold"
-              >
-                Log into your account
-              </Text>
-              <Text
-                color={colors.subText}
-                fontSize={16}
-                textAlign="left"
-                lineHeight={20}
-                fontFamily="Urbanist-Medium"
-              >
-                Fill the details below to log in
-              </Text>
-            </VStack>
-
-            <VStack space={"lg"}>
-              <Button
-                title="Continue With Google"
-                size="lg"
-                bgColor={colors.background3}
-                color={colors.darkBlue}
-                icon={require("../../../assets/images/google.png")}
-                iconPosition="left"
-              />
-              <Button
-                title="Continue With Facebook"
-                size="lg"
-                bgColor={colors.background3}
-                color={colors.darkBlue}
-                icon={require("../../../assets/images/facebook.png")}
-                iconPosition="left"
-              />
-            </VStack>
-
-            <HStack space="md" alignItems="center" mb={20}>
-              <View
-                style={{ height: 1, flex: 1, backgroundColor: "#D9D9D9" }}
-              />
-              <Text color="#4C4E55" fontSize={14} fontFamily="Urbanist-Bold">
-                OR
-              </Text>
-              <View
-                style={{ height: 1, flex: 1, backgroundColor: "#D9D9D9" }}
-              />
-            </HStack>
-
-            <VStack space={"xl"}>
-              <Input
-                label="First name"
-                placeholder="Enter your first name"
-                type="text"
-                leftIconName={"person-outline"}
-                value={firstName}
-                onChange={(text: string) => {
-                  setFirstName(text);
-                  setFormErrors({ ...formErrors, firstName: "" });
-                }}
-                error={formErrors.firstName}
-              />
-              <Input
-                label="Last name"
-                placeholder="Enter your last name"
-                type="text"
-                leftIconName={"person-outline"}
-                value={lastName}
-                onChange={(text: string) => {
-                  setLastName(text);
-                  setFormErrors({ ...formErrors, lastName: "" });
-                }}
-                error={formErrors.lastName}
-              />
-              <Input
-                label="Email"
-                placeholder="Enter your email"
-                type="text"
-                leftIconName={"mail-outline"}
-                value={email}
-                onChange={(text: string) => {
-                  setEmail(text);
-                  setFormErrors({ ...formErrors, email: "" });
-                }}
-                error={formErrors.email}
-              />
-              <Input
-                label="Phone number"
-                placeholder="Enter your phone number"
-                type="number"
-                leftIconName={"call-outline"}
-                value={phoneNumber}
-                onChange={(text: string) => {
-                  setPhoneNumber(text);
-                  setFormErrors({ ...formErrors, phoneNumber: "" });
-                }}
-                error={formErrors.phoneNumber}
-              />
-              <Input
-                label="Password"
-                placeholder="Enter your password"
-                type="password"
-                leftIconName={"lock-closed-outline"}
-                value={password}
-                onChange={(text: string) => {
-                  setPassword(text);
-                  setFormErrors({ ...formErrors, password: "" });
-                }}
-                error={formErrors.password}
-              />
-            </VStack>
-
-            <HStack alignItems="flex-start" mt={-10}>
-              <Checkbox
-                size="md"
-                isInvalid={false}
-                isChecked={checked}
-                onChange={(value: boolean) => setChecked(value)}
-                value={checked}
-                aria-label="Checkbox Label"
-              >
-                <CheckboxIndicator mr="$2">
-                  <CheckboxIcon as={CheckIcon} />
-                </CheckboxIndicator>
-              </Checkbox>
-              <Text color="#222" fontSize={15} fontFamily="Urbanist-Bold">
-                I accept the{" "}
-              </Text>
-              <TouchableOpacity onPress={handlePressButtonAsync}>
-                <Text color={colors.secondary} fontSize={15} fontFamily="Urbanist-Bold">
-                  Terms and Conditions
+        {statesLoading || categoriesLoading ? (
+          <Loader isLoading={statesLoading || categoriesLoading} />
+        ) : (
+          <VStack
+            p={"$5"}
+            justifyContent="space-between"
+            width="100%"
+            height="100%"
+            space={"4xl"}
+            flex={1}
+          >
+            <VStack space={"xl"} flex={1}>
+              <VStack space={"xs"}>
+                <Text
+                  color={colors.darkBlue}
+                  fontSize={22}
+                  textAlign="left"
+                  fontFamily="Urbanist-Bold"
+                >
+                  Welcome to Sabipost
                 </Text>
-              </TouchableOpacity>
-            </HStack>
-          </VStack>
+                <Text
+                  color={colors.subText}
+                  fontSize={16}
+                  textAlign="left"
+                  lineHeight={20}
+                  fontFamily="Urbanist-Medium"
+                >
+                  Type in your e-mail to create a sabipost account
+                </Text>
+              </VStack>
 
-          <VStack space={"md"} pb={"$2"}>
-            <Button
-              title="Create account"
-              size="lg"
-              bgColor={colors.primary}
-              color={colors.white}
-              onPress={() => onPreSignUp()}
-              isLoading={isLoading}
-              isDisabled={isLoading}
-            />
+              <VStack space={"lg"}>
+                <Button
+                  title="Google"
+                  size="lg"
+                  variant="outline"
+                  bgColor={colors.white}
+                  borderColor="#E9E9E9"
+                  color={"#575757"}
+                  icon={require("../../../assets/images/google.png")}
+                  iconPosition="left"
+                  style={{ height: 45 }}
+                />
+              </VStack>
 
-            <HStack width="100%" justifyContent="center" alignItems="center">
-              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                <Text color="#222222" fontSize={15} fontFamily="Urbanist-Bold">
-                  Already have an account?{" "}
+              <Text
+                color="#4C4E55"
+                fontSize={14}
+                fontFamily="Urbanist-Bold"
+                textAlign="center"
+              >
+                - OR Continue with -
+              </Text>
+
+              <VStack space={"xl"}>
+                <Input
+                  label="First name"
+                  placeholder="Enter your first name"
+                  type="text"
+                  value={firstname}
+                  onChange={(text: string) => {
+                    setFirstname(text);
+                    setFormErrors({ ...formErrors, firstname: "" });
+                  }}
+                  error={formErrors.firstname}
+                />
+                <Input
+                  label="Last name"
+                  placeholder="Enter your last name"
+                  type="text"
+                  value={lastname}
+                  onChange={(text: string) => {
+                    setLastname(text);
+                    setFormErrors({ ...formErrors, lastname: "" });
+                  }}
+                  error={formErrors.lastname}
+                />
+                <Input
+                  label="Email"
+                  placeholder="Enter your email"
+                  type="text"
+                  value={email}
+                  onChange={(text: string) => {
+                    setEmail(text);
+                    setFormErrors({ ...formErrors, email: "" });
+                  }}
+                  error={formErrors.email}
+                />
+
+                {signupData?.role === "seller" && (
+                  <>
+                    <Select
+                      data={allStates}
+                      label="Location"
+                      placeholder="Select your location"
+                      search={true}
+                      onChange={(item: any) => {
+                        setBusiness_state_id(item.value);
+                        setFormErrors({ ...formErrors, business_state_id: "" });
+                      }}
+                      value={business_state_id}
+                      error={formErrors.business_state_id}
+                    />
+
+                    <MultSelect
+                      data={allCategories}
+                      label="Category(s)"
+                      placeholder="Select your category(s)"
+                      search={true}
+                      onChange={(item: any) => {
+                        setSeller_category(item);
+                        setFormErrors({ ...formErrors, seller_category: "" });
+                      }}
+                      value={seller_category}
+                      error={formErrors.seller_category}
+                      maxSelect={2}
+                    />
+                  </>
+                )}
+
+                <Input
+                  label="Phone number"
+                  placeholder="Enter your phone number"
+                  type="number"
+                  value={phone}
+                  onChange={(text: string) => {
+                    setPhone(text);
+                    setFormErrors({ ...formErrors, phone: "" });
+                  }}
+                  error={formErrors.phone}
+                />
+                <Input
+                  label="Password"
+                  placeholder="Enter your password"
+                  type="password"
+                  value={password}
+                  onChange={(text: string) => {
+                    setPassword(text);
+                    setFormErrors({ ...formErrors, password: "" });
+                  }}
+                  error={formErrors.password}
+                />
+              </VStack>
+
+              <HStack alignItems="flex-start" mt={-10}>
+                <Checkbox
+                  size="md"
+                  isInvalid={false}
+                  isChecked={checked}
+                  onChange={(value: boolean) => setChecked(value)}
+                  value={checked}
+                  aria-label="Checkbox Label"
+                >
+                  <CheckboxIndicator mr="$2">
+                    <CheckboxIcon as={CheckIcon} />
+                  </CheckboxIndicator>
+                </Checkbox>
+                <Text color="#222" fontSize={15} fontFamily="Urbanist-Bold">
+                  I accept the{" "}
+                </Text>
+                <TouchableOpacity onPress={handlePressButtonAsync}>
                   <Text
                     color={colors.secondary}
                     fontSize={15}
                     fontFamily="Urbanist-Bold"
                   >
-                    Log In
+                    Terms and Conditions
                   </Text>
-                </Text>
-              </TouchableOpacity>
-            </HStack>
+                </TouchableOpacity>
+              </HStack>
+            </VStack>
+
+            <VStack space={"md"} pb={"$2"}>
+              <Button
+                title="Create account"
+                size="lg"
+                bgColor={colors.secondary}
+                color={colors.primary}
+                onPress={() => onSignUp()}
+                isLoading={isLoading}
+                isDisabled={isLoading}
+              />
+
+              <HStack width="100%" justifyContent="center" alignItems="center">
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <Text
+                    color="#222222"
+                    fontSize={15}
+                    fontFamily="Urbanist-Bold"
+                  >
+                    Already have an account?{" "}
+                    <Text
+                      color={colors.secondary}
+                      fontSize={15}
+                      fontFamily="Urbanist-Bold"
+                    >
+                      Log In
+                    </Text>
+                  </Text>
+                </TouchableOpacity>
+              </HStack>
+            </VStack>
           </VStack>
-        </VStack>
+        )}
       </KeyboardAwareScrollView>
     </SafeAreaProvider>
   );
@@ -302,6 +350,6 @@ export default Register;
 const styles = StyleSheet.create({
   constainer: {
     flex: 1,
-    backgroundColor: "#FEFEFE",
+    backgroundColor: colors.white,
   },
 });

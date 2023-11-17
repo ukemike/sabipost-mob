@@ -1,8 +1,8 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { VStack, Text, HStack } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
 import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState } from "react";
@@ -46,17 +46,10 @@ const Login = ({ navigation }: any) => {
 
   return (
     <SafeAreaProvider style={styles.constainer}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background2} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <VStack p={"$5"} width="100%" height="100%" space={"4xl"} flex={1}>
           <VStack space={"xl"} flex={1}>
-            <Image
-              source={require("../../../assets/images/logo-dark.png")}
-              alt="logo"
-              width={200}
-              height={79}
-            />
-
             <VStack space={"xs"}>
               <Text
                 color={colors.darkBlue}
@@ -64,7 +57,7 @@ const Login = ({ navigation }: any) => {
                 textAlign="left"
                 fontFamily="Urbanist-Bold"
               >
-                Log into your account
+                Welcome Back
               </Text>
               <Text
                 color={colors.subText}
@@ -79,41 +72,32 @@ const Login = ({ navigation }: any) => {
 
             <VStack space={"lg"}>
               <Button
-                title="Continue With Google"
+                title="Google"
                 size="lg"
-                bgColor={colors.background3}
-                color={colors.darkBlue}
+                variant="outline"
+                bgColor={colors.white}
+                borderColor="#E9E9E9"
+                color={"#575757"}
                 icon={require("../../../assets/images/google.png")}
                 iconPosition="left"
-              />
-              <Button
-                title="Continue With Facebook"
-                size="lg"
-                bgColor={colors.background3}
-                color={colors.darkBlue}
-                icon={require("../../../assets/images/facebook.png")}
-                iconPosition="left"
+                style={{ height: 45 }}
               />
             </VStack>
 
-            <HStack space="md" alignItems="center" mb={20}>
-              <View
-                style={{ height: 1, flex: 1, backgroundColor: "#D9D9D9" }}
-              />
-              <Text color="#4C4E55" fontSize={14} fontFamily="Urbanist-Bold">
-                OR
-              </Text>
-              <View
-                style={{ height: 1, flex: 1, backgroundColor: "#D9D9D9" }}
-              />
-            </HStack>
+            <Text
+              color="#4C4E55"
+              fontSize={14}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              - OR Continue with -
+            </Text>
 
             <VStack space={"xl"}>
               <Input
                 label="Email"
                 placeholder="Enter your email"
                 type="text"
-                leftIconName={"mail-outline"}
                 onChange={(text: string) => {
                   setEmail(text);
                   setFormErrors({ ...formErrors, email: "" });
@@ -124,7 +108,6 @@ const Login = ({ navigation }: any) => {
                 label="Password"
                 placeholder="Enter your password"
                 type="password"
-                leftIconName={"lock-closed-outline"}
                 onChange={(text: string) => {
                   setPassword(text);
                   setFormErrors({ ...formErrors, password: "" });
@@ -151,33 +134,39 @@ const Login = ({ navigation }: any) => {
                 </Text>
               </TouchableOpacity>
             </HStack>
-          </VStack>
 
-          <VStack space={"md"} pb={"$2"}>
-            <Button
-              title="Log In"
-              size="lg"
-              bgColor={colors.primary}
-              color={colors.white}
-              isLoading={isLoading}
-              isDisabled={isLoading}
-              onPress={onLogin}
-            />
+            <VStack space={"md"} pb={"$2"} mt={"$5"}>
+              <Button
+                title="Log In"
+                size="lg"
+                bgColor={colors.secondary}
+                color={colors.primary}
+                isLoading={isLoading}
+                isDisabled={isLoading}
+                onPress={onLogin}
+              />
 
-            <HStack width="100%" justifyContent="center" alignItems="center">
-              <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                <Text color="#222222" fontSize={15} fontFamily="Urbanist-Bold">
-                  Don’t have an account?{" "}
+              <HStack width="100%" justifyContent="center" alignItems="center">
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("UserType")}
+                >
                   <Text
-                    color={colors.secondary}
+                    color="#222222"
                     fontSize={15}
                     fontFamily="Urbanist-Bold"
                   >
-                    Sign Up
+                    Don’t have an account?{" "}
+                    <Text
+                      color={colors.secondary}
+                      fontSize={15}
+                      fontFamily="Urbanist-Bold"
+                    >
+                      Sign Up
+                    </Text>
                   </Text>
-                </Text>
-              </TouchableOpacity>
-            </HStack>
+                </TouchableOpacity>
+              </HStack>
+            </VStack>
           </VStack>
         </VStack>
       </KeyboardAwareScrollView>
@@ -190,6 +179,6 @@ export default Login;
 const styles = StyleSheet.create({
   constainer: {
     flex: 1,
-    backgroundColor: "#FEFEFE",
+    backgroundColor: colors.white,
   },
 });

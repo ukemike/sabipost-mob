@@ -1,19 +1,50 @@
 import { StyleSheet } from "react-native";
-import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
+import { VStack, Text } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
+import Button from "../../components/ui/Button";
+import Input from "../../components//ui/Input";
 import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Header from "../../components/Header";
+import { useRequestResetPasswordMutation } from "../../redux/services/auth.service";
 
 const ForgotPassword = ({ navigation }: any) => {
   const toast = useToast();
+
+  const [requestResetPassword, { isLoading }] =
+    useRequestResetPasswordMutation();
+  const [email, setEmail] = useState("");
+  const [formErrors, setFormErrors] = useState<any>({});
+
+  const onRequestReset = async () => {
+    if (!email) {
+      return setFormErrors({
+        email: !email ? "Email is required" : "",
+      });
+    }
+
+    await requestResetPassword({ email })
+      .unwrap()
+      .then((res) => {
+        toast.show("Reset password successful", {
+          type: "success",
+        });
+        navigation.navigate("ResetPassword", { email });
+      })
+      .catch((err) => {
+        toast.show(err.data.message, {
+          type: "danger",
+        });
+      });
+  };
+
   return (
     <SafeAreaProvider style={styles.constainer}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background2} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <Header backgroundColor={colors.white} />
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <VStack
           p={"$5"}
@@ -24,13 +55,6 @@ const ForgotPassword = ({ navigation }: any) => {
           flex={1}
         >
           <VStack space={"xl"} flex={1}>
-            <Image
-              source={require("../../../assets/images/logo-dark.png")}
-              alt="logo"
-              width={200}
-              height={79}
-            />
-
             <VStack space={"xs"}>
               <Text
                 color={colors.darkBlue}
@@ -57,7 +81,11 @@ const ForgotPassword = ({ navigation }: any) => {
                 label="Email"
                 placeholder="Enter your email"
                 type="text"
-                leftIconName={"mail-outline"}
+                onChange={(text: string) => {
+                  setEmail(text);
+                  setFormErrors({ ...formErrors, email: "" });
+                }}
+                error={formErrors.email}
               />
             </VStack>
           </VStack>
@@ -66,13 +94,11 @@ const ForgotPassword = ({ navigation }: any) => {
             <Button
               title="Continue"
               size="lg"
-              bgColor={colors.primary}
-              color={colors.white}
-              onPress={() => {
-                navigation.navigate("ForgotPasswordConatact", {
-                  isSuccessful: true,
-                });
-              }}
+              bgColor={colors.secondary}
+              color={colors.primary}
+              isLoading={isLoading}
+              isDisabled={isLoading}
+              onPress={onRequestReset}
             />
           </VStack>
         </VStack>
@@ -86,6 +112,6 @@ export default ForgotPassword;
 const styles = StyleSheet.create({
   constainer: {
     flex: 1,
-    backgroundColor: "#FEFEFE",
+    backgroundColor: colors.white,
   },
 });

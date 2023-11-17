@@ -13,7 +13,7 @@ import { StatusBar } from "expo-status-bar";
 export default function App() {
   return (
     <Provider store={store}>
-      <StatusBar style="light" backgroundColor="#02002C" />
+      <StatusBar style="light" backgroundColor="#1E2329" />
       <PersistGate loading={null} persistor={persistor}>
         <GluestackUIProvider config={config}>
           <SafeAreaView style={{ flex: 1 }}>

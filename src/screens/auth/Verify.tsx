@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { VStack, Text, HStack } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
+import Button from "../../components/ui/Button";
 import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState } from "react";
@@ -10,48 +10,48 @@ import OTPTextInput from "react-native-otp-textinput";
 import { useToast } from "react-native-toast-notifications";
 import { setSignupData, setCredentials } from "../../redux/slices/authSlice";
 import {
-  usePreSignUpMutation,
-  useSignUpMutation,
+  useResendCodeMutation,
+  useVerifyEmailMutation,
 } from "../../redux/services/auth.service";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { useAppDispatch } from "../../redux/store";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-const Verify = ({ navigation }: any) => {
+const Verify = ({ navigation, route }: any) => {
+  const { email } = route.params;
   const dispatch = useAppDispatch();
   const toast = useToast();
 
-  const [otp, setOtp] = useState("");
+  const [code, setCode] = useState("");
 
-  const { signupData } = useAppSelector((state) => state.app.auth);
+  const [resendCode, { isLoading }] = useResendCodeMutation();
 
-  const [preSignUp, { isLoading }] = usePreSignUpMutation();
-
-  const [signUp, { isLoading: signUpLoading }] = useSignUpMutation();
+  const [verifyEmail, { isLoading: signUpLoading }] = useVerifyEmailMutation();
 
   const handleOtpChange = (otp: any) => {
-    setOtp(otp);
+    setCode(otp);
   };
 
   const onConfirmSignUp = async () => {
-    if (!otp) {
+    if (!code) {
       toast.show("Please enter OTP", {
         type: "danger",
       });
       return;
     }
 
-    await signUp({
-      ...signupData,
-      otp,
-    })
+    const data = {
+      email,
+      code,
+    };
+
+    await verifyEmail(data)
       .unwrap()
       .then((res: any) => {
         dispatch(setCredentials(res));
-        dispatch(setSignupData({}));
+        dispatch(setSignupData(null));
         toast.show("Account created successfully", {
           type: "success",
         });
-        navigation.navigate("SetUp");
       })
       .catch((err: any) => {
         toast.show(err.data.message, {
@@ -61,9 +61,8 @@ const Verify = ({ navigation }: any) => {
   };
 
   const resendOtp = async () => {
-    await preSignUp({
-      email: signupData?.email,
-      phoneNumber: signupData?.phoneNumber,
+    await resendCode({
+      email,
     })
       .unwrap()
       .then((res: any) => {
@@ -80,8 +79,8 @@ const Verify = ({ navigation }: any) => {
 
   return (
     <SafeAreaProvider style={styles.constainer}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background2} />
-      <Header backgroundColor={colors.background2} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <Header backgroundColor={colors.white} />
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <VStack
           p={"$5"}
@@ -93,13 +92,13 @@ const Verify = ({ navigation }: any) => {
         >
           <VStack space={"xl"} flex={1}>
             <VStack space={"xs"}>
-            <Text
+              <Text
                 color={colors.darkBlue}
                 fontSize={22}
                 textAlign="left"
                 fontFamily="Urbanist-Bold"
               >
-                Verification Code
+                Verify your email
               </Text>
               <Text
                 color={colors.subText}
@@ -108,8 +107,8 @@ const Verify = ({ navigation }: any) => {
                 lineHeight={20}
                 fontFamily="Urbanist-Medium"
               >
-                Provide the OTP sent to the email you provided during
-                registration.
+                Kindly input the code that was sent to the email your provided.
+                Be sure to check your spam or promotional directory.
               </Text>
             </VStack>
 
@@ -157,10 +156,10 @@ const Verify = ({ navigation }: any) => {
 
           <VStack space={"md"} pb={"$2"}>
             <Button
-              title="Verify account"
+              title="Continue"
               size="lg"
-              bgColor={colors.primary}
-              color={colors.white}
+              bgColor={colors.secondary}
+              color={colors.primary}
               onPress={onConfirmSignUp}
               isLoading={signUpLoading}
               isDisabled={signUpLoading}
@@ -177,7 +176,7 @@ export default Verify;
 const styles = StyleSheet.create({
   constainer: {
     flex: 1,
-    backgroundColor: "#FEFEFE",
+    backgroundColor: colors.white,
   },
   otpInput: {
     fontSize: 24,

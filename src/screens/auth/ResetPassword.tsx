@@ -1,16 +1,61 @@
 import { StyleSheet } from "react-native";
-import { VStack, Text, Image } from "@gluestack-ui/themed";
+import { VStack, Text } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
 import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Header from "../../components/Header";
+import { useResetPasswordMutation } from "../../redux/services/auth.service";
+import { useToast } from "react-native-toast-notifications";
+import { useState } from "react";
 
-const ResetPassword = ({ navigation }: any) => {
+const ResetPassword = ({ navigation, route }: any) => {
+  const email = route.params.email;
+  const toast = useToast();
+
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [password_confirmation, setPasswordConfirmation] = useState("");
+  const [formErrors, setFormErrors] = useState<any>({});
+
+  const onResetPassword = async () => {
+    if (!code || !password || !password_confirmation) {
+      return setFormErrors({
+        code: !code ? "Code is required" : "",
+        password: !password ? "Password is required" : "",
+        password_confirmation: !password_confirmation
+          ? "Password confirmation is required"
+          : "",
+      });
+    }
+
+    await resetPassword({
+      email,
+      code,
+      password,
+      password_confirmation,
+    })
+      .unwrap()
+      .then((res) => {
+        toast.show("Reset password successful", {
+          type: "success",
+        });
+        navigation.navigate("Login");
+      })
+      .catch((err) => {
+        toast.show(err.data.message, {
+          type: "danger",
+        });
+      });
+  };
+
   return (
     <SafeAreaProvider style={styles.constainer}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background2} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <Header backgroundColor={colors.white} />
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <VStack
           p={"$5"}
@@ -21,13 +66,6 @@ const ResetPassword = ({ navigation }: any) => {
           flex={1}
         >
           <VStack space={"xl"} flex={1}>
-            <Image
-              source={require("../../../assets/images/logo-dark.png")}
-              alt="logo"
-              width={200}
-              height={79}
-            />
-
             <VStack space={"xs"}>
               <Text
                 color={colors.darkBlue}
@@ -50,17 +88,35 @@ const ResetPassword = ({ navigation }: any) => {
 
             <VStack space={"xl"}>
               <Input
+                label="OTP"
+                placeholder="Enter your new password"
+                type="number"
+                onChange={(text: string) => {
+                  setCode(text);
+                  setFormErrors({ ...formErrors, code: "" });
+                }}
+                error={formErrors.code}
+              />
+              <Input
                 label="New Password"
                 placeholder="Enter your new password"
                 type="password"
-                leftIconName={"lock-closed-outline"}
+                onChange={(text: string) => {
+                  setPassword(text);
+                  setFormErrors({ ...formErrors, password: "" });
+                }}
+                error={formErrors.password}
               />
 
               <Input
                 label="Confirm Password"
                 placeholder="Confirm your password"
                 type="password"
-                leftIconName={"lock-closed-outline"}
+                onChange={(text: string) => {
+                  setPasswordConfirmation(text);
+                  setFormErrors({ ...formErrors, password_confirmation: "" });
+                }}
+                error={formErrors.password_confirmation}
               />
             </VStack>
           </VStack>
@@ -69,11 +125,11 @@ const ResetPassword = ({ navigation }: any) => {
             <Button
               title="Reset Password"
               size="lg"
-              bgColor={colors.primary}
-              color={colors.white}
-              onPress={() => {
-                navigation.navigate("Login");
-              }}
+              bgColor={colors.secondary}
+              color={colors.primary}
+              isLoading={isLoading}
+              isDisabled={isLoading}
+              onPress={onResetPassword}
             />
           </VStack>
         </VStack>
@@ -87,6 +143,6 @@ export default ResetPassword;
 const styles = StyleSheet.create({
   constainer: {
     flex: 1,
-    backgroundColor: "#FEFEFE",
+    backgroundColor: colors.white,
   },
 });

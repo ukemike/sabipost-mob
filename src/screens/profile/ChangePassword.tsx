@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native";
 import { VStack, Text, Image } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
 import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
