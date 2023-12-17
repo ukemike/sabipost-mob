@@ -45,10 +45,50 @@ export const formatDateTime2 = (initialDate: string): string => {
   return formatted;
 };
 
-export const numberFormat = (value: any) =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "NGN",
-    // minimumSignificantDigits: 3,
-    maximumSignificantDigits: 3,
-  }).format(value);
+export const calculateDiscountPercentage = (
+  amount: number,
+  discountAmount: number
+): number => {
+  if (amount <= 0 || discountAmount <= 0) {
+    return 0;
+  }
+
+  const discountPercentage = (discountAmount / amount) * 100;
+  return Math.round(discountPercentage * 100) / 100; // Round to two decimal places
+};
+
+export const validatemail = (email: string) => {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re?.test(String(email)?.toLowerCase());
+};
+
+export const validatephone = (phone: string) => {
+  if (phone?.includes("+234")) {
+    return phone?.includes("+234");
+  } else if (phone?.includes("234") && phone?.length > 10) {
+    return phone?.includes("234");
+  } else if (phone?.includes("090") && phone?.length > 8) {
+    return phone?.includes("090");
+  } else if (phone?.includes("080") && phone?.length > 8) {
+    return phone?.includes("080");
+  } else if (phone?.includes("070") && phone?.length > 8) {
+    return phone.includes("070");
+  } else if (phone?.includes("081") && phone?.length > 8) {
+    return phone?.includes("081");
+  } else if (phone?.includes("091") && phone?.length > 8) {
+    return phone?.includes("091");
+  }
+};
+
+export const validateUrl = (url: string) => {
+  if (url?.includes("www")) {
+    return url?.includes("www");
+  } else if (url?.includes("http")) {
+    return url?.includes("http");
+  } else if (url?.includes("https")) {
+    return url?.includes("https");
+  } else if (url?.includes(".com")) {
+    return url?.includes(".com");
+  }
+};

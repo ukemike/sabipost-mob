@@ -125,11 +125,11 @@ const Profile = ({ navigation }: any) => {
                   borderRadius={"$full"}
                   bg={colors.background3}
                 >
-                  <AvatarImage
+                  {/* <AvatarImage
                     source={{
                       uri: profileImg ? profileImg : undefined,
                     }}
-                  />
+                  /> */}
 
                   <AvatarBadge
                     bg={colors.background4}

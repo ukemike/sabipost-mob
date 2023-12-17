@@ -1,14 +1,46 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, ScrollView } from "react-native";
+import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { colors } from "../../constants";
+import StatusBar from "../../components/StatusBar";
+import Header from "../../components/Header";
 
 const Orders = () => {
   return (
-    <View>
-      <Text>Orders</Text>
-    </View>
-  )
-}
+    <SafeAreaProvider style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <Header backgroundColor={colors.white} />
+      <ScrollView
+        alwaysBounceVertical={false}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <VStack m={"$5"} space="lg" flex={1}>
+          <VStack flex={1} space="lg">
+            <VStack>
+              <Text
+                color={colors.primary}
+                fontSize={20}
+                fontFamily="Urbanist-Bold"
+                textAlign="left"
+              >
+                Orders
+              </Text>
+            </VStack>
 
-export default Orders
+            <VStack></VStack>
+          </VStack>
+        </VStack>
+      </ScrollView>
+    </SafeAreaProvider>
+  );
+};
 
-const styles = StyleSheet.create({})
+export default Orders;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+});

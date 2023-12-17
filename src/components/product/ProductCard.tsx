@@ -7,12 +7,12 @@ import Button from "../ui/Button";
 import { useNavigation } from "@react-navigation/native";
 
 type PostCardProps = {
-  title: string;
-  image: string;
-  amount: number;
-  rating: number;
-  reviews: number;
-  inStock: boolean;
+  title?: string;
+  image?: string;
+  amount?: number;
+  rating?: number;
+  reviews?: number;
+  inStock?: boolean;
   productID?: string;
 };
 
@@ -60,13 +60,15 @@ const PostCard = ({
           alignItems="center"
           justifyContent="center"
         >
-          <Image
-            source={image}
-            alt="post"
-            h={155}
-            w={"100%"}
-            resizeMode="contain"
-          />
+          {image && (
+            <Image
+              source={image ? image : undefined}
+              alt="post"
+              h={155}
+              w={"100%"}
+              resizeMode="contain"
+            />
+          )}
         </VStack>
       </TouchableOpacity>
       <VStack py={"$3"}>
@@ -86,7 +88,7 @@ const PostCard = ({
         />
 
         <StarRating
-          rating={rating}
+          rating={rating ? rating : 0}
           onChange={(rating) => console.log(rating)}
           starSize={18}
           maxStars={5}
@@ -110,6 +112,7 @@ const PostCard = ({
         bgColor={colors.white}
         color={colors.secondary}
         style={{ height: 45, borderRadius: 6, marginBottom: 10 }}
+        onPress={() => navigation.navigate("ProductDetail", { productID })}
       />
     </VStack>
   );

@@ -26,6 +26,7 @@ import { profileApi } from "./services/profile.service";
 import { generalApi } from "./services/general.service";
 import { postApi } from "./services/post.service";
 import { productApi } from "./services/product.service";
+import { quoteApi } from "./services/quotes.service";
 
 // reducers
 import authReducer from "./slices/authSlice";
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
   [generalApi.reducerPath]: generalApi.reducer,
   [postApi.reducerPath]: postApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
+  [quoteApi.reducerPath]: quoteApi.reducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -55,6 +57,7 @@ export const store: any = configureStore({
     [generalApi.reducerPath]: generalApi.reducer,
     [postApi.reducerPath]: postApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
+    [quoteApi.reducerPath]: quoteApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -67,6 +70,7 @@ export const store: any = configureStore({
       generalApi.middleware,
       postApi.middleware,
       productApi.middleware,
+      quoteApi.middleware,
     ]),
 });
 

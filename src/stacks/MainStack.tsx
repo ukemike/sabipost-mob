@@ -21,6 +21,7 @@ import MyPosts from "../screens/posts/MyPosts";
 import MyOffers from "../screens/offers/MyOffers";
 import Notification from "../screens/notification/Notification";
 import Orders from "../screens/orders/Orders";
+import Post from "../screens/post/Post";
 import { colors } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
@@ -40,6 +41,13 @@ const MainTab = () => {
       icon: require("../../assets/images/home.png"),
       isHidden: false,
       component: Home,
+    },
+    {
+      name: "Post",
+      label: "Create Post",
+      icon: require("../../assets/images/posts.png"),
+      isHidden: false,
+      component: Post,
     },
     {
       name: "Posts",
@@ -117,12 +125,12 @@ const MainTab = () => {
                 <AvatarFallbackText size="lg" fontFamily="Urbanist-Bold">
                   John Doe
                 </AvatarFallbackText>
-                <AvatarImage
+                {/* <AvatarImage
                   source={{
                     uri: undefined,
                   }}
                   alt="avatar"
-                />
+                /> */}
               </Avatar>
             </TouchableOpacity>
             <VStack>

@@ -4,7 +4,6 @@ import StatusBar from "../../components/StatusBar";
 import { colors } from "../../constants";
 import DashboardMenu from "../../components/ui/DashboardMenu";
 import HomeTabs from "../../stacks/HomeTabs";
-import { VStack } from "@gluestack-ui/themed";
 
 const Home = ({ navigation }: any) => {
   const openDrawer = () => {

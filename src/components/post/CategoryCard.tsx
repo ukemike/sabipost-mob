@@ -11,9 +11,10 @@ const CategoryCard = ({ allPost }: any) => {
 
   const renderItemC = ({ item }: any) => (
     <PostCard
-      title={item.name}
-      category={item.category.name}
-      image={item.image_url || item.image}
+      title={item?.name}
+      category={item?.category?.name}
+      image={item?.image_url || item?.image}
+      postID={item?.postID}
     />
   );
 

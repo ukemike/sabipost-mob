@@ -11,6 +11,8 @@ import ChangePassword from "../screens/profile/ChangePassword";
 import PostCategory from "../screens/posts/PostCategory";
 import ProductCategory from "../screens/products/ProductCategory";
 import ProductDetail from "../screens/products/ProductDetail";
+import PostDetail from "../screens/posts/PostDetail";
+import PostNegotiation from "../screens/posts/PostNegotiation";
 
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -56,6 +58,8 @@ function MainNavigation() {
             <Stack.Screen name="PostCategory" component={PostCategory} />
             <Stack.Screen name="ProductCategory" component={ProductCategory} />
             <Stack.Screen name="ProductDetail" component={ProductDetail} />
+            <Stack.Screen name="PostDetail" component={PostDetail} />
+            <Stack.Screen name="PostNegotiation" component={PostNegotiation} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

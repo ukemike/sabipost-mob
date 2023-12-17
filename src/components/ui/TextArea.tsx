@@ -55,9 +55,9 @@ const TextArea = ({
         w="100%"
         bg="white"
         borderWidth={1}
-        borderColor={error ? "red" : colors.border}
+        borderColor={error ? "red" : colors.border3}
         borderRadius={4}
-        backgroundColor={colors.inputBackground}
+        backgroundColor={colors.white}
       >
         <TextareaInput
           placeholder={placeholder}

@@ -38,12 +38,12 @@ const DashboardMenu = ({ openDrawer }: any) => {
           <AvatarFallbackText size="lg" fontFamily="Urbanist-Bold">
             John Doe
           </AvatarFallbackText>
-          <AvatarImage
+          {/* <AvatarImage
             source={{
               uri: undefined,
             }}
             alt="avatar"
-          />
+          /> */}
         </Avatar>
       </TouchableOpacity>
     </HStack>

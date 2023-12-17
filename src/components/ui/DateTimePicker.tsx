@@ -52,16 +52,7 @@ const DateTimePickers = ({
             : date.toLocaleTimeString()}
         </Text>
       </TouchableOpacity>
-      <Image
-        source={require("../../assets/images/date.png")}
-        width={22}
-        height={22}
-        resizeMode="contain"
-        position="absolute"
-        right={20}
-        bottom={12}
-        alt="date"
-      />
+
       {showPicker && (
         <VStack width="100%">
           <DateTimePicker
@@ -82,11 +73,11 @@ const styles = StyleSheet.create({
   container: {},
   input: {
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#D0DBE2",
     borderRadius: 4,
-    backgroundColor: colors.inputBackground,
+    backgroundColor: colors.white,
     width: "100%",
-    paddingVertical: 13,
+    paddingVertical: Platform.OS === "ios" ? 23 : 18,
     paddingHorizontal: 20,
   },
   inputText: {

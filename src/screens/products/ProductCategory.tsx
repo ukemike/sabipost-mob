@@ -73,9 +73,13 @@ const ProductCategory = ({ navigation, route }: any) => {
 
   const renderItem = ({ item }: any) => (
     <ProductCard
-      title={item.name}
-      image={item.images[0].image}
-      amount={item.price}
+      title={item?.name}
+      image={item?.images[0]?.image}
+      amount={item?.price}
+      rating={item?.rating}
+      reviews={item?.reviews || 0}
+      inStock={+item?.quantity !== 0}
+      productID={item?.productID}
     />
   );
 

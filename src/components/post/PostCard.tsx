@@ -1,17 +1,22 @@
 import { Image, VStack, Text } from "@gluestack-ui/themed";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../../constants";
+import { useNavigation } from "@react-navigation/native";
 
 type PostCardProps = {
   title: string;
   category: string;
   image: string;
+  postID?: any;
 };
 
-const PostCard = ({ title, category, image }: PostCardProps) => {
+const PostCard = ({ title, category, image, postID }: PostCardProps) => {
+  const navigation = useNavigation<any>();
   return (
     <VStack bg={colors.white} w={"48%"}>
-      <TouchableOpacity>
+      <TouchableOpacity
+      onPress={() => navigation.navigate("PostDetail", { postID })}
+      >
         <VStack
           bg={"#f5f5f5"}
           borderRadius={7}
@@ -20,13 +25,15 @@ const PostCard = ({ title, category, image }: PostCardProps) => {
           alignItems="center"
           justifyContent="center"
         >
-          <Image
-            source={image}
-            alt="post"
-            h={155}
-            w={"100%"}
-            resizeMode="contain"
-          />
+          {image && (
+            <Image
+              source={image ? image : undefined}
+              alt="post"
+              h={155}
+              w={"100%"}
+              resizeMode="contain"
+            />
+          )}
         </VStack>
       </TouchableOpacity>
       <VStack py={"$3"}>
