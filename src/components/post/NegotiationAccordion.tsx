@@ -8,29 +8,26 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-  Avatar,
-  AvatarImage,
-  AvatarFallbackText,
   Divider,
   Badge,
 } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import Button from "../ui/Button";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
-import ImageView from "react-native-image-viewing";
 import {
   BottomSheetModal,
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { useRef, useCallback, useMemo, useState } from "react";
-import Negotiate from "./Negotiate";
-import Modal from "../Modal";
+import Accept from "./Accept";
+import Reject from "./Reject";
 import { formatDays } from "../../utils/functions";
+import Badges from "../ui/Badge";
+import Avatar from "../ui/Avatar";
 
 const NegotiationAccordion = ({ item, post }: any) => {
-  const [visible, setIsVisible] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [type, setType] = useState("");
 
   const details = [
     {
@@ -44,7 +41,7 @@ const NegotiationAccordion = ({ item, post }: any) => {
   ];
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["25%", "60%"], []);
+  const snapPoints = useMemo(() => ["25%", "65%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -70,7 +67,8 @@ const NegotiationAccordion = ({ item, post }: any) => {
 
   const renderContent = () => (
     <>
-      <Negotiate />
+      {type === "accept" && <Accept />}
+      {type === "reject" && <Reject />}
     </>
   );
 
@@ -90,7 +88,65 @@ const NegotiationAccordion = ({ item, post }: any) => {
           borderRadius={6}
           px={"$3"}
           pt={"$4"}
+          position="relative"
+          mt={"$4"}
         >
+          {item?.seller ? (
+            <Badges
+              title={item?.seller?.status}
+              variant="outline"
+              bgColor={colors.white}
+              color={
+                item?.seller?.status === "accepted"
+                  ? colors.green
+                  : item?.seller?.status === "pending"
+                  ? colors.secondary
+                  : colors.red
+              }
+              borderColor={
+                item?.seller?.status === "accepted"
+                  ? colors.green
+                  : item?.seller?.status === "pending"
+                  ? colors.secondary
+                  : colors.red
+              }
+              width={"auto"}
+              style={{
+                position: "absolute",
+                top: -10,
+                left: 0,
+                zIndex: 1,
+              }}
+            />
+          ) : (
+            <Badges
+              title={item?.buyer?.status}
+              variant="outline"
+              bgColor={colors.white}
+              color={
+                item?.buyer?.status === "accepted"
+                  ? colors.green
+                  : item?.buyer?.status === "pending"
+                  ? colors.secondary
+                  : colors.red
+              }
+              borderColor={
+                item?.buyer?.status === "accepted"
+                  ? colors.green
+                  : item?.buyer?.status === "pending"
+                  ? colors.secondary
+                  : colors.red
+              }
+              width={"auto"}
+              style={{
+                position: "absolute",
+                top: -10,
+                left: 0,
+                zIndex: 1,
+              }}
+            />
+          )}
+
           <VStack mb={"$4"}>
             <AccordionTrigger>
               {({ isExpanded }) => {
@@ -102,21 +158,10 @@ const NegotiationAccordion = ({ item, post }: any) => {
                       width="100%"
                     >
                       <HStack alignItems="center" space={"sm"}>
-                        <Avatar size="md" bg={colors.secondary}>
-                          <AvatarFallbackText fontFamily="Urbanist-Bold">
-                            {item?.buyer?.sellerBusiness}
-                          </AvatarFallbackText>
-                          {item?.buyer?.sellerImage && (
-                            <AvatarImage
-                              source={{
-                                uri: item?.buyer?.sellerImage
-                                  ? item?.buyer?.sellerImage
-                                  : undefined,
-                              }}
-                              alt="avatar"
-                            />
-                          )}
-                        </Avatar>
+                        <Avatar
+                          name={item?.buyer?.sellerBusiness}
+                          image={item?.buyer?.sellerImage}
+                        />
                         <VStack>
                           <Text
                             fontFamily="Urbanist-Bold"
@@ -578,6 +623,10 @@ const NegotiationAccordion = ({ item, post }: any) => {
                       width: "48%",
                       borderRadius: 4,
                     }}
+                    onPress={() => {
+                      setType("reject");
+                      handlePresentModalPress();
+                    }}
                   />
                   <Button
                     title="Accept Quote"
@@ -589,7 +638,10 @@ const NegotiationAccordion = ({ item, post }: any) => {
                       width: "48%",
                       borderRadius: 4,
                     }}
-                    onPress={() => setShowModal(true)}
+                    onPress={() => {
+                      setType("accept");
+                      handlePresentModalPress();
+                    }}
                   />
                 </HStack>
               </VStack>
@@ -597,6 +649,7 @@ const NegotiationAccordion = ({ item, post }: any) => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={1}
@@ -616,39 +669,6 @@ const NegotiationAccordion = ({ item, post }: any) => {
           {renderContent()}
         </BottomSheetScrollView>
       </BottomSheetModal>
-
-      <Modal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        modalTitle="Accept this quote"
-        modalBody={
-          <>
-            <Text color="#65676B" fontSize={16} fontWeight="medium">
-              Are you sure you want to accept this quote?
-            </Text>
-          </>
-        }
-        modalFooter={
-          <HStack space="md">
-            <Button
-              variant="outline"
-              title="Cancel"
-              bgColor={colors.white}
-              color={colors.red}
-              borderColor={colors.red}
-              style={{ height: 45 }}
-              onPress={() => setShowModal(false)}
-            />
-
-            <Button
-              title="Log Out"
-              bgColor={colors.secondary}
-              color={colors.primary}
-              style={{ height: 45 }}
-            />
-          </HStack>
-        }
-      />
     </>
   );
 };

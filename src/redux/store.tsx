@@ -27,10 +27,12 @@ import { generalApi } from "./services/general.service";
 import { postApi } from "./services/post.service";
 import { productApi } from "./services/product.service";
 import { quoteApi } from "./services/quotes.service";
+import { orderApi } from "./services/order.service";
+import { notificationApi } from "./services/notification.service";
+import { userApi } from "./services/user.service";
 
 // reducers
 import authReducer from "./slices/authSlice";
-
 
 const persistConfig = {
   key: "root",
@@ -46,6 +48,9 @@ const rootReducer = combineReducers({
   [postApi.reducerPath]: postApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
   [quoteApi.reducerPath]: quoteApi.reducer,
+  [orderApi.reducerPath]: orderApi.reducer,
+  [notificationApi.reducerPath]: notificationApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -58,6 +63,9 @@ export const store: any = configureStore({
     [postApi.reducerPath]: postApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [quoteApi.reducerPath]: quoteApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -71,6 +79,9 @@ export const store: any = configureStore({
       postApi.middleware,
       productApi.middleware,
       quoteApi.middleware,
+      orderApi.middleware,
+      notificationApi.middleware,
+      userApi.middleware,
     ]),
 });
 

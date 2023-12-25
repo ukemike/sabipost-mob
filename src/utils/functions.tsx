@@ -16,10 +16,10 @@ export const formatDays = (initialDate: string): string => {
 };
 
 export const shortenText = (text: string, maxLength: number): string => {
-  if (text.length <= maxLength) {
+  if (text?.length <= maxLength) {
     return text;
   }
-  return text.substr(0, maxLength) + "...";
+  return text?.substr(0, maxLength) + "...";
 };
 
 export const formatDate2 = (initialDate: string): string => {

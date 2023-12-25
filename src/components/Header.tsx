@@ -7,12 +7,14 @@ type HeaderProps = {
   title?: string;
   leftButton?: any;
   backgroundColor?: string;
+  arrowColor?: string;
 };
 
 const Header = ({
   title = "",
   leftButton = { display: true },
   backgroundColor = "#fff",
+  arrowColor = "#000",
 }: HeaderProps) => {
   const navigation = useNavigation();
   return (
@@ -28,7 +30,9 @@ const Header = ({
           style={styles.button}
           onPress={() => (leftButton.display ? navigation.goBack() : null)}
         >
-          {leftButton.display && <Feather name="arrow-left" size={26} />}
+          {leftButton.display && (
+            <Feather name="arrow-left" size={26} color={arrowColor} />
+          )}
         </TouchableOpacity>
 
         <Text

@@ -2,34 +2,25 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { VStack, Text, HStack } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import Button from "../../components/ui/Button";
-import Input from "../../components/ui/Input";
 import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { setCredentials } from "../../redux/slices/authSlice";
 import { useLoginMutation } from "../../redux/services/auth.service";
 import { useAppDispatch } from "../../redux/store";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Input from "../../components/ui/Input2";
+import { Formik } from "formik";
+import { loginSchema } from "../../schemas/auth.schema";
 
 const Login = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
   const toast = useToast();
 
   const [login, { isLoading }] = useLoginMutation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [formErrors, setFormErrors] = useState<any>({});
 
-  const onLogin = async () => {
-    if (!email || !password) {
-      return setFormErrors({
-        email: !email ? "Email is required" : "",
-        password: !password ? "Password is required" : "",
-      });
-    }
-
-    await login({ email, password })
+  const onLogin = async (values: any) => {
+    await login(values)
       .unwrap()
       .then((res) => {
         dispatch(setCredentials(res));
@@ -70,7 +61,7 @@ const Login = ({ navigation }: any) => {
               </Text>
             </VStack>
 
-            <VStack space={"lg"}>
+            <VStack space={"lg"} display="none">
               <Button
                 title="Google"
                 size="lg"
@@ -85,6 +76,7 @@ const Login = ({ navigation }: any) => {
             </VStack>
 
             <Text
+              display="none"
               color="#4C4E55"
               fontSize={14}
               fontFamily="Urbanist-Bold"
@@ -94,78 +86,91 @@ const Login = ({ navigation }: any) => {
             </Text>
 
             <VStack space={"xl"}>
-              <Input
-                label="Email"
-                placeholder="Enter your email"
-                type="text"
-                onChange={(text: string) => {
-                  setEmail(text);
-                  setFormErrors({ ...formErrors, email: "" });
+              <Formik
+                initialValues={{
+                  email: "",
+                  password: "",
                 }}
-                error={formErrors.email}
-              />
-              <Input
-                label="Password"
-                placeholder="Enter your password"
-                type="password"
-                onChange={(text: string) => {
-                  setPassword(text);
-                  setFormErrors({ ...formErrors, password: "" });
+                onSubmit={(values) => {
+                  onLogin(values);
                 }}
-                error={formErrors.password}
-              />
-            </VStack>
-
-            <HStack
-              width="100%"
-              justifyContent="flex-end"
-              alignItems="center"
-              mt={-15}
-            >
-              <TouchableOpacity
-                onPress={() => navigation.navigate("ForgotPassword")}
+                validationSchema={loginSchema}
               >
-                <Text
-                  color={colors.secondary}
-                  fontSize={15}
-                  fontFamily="Urbanist-Bold"
-                >
-                  Forgot Password?
-                </Text>
-              </TouchableOpacity>
-            </HStack>
+                {(formikProps) => (
+                  <>
+                    <Input
+                      field="email"
+                      form={formikProps}
+                      placeholder="Enter your email"
+                      keyboardType="email-address"
+                      label="Email"
+                    />
 
-            <VStack space={"md"} pb={"$2"} mt={"$5"}>
-              <Button
-                title="Log In"
-                size="lg"
-                bgColor={colors.secondary}
-                color={colors.primary}
-                isLoading={isLoading}
-                isDisabled={isLoading}
-                onPress={onLogin}
-              />
+                    <Input
+                      field="password"
+                      form={formikProps}
+                      placeholder="Enter your password"
+                      label="Password"
+                      secureTextEntry
+                    />
 
-              <HStack width="100%" justifyContent="center" alignItems="center">
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("UserType")}
-                >
-                  <Text
-                    color="#222222"
-                    fontSize={15}
-                    fontFamily="Urbanist-Bold"
-                  >
-                    Don’t have an account?{" "}
-                    <Text
-                      color={colors.secondary}
-                      fontSize={15}
-                      fontFamily="Urbanist-Bold"
+                    <HStack
+                      width="100%"
+                      justifyContent="flex-end"
+                      alignItems="center"
+                      mt={-15}
                     >
-                      Sign Up
-                    </Text>
-                  </Text>
-                </TouchableOpacity>
-              </HStack>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate("ForgotPassword")}
+                      >
+                        <Text
+                          color={colors.secondary}
+                          fontSize={15}
+                          fontFamily="Urbanist-Bold"
+                        >
+                          Forgot Password?
+                        </Text>
+                      </TouchableOpacity>
+                    </HStack>
+
+                    <VStack space={"md"} pb={"$2"} mt={"$5"}>
+                      <Button
+                        onPress={formikProps.handleSubmit}
+                        title="Log In"
+                        size="lg"
+                        bgColor={colors.secondary}
+                        color={colors.primary}
+                        isLoading={isLoading}
+                        isDisabled={isLoading}
+                      />
+                      <HStack
+                        width="100%"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <TouchableOpacity
+                          onPress={() => navigation.navigate("UserType")}
+                        >
+                          <Text
+                            color="#222222"
+                            fontSize={15}
+                            fontFamily="Urbanist-Bold"
+                          >
+                            Don’t have an account?{" "}
+                            <Text
+                              color={colors.secondary}
+                              fontSize={15}
+                              fontFamily="Urbanist-Bold"
+                            >
+                              Sign Up
+                            </Text>
+                          </Text>
+                        </TouchableOpacity>
+                      </HStack>
+                    </VStack>
+                  </>
+                )}
+              </Formik>
             </VStack>
           </VStack>
         </VStack>

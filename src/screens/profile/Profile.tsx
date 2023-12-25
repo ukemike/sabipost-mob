@@ -1,21 +1,14 @@
-import {
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  useWindowDimensions,
-  FlatList,
-  RefreshControl,
-} from "react-native";
+import { TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import {
   Image,
   VStack,
   HStack,
   Text,
-  Badge,
-  BadgeText,
   Avatar,
   AvatarBadge,
   AvatarImage,
+  AvatarFallbackText,
+  Spinner,
 } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import StatusBar from "../../components/StatusBar";
@@ -23,43 +16,32 @@ import { colors } from "../../constants";
 import Button from "../../components/ui/Button";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { logOut } from "../../redux/slices/authSlice";
-
-import * as ImagePicker from "expo-image-picker";
-import * as MediaLibrary from "expo-media-library";
 import { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import useImagePicker from "../../hooks/useImagePicker";
+import Modal from "../../components/Modal";
+import { useUpdateProfilePictureMutation } from "../../redux/services/user.service";
+import { useToast } from "react-native-toast-notifications";
+import { setCredentials } from "../../redux/slices/authSlice";
+import * as Application from "expo-application";
 
 const Profile = ({ navigation }: any) => {
+  const toast = useToast();
   const dispatch = useAppDispatch();
-  const [hasGalleryPermissions, setHasGalleryPermissions] = useState(false);
-  const [profileImg, setProfileImg] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const { userInfo } = useAppSelector((state) => state.app.auth);
+  const token = userInfo?.token;
 
-  // get permissions for gallery on component mount
-  useEffect(() => {
-    (async () => {
-      const galleryStatus =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      setHasGalleryPermissions(galleryStatus.status == "granted");
+  const {
+    selectedImage,
+    pickFromGallery,
+    base64,
+    setBase64,
+    setSelectedImage,
+  } = useImagePicker();
 
-      if (galleryStatus.status == "granted") {
-        const userGalleryMedia = await MediaLibrary.getAssetsAsync({
-          sortBy: ["creationTime"],
-          mediaType: ["photo"],
-        });
-      }
-    })();
-  }, []);
-
-  const pickFromGallery = async () => {
-    let result = (await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    })) as any;
-    if (!result.canceled) {
-      setProfileImg(result.assets[0].uri);
-    }
-  };
+  const [updateProfilePicture, { isLoading: isUpdatingPicture }] =
+    useUpdateProfilePictureMutation();
 
   const handleLogout = () => {
     dispatch(logOut());
@@ -74,24 +56,63 @@ const Profile = ({ navigation }: any) => {
     },
     {
       id: 2,
+      title: "Bank Details",
+      icon: require("../../../assets/images/medal.png"),
+      onPress: () => navigation.navigate("BankDetails"),
+    },
+    {
+      id: 3,
       title: "Change Password",
       icon: require("../../../assets/images/lock.png"),
       onPress: () => navigation.navigate("ChangePassword"),
     },
     {
-      id: 3,
-      title: "Referral",
-      icon: require("../../../assets/images/medal.png"),
-      onPress: () => navigation.navigate("Referral"),
-    },
-    {
       id: 4,
       title: "Log Out",
       icon: require("../../../assets/images/logout.png"),
-      onPress: () => handleLogout(),
+      onPress: () => setShowModal(true),
       isLogout: true,
     },
   ];
+
+  const handleUpdateProfilePicture = async () => {
+    await updateProfilePicture({
+      body: { image_code: base64 },
+      token: token,
+    })
+      .unwrap()
+      .then((res) => {
+        const image = res.data.image;
+        dispatch(
+          setCredentials({
+            ...userInfo,
+            data: {
+              ...userInfo?.data,
+              image,
+            },
+          })
+        );
+        toast.show("Profile picture updated successfully", {
+          type: "success",
+        });
+        setSelectedImage(null);
+        setBase64(null);
+      })
+      .catch((err: any) => {
+        toast.show(err?.data?.message, {
+          type: "danger",
+        });
+      });
+  };
+
+  useEffect(() => {
+    if (base64) {
+      handleUpdateProfilePicture();
+    }
+  }, [base64]);
+
+  // get app version
+  const version = Application.nativeApplicationVersion;
 
   return (
     <>
@@ -125,11 +146,26 @@ const Profile = ({ navigation }: any) => {
                   borderRadius={"$full"}
                   bg={colors.background3}
                 >
-                  {/* <AvatarImage
-                    source={{
-                      uri: profileImg ? profileImg : undefined,
-                    }}
-                  /> */}
+                  <AvatarFallbackText>
+                    {userInfo?.data?.firstName + " " + userInfo?.data?.lastName}
+                  </AvatarFallbackText>
+                  {selectedImage && (
+                    <AvatarImage
+                      source={{
+                        uri: selectedImage,
+                      }}
+                      alt="profile"
+                    />
+                  )}
+
+                  {userInfo.data.image && (
+                    <AvatarImage
+                      source={{
+                        uri: userInfo.data.image,
+                      }}
+                      alt="profile"
+                    />
+                  )}
 
                   <AvatarBadge
                     bg={colors.background4}
@@ -139,13 +175,20 @@ const Profile = ({ navigation }: any) => {
                     width={40}
                     height={40}
                   >
-                    <TouchableOpacity onPress={pickFromGallery}>
-                      <Image
-                        source={require("../../../assets/images/edit.png")}
-                        width={20}
-                        height={20}
-                        alt="edit"
-                      />
+                    <TouchableOpacity
+                      onPress={pickFromGallery}
+                      disabled={isUpdatingPicture}
+                    >
+                      {isUpdatingPicture ? (
+                        <Spinner color={colors.secondary} size="large" />
+                      ) : (
+                        <Image
+                          source={require("../../../assets/images/edit.png")}
+                          width={20}
+                          height={20}
+                          alt="edit"
+                        />
+                      )}
                     </TouchableOpacity>
                   </AvatarBadge>
                 </Avatar>
@@ -155,7 +198,7 @@ const Profile = ({ navigation }: any) => {
                   fontFamily="Urbanist-Bold"
                   textAlign="center"
                 >
-                  Adewale Temitope
+                  {userInfo?.data?.firstName + " " + userInfo?.data?.lastName}
                 </Text>
               </VStack>
 
@@ -201,10 +244,67 @@ const Profile = ({ navigation }: any) => {
                   </TouchableOpacity>
                 ))}
               </VStack>
+
+              <VStack alignItems="center" mt={"$5"}>
+                <Text
+                  color={colors.subText}
+                  fontSize={16}
+                  fontFamily="Urbanist-Regular"
+                  textAlign="center"
+                >
+                  Version {version}
+                </Text>
+              </VStack>
             </VStack>
           </VStack>
         </ScrollView>
       </SafeAreaProvider>
+
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        modalTitle="Logout"
+        modalBody={
+          <>
+            <Text color="#65676B" fontSize={16} fontWeight="medium">
+              Are you sure you want to logout?
+            </Text>
+          </>
+        }
+        modalFooter={
+          <HStack space="md">
+            <Button
+              title="Cancel"
+              size="lg"
+              variant="outline"
+              bgColor={colors.white}
+              color={colors.red}
+              borderColor={colors.red}
+              style={{
+                height: 45,
+                borderRadius: 4,
+              }}
+              onPress={() => {
+                setShowModal(false);
+              }}
+            />
+            <Button
+              title="Logout"
+              size="lg"
+              bgColor={colors.secondary}
+              color={colors.primary}
+              style={{
+                height: 45,
+                borderRadius: 4,
+              }}
+              onPress={() => {
+                setShowModal(false);
+                handleLogout();
+              }}
+            />
+          </HStack>
+        }
+      />
     </>
   );
 };

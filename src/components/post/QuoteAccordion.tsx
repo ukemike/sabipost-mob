@@ -8,9 +8,6 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-  Avatar,
-  AvatarImage,
-  AvatarFallbackText,
   Divider,
 } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
@@ -24,11 +21,13 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useRef, useCallback, useMemo, useState } from "react";
 import Negotiate from "./Negotiate";
-import Modal from "../Modal";
+import Accept from "./Accept";
+import Badge from "../ui/Badge";
+import Avatar from "../ui/Avatar";
 
 const QuoteAccordion = ({ item, post }: any) => {
   const [visible, setIsVisible] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [type, setType] = useState("");
 
   const details = [
     {
@@ -69,7 +68,7 @@ const QuoteAccordion = ({ item, post }: any) => {
   ];
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["25%", "60%"], []);
+  const snapPoints = useMemo(() => ["25%", "65%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -95,7 +94,8 @@ const QuoteAccordion = ({ item, post }: any) => {
 
   const renderContent = () => (
     <>
-      <Negotiate />
+      {type === "negotiate" && <Negotiate />}
+      {type === "accept" && <Accept />}
     </>
   );
 
@@ -115,7 +115,35 @@ const QuoteAccordion = ({ item, post }: any) => {
           borderRadius={6}
           px={"$3"}
           pt={"$4"}
+          position="relative"
+          mt={"$4"}
         >
+          <Badge
+            title={item?.status}
+            variant="outline"
+            bgColor={colors.white}
+            color={
+              item?.status === "accepted"
+                ? colors.green
+                : item?.status === "pending"
+                ? colors.secondary
+                : colors.red
+            }
+            borderColor={
+              item?.status === "accepted"
+                ? colors.green
+                : item?.status === "pending"
+                ? colors.secondary
+                : colors.red
+            }
+            width={"auto"}
+            style={{
+              position: "absolute",
+              top: -10,
+              left: 0,
+              zIndex: 1,
+            }}
+          />
           <VStack mb={"$4"}>
             <AccordionTrigger>
               {({ isExpanded }) => {
@@ -127,21 +155,10 @@ const QuoteAccordion = ({ item, post }: any) => {
                       width="100%"
                     >
                       <HStack alignItems="center" space={"sm"}>
-                        <Avatar size="md" bg={colors.secondary}>
-                          <AvatarFallbackText fontFamily="Urbanist-Bold">
-                            {item?.seller?.profile?.businessName}
-                          </AvatarFallbackText>
-                          {item?.seller?.image && (
-                            <AvatarImage
-                              source={{
-                                uri: item?.seller?.image
-                                  ? item?.seller?.image
-                                  : undefined,
-                              }}
-                              alt="avatar"
-                            />
-                          )}
-                        </Avatar>
+                        <Avatar
+                          name={item?.seller?.profile?.businessName}
+                          image={item?.seller?.image}
+                        />
                         <VStack>
                           <Text
                             fontFamily="Urbanist-Bold"
@@ -214,6 +231,14 @@ const QuoteAccordion = ({ item, post }: any) => {
                           justifyContent="space-between"
                           alignItems="center"
                           width="100%"
+                          display={
+                            item?.status === "accepted" ||
+                            item?.status === "rejected" ||
+                            item?.sellerCountered ||
+                            item?.buyerNegotiated
+                              ? "none"
+                              : "flex"
+                          }
                         >
                           <Button
                             title="Negotiate"
@@ -227,7 +252,10 @@ const QuoteAccordion = ({ item, post }: any) => {
                               width: "48%",
                               borderRadius: 4,
                             }}
-                            onPress={handlePresentModalPress}
+                            onPress={() => {
+                              setType("negotiate");
+                              handlePresentModalPress();
+                            }}
                           />
                           <Button
                             title="Accept Quote"
@@ -239,7 +267,10 @@ const QuoteAccordion = ({ item, post }: any) => {
                               width: "48%",
                               borderRadius: 4,
                             }}
-                            onPress={() => setShowModal(true)}
+                            onPress={() => {
+                              setType("accept");
+                              handlePresentModalPress();
+                            }}
                           />
                         </HStack>
                       </VStack>
@@ -378,6 +409,14 @@ const QuoteAccordion = ({ item, post }: any) => {
                     justifyContent="space-between"
                     alignItems="center"
                     width="100%"
+                    display={
+                      item?.status === "accepted" ||
+                      item?.status === "rejected" ||
+                      item?.sellerCountered ||
+                      item?.buyerNegotiated
+                        ? "none"
+                        : "flex"
+                    }
                   >
                     <Button
                       title="Negotiate"
@@ -391,7 +430,10 @@ const QuoteAccordion = ({ item, post }: any) => {
                         width: "48%",
                         borderRadius: 4,
                       }}
-                      onPress={handlePresentModalPress}
+                      onPress={() => {
+                        setType("negotiate");
+                        handlePresentModalPress();
+                      }}
                     />
                     <Button
                       title="Accept Quote"
@@ -403,7 +445,10 @@ const QuoteAccordion = ({ item, post }: any) => {
                         width: "48%",
                         borderRadius: 4,
                       }}
-                      onPress={() => setShowModal(true)}
+                      onPress={() => {
+                        setType("accept");
+                        handlePresentModalPress();
+                      }}
                     />
                   </HStack>
                 </VStack>
@@ -412,6 +457,7 @@ const QuoteAccordion = ({ item, post }: any) => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={1}
@@ -431,39 +477,6 @@ const QuoteAccordion = ({ item, post }: any) => {
           {renderContent()}
         </BottomSheetScrollView>
       </BottomSheetModal>
-
-      <Modal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        modalTitle="Accept this quote"
-        modalBody={
-          <>
-            <Text color="#65676B" fontSize={16} fontWeight="medium">
-              Are you sure you want to accept this quote?
-            </Text>
-          </>
-        }
-        modalFooter={
-          <HStack space="md">
-            <Button
-              variant="outline"
-              title="Cancel"
-              bgColor={colors.white}
-              color={colors.red}
-              borderColor={colors.red}
-              style={{ height: 45 }}
-              onPress={() => setShowModal(false)}
-            />
-
-            <Button
-              title="Log Out"
-              bgColor={colors.secondary}
-              color={colors.primary}
-              style={{ height: 45 }}
-            />
-          </HStack>
-        }
-      />
     </>
   );
 };

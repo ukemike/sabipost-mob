@@ -13,6 +13,15 @@ import ProductCategory from "../screens/products/ProductCategory";
 import ProductDetail from "../screens/products/ProductDetail";
 import PostDetail from "../screens/posts/PostDetail";
 import PostNegotiation from "../screens/posts/PostNegotiation";
+import Post from "../screens/post/Post";
+import Accepted from "../screens/posts/Accepted";
+import PostCheckOut from "../screens/checkout/PostCheckOut";
+import OrderSucess from "../screens/checkout/OrderSucess";
+import DeliverySucess from "../screens/orders/DeliverySucess";
+import OfferDetail from "../screens/offers/OfferDetail";
+import ProductCheckout from "../screens/checkout/ProductCheckout";
+import VendorProfile from "../screens/products/VendorProfile";
+import BankDetails from "../screens/profile/BankDetails";
 
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -60,6 +69,15 @@ function MainNavigation() {
             <Stack.Screen name="ProductDetail" component={ProductDetail} />
             <Stack.Screen name="PostDetail" component={PostDetail} />
             <Stack.Screen name="PostNegotiation" component={PostNegotiation} />
+            <Stack.Screen name="Post" component={Post} />
+            <Stack.Screen name="Accepted" component={Accepted} />
+            <Stack.Screen name="PostCheckOut" component={PostCheckOut} />
+            <Stack.Screen name="DeliverySucess" component={DeliverySucess} />
+            <Stack.Screen name="OrderSucess" component={OrderSucess} />
+            <Stack.Screen name="OfferDetail" component={OfferDetail} />
+            <Stack.Screen name="ProductCheckout" component={ProductCheckout} />
+            <Stack.Screen name="VendorProfile" component={VendorProfile} />
+            <Stack.Screen name="BankDetails" component={BankDetails} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

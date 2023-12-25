@@ -6,204 +6,240 @@ import StatusBar from "../../components/StatusBar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import Header from "../../components/Header";
-import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
-import { nigerian_states } from "../../utils/states";
+import Select2 from "../../components/ui/Select2";
 import { setCredentials } from "../../redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { useToast } from "react-native-toast-notifications";
-import { useUpdateProfileMutation } from "../../redux/services/profile.service";
+import { useUpdateProfileMutation } from "../../redux/services/user.service";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
-const genders = ["Male", "Female"];
+import {
+  useGetStatesQuery,
+  useGetLgasQuery,
+} from "../../redux/services/general.service";
+import Input from "../../components/ui/Input2";
+import { Formik } from "formik";
+import Loader from "../../components/ui/Loader";
 
 const EditProfile = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
   const toast = useToast();
 
-  const [formErrors, setFormErrors] = useState<any>({});
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-  const [area, setArea] = useState("");
-  const [gender, setGender] = useState("");
+  const [state_id, setState_id] = useState<string>("");
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
 
-  const userInfo = useAppSelector((state) => state.app.auth.userInfo);
+  const { userInfo } = useAppSelector((state) => state.app.auth);
+  const token = userInfo?.token;
 
-  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+  const userData = userInfo?.data;
+
+  const { data: states, isLoading: statesLoading } = useGetStatesQuery("");
+
+  const allStates = states?.data.map((state: any) => {
+    return {
+      value: state.stateID,
+      label: state.stateName,
+    };
+  });
+
+  const {
+    data: lgas,
+    isLoading: lgasLoading,
+    refetch,
+  } = useGetLgasQuery(state_id);
+
+  const allLgas = lgas?.data.map((lga: any) => {
+    return {
+      value: lga.lgaID,
+      label: lga.lgaName,
+    };
+  });
 
   useEffect(() => {
-    if (userInfo) {
-      setFirstName(userInfo.data.firstName);
-      setLastName(userInfo.data.lastName);
-      setState(userInfo.data.state);
-      setCity(userInfo.data.city);
-      setArea(userInfo.data.area);
-      setGender(userInfo.data.gender);
+    refetch();
+  }, [refetch, state_id]);
+
+  useEffect(() => {
+    if (userData?.state?.stateID) {
+      setState_id(userData?.state?.stateID);
     }
-  }, [userInfo]);
+  }, [userData]);
 
-  const handleUpdateProfile = async () => {
-    if (!firstName || !lastName || !state || !city || !area || !gender) {
-      return setFormErrors({
-        firstName: !firstName ? "First name is required" : "",
-        lastName: !lastName ? "Last name is required" : "",
-        state: !state ? "State is required" : "",
-        city: !city ? "City is required" : "",
-        area: !area ? "Area is required" : "",
-        gender: !gender ? "Gender is required" : "",
-      });
-    }
-
-    const formData = new FormData() as any;
-    formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
-    formData.append("state", state);
-    formData.append("city", city);
-    formData.append("area", area);
-    formData.append("gender", gender);
-
+  const handleUpdateProfile = async (values: any) => {
     await updateProfile({
-      token: userInfo?.data?.token,
-      data: formData,
+      body: {
+        firstName: values.firstname,
+        lastName: values.lastname,
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+        state_id: state_id,
+        lga_id: values.lga_id,
+      },
+      token: token,
     })
       .unwrap()
       .then((res) => {
+        const firstName = res.data.firstName;
+        const lastName = res.data.lastName;
+        const email = res.data.email;
+        const phone = res.data.phone;
+        const address = res.data.address;
+        const state = res.data.state;
+        const lga = res.data.lga;
+        const fullName = res.data.fullName;
         dispatch(
           setCredentials({
             ...userInfo,
-            data: { ...userInfo?.data, ...res.data },
+            data: {
+              ...userInfo?.data,
+              firstName,
+              lastName,
+              email,
+              phone,
+              address,
+              state,
+              lga,
+              fullName,
+            },
           })
         );
         toast.show("Profile updated successfully", {
           type: "success",
         });
-        navigation.navigate("Profile");
+        navigation.goBack();
       })
-
-      .catch((err) => {
-        toast.show(err.data.message, {
+      .catch((err: any) => {
+        toast.show(err?.data?.message, {
           type: "danger",
         });
       });
   };
+
   return (
     <SafeAreaProvider style={styles.constainer}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background8} />
       <Header backgroundColor={colors.background8} />
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <VStack
-          p={"$5"}
-          justifyContent="space-between"
-          width="100%"
-          height="100%"
-          space={"4xl"}
-          flex={1}
-        >
-          <VStack space={"xl"} flex={1}>
-            <VStack space={"xs"}>
-              <Text
-                color={colors.darkBlue}
-                fontSize={22}
-                fontFamily="Urbanist-Bold"
-                textAlign="left"
-              >
-                Edit profile
-              </Text>
-            </VStack>
-            <VStack space={"md"}>
-              <Input
-                label="First name"
-                placeholder="Enter your first name"
-                type="text"
-                value={firstName}
-                onChange={(text: string) => {
-                  setFirstName(text);
-                  setFormErrors({ ...formErrors, firstName: "" });
-                }}
-                error={formErrors.firstName}
-              />
+        {statesLoading ? (
+          <Loader isLoading={statesLoading} />
+        ) : (
+          <VStack
+            p={"$5"}
+            justifyContent="space-between"
+            width="100%"
+            height="100%"
+            space={"4xl"}
+            flex={1}
+          >
+            <VStack space={"xl"} flex={1}>
+              <VStack space={"xs"}>
+                <Text
+                  color={colors.darkBlue}
+                  fontSize={22}
+                  fontFamily="Urbanist-Bold"
+                  textAlign="left"
+                >
+                  Edit profile
+                </Text>
+              </VStack>
+              <VStack space={"xl"}>
+                <Formik
+                  initialValues={{
+                    firstname: userData?.firstName,
+                    lastname: userData?.lastName,
+                    email: userData?.email,
+                    phone: userData?.phone,
+                    address: userData?.address,
+                    state_id: state_id,
+                    lga_id: userData?.lga?.lgaID,
+                  }}
+                  onSubmit={(values) => {
+                    handleUpdateProfile(values);
+                  }}
+                >
+                  {(formikProps) => (
+                    <>
+                      <Input
+                        field="firstname"
+                        form={formikProps}
+                        placeholder="Enter your first name"
+                        keyboardType="default"
+                        label="First name"
+                      />
 
-              <Input
-                label="Last name"
-                placeholder="Enter your last name"
-                type="text"
-                value={lastName}
-                onChange={(text: string) => {
-                  setLastName(text);
-                  setFormErrors({ ...formErrors, lastName: "" });
-                }}
-                error={formErrors.lastName}
-              />
+                      <Input
+                        field="lastname"
+                        form={formikProps}
+                        placeholder="Enter your last name"
+                        keyboardType="default"
+                        label="Last name"
+                      />
 
-              <Select
-                data={nigerian_states.map((state: any) => {
-                  return { label: state, value: state };
-                })}
-                label="State"
-                placeholder="Select state"
-                search={true}
-                onChange={(item: any) => {
-                  setState(item.value);
-                  setFormErrors({ ...formErrors, state: "" });
-                }}
-                value={state}
-                error={formErrors.state}
-              />
+                      <Input
+                        field="email"
+                        form={formikProps}
+                        placeholder="Enter your email"
+                        keyboardType="email-address"
+                        label="Email"
+                      />
 
-              <Input
-                label="City"
-                placeholder="Enter your city"
-                type="text"
-                onChange={(text: string) => {
-                  setCity(text);
-                  setFormErrors({ ...formErrors, city: "" });
-                }}
-                error={formErrors.city}
-              />
+                      <Input
+                        field="phone"
+                        form={formikProps}
+                        placeholder="Enter your phone number"
+                        keyboardType="phone-pad"
+                        label="Phone number"
+                      />
 
-              <Input
-                label="Area"
-                placeholder="Enter area"
-                type="text"
-                onChange={(text: string) => {
-                  setArea(text);
-                  setFormErrors({ ...formErrors, area: "" });
-                }}
-                error={formErrors.area}
-              />
+                      <Input
+                        field="address"
+                        form={formikProps}
+                        placeholder="Enter your address"
+                        keyboardType="default"
+                        label="Address"
+                      />
 
-              <Select
-                data={genders.map((gender: any) => {
-                  return { label: gender, value: gender };
-                })}
-                label="Gender"
-                placeholder="Select gender"
-                onChange={(item: any) => {
-                  setGender(item.value);
-                  setFormErrors({ ...formErrors, gender: "" });
-                }}
-                value={gender}
-                error={formErrors.gender}
-              />
+                      <Select
+                        data={allStates}
+                        label="Location"
+                        placeholder="Select location"
+                        search={true}
+                        onChange={(item: any) => {
+                          setState_id(item.value);
+                        }}
+                        value={state_id}
+                      />
+
+                      {!lgasLoading && lgas?.data?.length > 0 && (
+                        <Select2
+                          data={allLgas}
+                          field="lga_id"
+                          form={formikProps}
+                          label="LGA"
+                          placeholder="Select LGA"
+                          search={true}
+                        />
+                      )}
+
+                      <VStack space={"md"} pb={"$2"} mt={"$5"}>
+                        <Button
+                          onPress={formikProps.handleSubmit}
+                          title="Update profile"
+                          size="lg"
+                          bgColor={colors.secondary}
+                          color={colors.primary}
+                          isLoading={isUpdating}
+                          isDisabled={isUpdating}
+                        />
+                      </VStack>
+                    </>
+                  )}
+                </Formik>
+              </VStack>
             </VStack>
           </VStack>
-
-          <VStack space={"md"}>
-            <Button
-              title="Save"
-              size="lg"
-              bgColor={colors.primary}
-              color={colors.white}
-              onPress={() => {
-                handleUpdateProfile();
-              }}
-              isLoading={isLoading}
-              isDisabled={isLoading}
-            />
-          </VStack>
-        </VStack>
+        )}
       </KeyboardAwareScrollView>
     </SafeAreaProvider>
   );

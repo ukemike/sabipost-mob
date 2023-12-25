@@ -22,8 +22,8 @@ const PayStack = ({
       {isPayStack && (
         <View style={{ flex: 1 }}>
           <Paystack
-            paystackKey={"pk_live_b6bb60371aac4d96d55fb423a7c109d833400513"}
-            // paystackKey={"pk_test_5d6272a098a3ee1a3a73a1cc24bdee33ba2f5cff"}
+            // paystackKey={"pk_live_d762896eb0efb6f23fc76c10169ff7df04ed14d5"}
+            paystackKey={"pk_test_5d6272a098a3ee1a3a73a1cc24bdee33ba2f5cff"}
             amount={amount}
             billingEmail={billingEmail}
             activityIndicatorColor="green"

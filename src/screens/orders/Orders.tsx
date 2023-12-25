@@ -1,8 +1,9 @@
-import { StyleSheet, ScrollView } from "react-native";
-import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
+import { StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { colors } from "../../constants";
 import StatusBar from "../../components/StatusBar";
+import { colors } from "../../constants";
+import MyOrdersTabs from "../../stacks/MyOrdersTabs";
+import { VStack, Text } from "@gluestack-ui/themed";
 import Header from "../../components/Header";
 
 const Orders = () => {
@@ -10,28 +11,25 @@ const Orders = () => {
     <SafeAreaProvider style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <Header backgroundColor={colors.white} />
-      <ScrollView
-        alwaysBounceVertical={false}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <VStack m={"$5"} space="lg" flex={1}>
-          <VStack flex={1} space="lg">
-            <VStack>
-              <Text
-                color={colors.primary}
-                fontSize={20}
-                fontFamily="Urbanist-Bold"
-                textAlign="left"
-              >
-                Orders
-              </Text>
-            </VStack>
-
-            <VStack></VStack>
-          </VStack>
-        </VStack>
-      </ScrollView>
+      <VStack m={"$5"}>
+        <Text
+          color={colors.primary}
+          fontSize={20}
+          fontFamily="Urbanist-Bold"
+          textAlign="left"
+        >
+          My Orders
+        </Text>
+        <Text
+          color={colors.subText}
+          fontSize={15}
+          fontFamily="Urbanist-Regular"
+          textAlign="left"
+        >
+          Manage all your orders from this place
+        </Text>
+      </VStack>
+      <MyOrdersTabs />
     </SafeAreaProvider>
   );
 };

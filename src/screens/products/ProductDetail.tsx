@@ -5,16 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import {
-  VStack,
-  Text,
-  Image,
-  HStack,
-  Avatar,
-  AvatarImage,
-  AvatarFallbackText,
-  Divider,
-} from "@gluestack-ui/themed";
+import { VStack, Text, Image, HStack, Divider } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../../constants";
 import Loader from "../../components/ui/Loader";
@@ -39,8 +30,9 @@ import {
 import { useRef, useCallback, useMemo } from "react";
 import NegotiateProduct from "../../components/product/NegotiateProduct";
 import ProductCard from "../../components/product/ProductCard";
+import Avatar from "../../components/ui/Avatar";
 
-const ProductDetail = ({ route }: any) => {
+const ProductDetail = ({ route, navigation }: any) => {
   const { productID } = route.params;
   const pageRef = useRef<any>(null);
   const [visible, setIsVisible] = useState(false);
@@ -59,8 +51,8 @@ const ProductDetail = ({ route }: any) => {
   } = useGetProductsByCategoryQuery({
     categoryID: productCategoryID,
     data: {
-      limit: 15,
-      page: 1,
+      limit: "",
+      page: "",
       search: "",
       category: "",
       state: "",
@@ -239,16 +231,16 @@ const ProductDetail = ({ route }: any) => {
                       p={"$2"}
                     >
                       {product?.images[0]?.image && (
-                      <TouchableOpacity onPress={() => setIsVisible(true)}>
-                        <Image
-                          source={product?.images[0]?.image}
-                          alt="product"
-                          h={200}
-                          w={"100%"}
-                          resizeMode="cover"
-                          borderRadius={20}
-                        />
-                      </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setIsVisible(true)}>
+                          <Image
+                            source={product?.images[0]?.image}
+                            alt="product"
+                            h={200}
+                            w={"100%"}
+                            resizeMode="cover"
+                            borderRadius={20}
+                          />
+                        </TouchableOpacity>
                       )}
                     </VStack>
                     <FlatList
@@ -273,20 +265,7 @@ const ProductDetail = ({ route }: any) => {
                     width="100%"
                   >
                     <HStack alignItems="center" space="sm">
-                      <Avatar size="md" bg={colors.secondary}>
-                        <AvatarFallbackText
-                          size="lg"
-                          fontFamily="Urbanist-Bold"
-                        >
-                          {product?.seller?.profile?.businessName}
-                        </AvatarFallbackText>
-                        {/* <AvatarImage
-                          source={{
-                            uri: undefined,
-                          }}
-                          alt="avatar"
-                        /> */}
-                      </Avatar>
+                      <Avatar name={product?.seller?.profile?.businessName} />
 
                       <VStack>
                         <Text
@@ -321,7 +300,11 @@ const ProductDetail = ({ route }: any) => {
                     </HStack>
 
                     <TouchableOpacity
-                    // product?.seller?.userID
+                      onPress={() =>
+                        navigation.navigate("VendorProfile", {
+                          vendorID: product?.seller?.userID,
+                        })
+                      }
                     >
                       <Text
                         color={colors.secondary}

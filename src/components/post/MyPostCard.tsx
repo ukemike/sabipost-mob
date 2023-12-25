@@ -12,11 +12,14 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const MyPostCard = ({ post }: any) => {
+
   const navigation = useNavigation<any>();
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("PostNegotiation", { postID: post.postID });
+        post?.status === "accepted"
+          ? navigation.navigate("Accepted", { postID: post.postID })
+          : navigation.navigate("PostNegotiation", { postID: post.postID });
       }}
     >
       <VStack

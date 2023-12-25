@@ -10,29 +10,24 @@ import { useToast } from "react-native-toast-notifications";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Header from "../../components/Header";
 import { useRequestResetPasswordMutation } from "../../redux/services/auth.service";
+import Input2 from "../../components/ui/Input2";
+import { Formik } from "formik";
+import { forgotPassword } from "../../schemas/auth.schema";
 
 const ForgotPassword = ({ navigation }: any) => {
   const toast = useToast();
 
   const [requestResetPassword, { isLoading }] =
     useRequestResetPasswordMutation();
-  const [email, setEmail] = useState("");
-  const [formErrors, setFormErrors] = useState<any>({});
 
-  const onRequestReset = async () => {
-    if (!email) {
-      return setFormErrors({
-        email: !email ? "Email is required" : "",
-      });
-    }
-
-    await requestResetPassword({ email })
+  const onRequestReset = async (values: any) => {
+    await requestResetPassword(values)
       .unwrap()
       .then((res) => {
         toast.show("Reset password successful", {
           type: "success",
         });
-        navigation.navigate("ResetPassword", { email });
+        navigation.navigate("ResetPassword", { email: values.email });
       })
       .catch((err) => {
         toast.show(err.data.message, {
@@ -77,29 +72,41 @@ const ForgotPassword = ({ navigation }: any) => {
             </VStack>
 
             <VStack space={"xl"}>
-              <Input
-                label="Email"
-                placeholder="Enter your email"
-                type="text"
-                onChange={(text: string) => {
-                  setEmail(text);
-                  setFormErrors({ ...formErrors, email: "" });
+              <Formik
+                initialValues={{
+                  email: "",
+                  password: "",
                 }}
-                error={formErrors.email}
-              />
-            </VStack>
-          </VStack>
+                onSubmit={(values) => {
+                  onRequestReset(values);
+                }}
+                validationSchema={forgotPassword}
+              >
+                {(formikProps) => (
+                  <>
+                    <Input2
+                      field="email"
+                      form={formikProps}
+                      placeholder="Enter your email"
+                      keyboardType="email-address"
+                      label="Email"
+                    />
 
-          <VStack space={"md"} pb={"$2"}>
-            <Button
-              title="Continue"
-              size="lg"
-              bgColor={colors.secondary}
-              color={colors.primary}
-              isLoading={isLoading}
-              isDisabled={isLoading}
-              onPress={onRequestReset}
-            />
+                    <VStack space={"md"} mt={"$10"}>
+                      <Button
+                        title="Continue"
+                        size="lg"
+                        bgColor={colors.secondary}
+                        color={colors.primary}
+                        isLoading={isLoading}
+                        isDisabled={isLoading}
+                        onPress={formikProps.handleSubmit}
+                      />
+                    </VStack>
+                  </>
+                )}
+              </Formik>
+            </VStack>
           </VStack>
         </VStack>
       </KeyboardAwareScrollView>

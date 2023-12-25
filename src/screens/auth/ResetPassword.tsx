@@ -10,34 +10,18 @@ import Header from "../../components/Header";
 import { useResetPasswordMutation } from "../../redux/services/auth.service";
 import { useToast } from "react-native-toast-notifications";
 import { useState } from "react";
+import Input2 from "../../components/ui/Input2";
+import { Formik } from "formik";
+import { resetPasswordSchema } from "../../schemas/auth.schema";
 
 const ResetPassword = ({ navigation, route }: any) => {
   const email = route.params.email;
   const toast = useToast();
 
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
-  const [code, setCode] = useState("");
-  const [password, setPassword] = useState("");
-  const [password_confirmation, setPasswordConfirmation] = useState("");
-  const [formErrors, setFormErrors] = useState<any>({});
 
-  const onResetPassword = async () => {
-    if (!code || !password || !password_confirmation) {
-      return setFormErrors({
-        code: !code ? "Code is required" : "",
-        password: !password ? "Password is required" : "",
-        password_confirmation: !password_confirmation
-          ? "Password confirmation is required"
-          : "",
-      });
-    }
-
-    await resetPassword({
-      email,
-      code,
-      password,
-      password_confirmation,
-    })
+  const onResetPassword = async (values: any) => {
+    await resetPassword(values)
       .unwrap()
       .then((res) => {
         toast.show("Reset password successful", {
@@ -87,50 +71,61 @@ const ResetPassword = ({ navigation, route }: any) => {
             </VStack>
 
             <VStack space={"xl"}>
-              <Input
-                label="OTP"
-                placeholder="Enter your new password"
-                type="number"
-                onChange={(text: string) => {
-                  setCode(text);
-                  setFormErrors({ ...formErrors, code: "" });
+              <Formik
+                initialValues={{
+                  email: email,
+                  code: "",
+                  password: "",
+                  password_confirmation: "",
                 }}
-                error={formErrors.code}
-              />
-              <Input
-                label="New Password"
-                placeholder="Enter your new password"
-                type="password"
-                onChange={(text: string) => {
-                  setPassword(text);
-                  setFormErrors({ ...formErrors, password: "" });
+                onSubmit={(values) => {
+                  onResetPassword(values);
                 }}
-                error={formErrors.password}
-              />
+                validationSchema={resetPasswordSchema}
+              >
+                {(formikProps) => (
+                  <>
+                    <Input2
+                      field="code"
+                      form={formikProps}
+                      placeholder="Enter code"
+                      keyboardType="number-pad"
+                      label="Code"
+                    />
 
-              <Input
-                label="Confirm Password"
-                placeholder="Confirm your password"
-                type="password"
-                onChange={(text: string) => {
-                  setPasswordConfirmation(text);
-                  setFormErrors({ ...formErrors, password_confirmation: "" });
-                }}
-                error={formErrors.password_confirmation}
-              />
+                    <Input2
+                      field="password"
+                      form={formikProps}
+                      placeholder="Enter password"
+                      keyboardType="default"
+                      label="Password"
+                      secureTextEntry
+                    />
+
+                    <Input2
+                      field="password_confirmation"
+                      form={formikProps}
+                      placeholder="Confirm password"
+                      keyboardType="default"
+                      label="Confirm Password"
+                      secureTextEntry
+                    />
+
+                    <VStack space={"md"} mt={"$10"}>
+                      <Button
+                        title="Reset Password"
+                        size="lg"
+                        bgColor={colors.secondary}
+                        color={colors.primary}
+                        isLoading={isLoading}
+                        isDisabled={isLoading}
+                        onPress={formikProps.handleSubmit}
+                      />
+                    </VStack>
+                  </>
+                )}
+              </Formik>
             </VStack>
-          </VStack>
-
-          <VStack space={"md"} pb={"$2"}>
-            <Button
-              title="Reset Password"
-              size="lg"
-              bgColor={colors.secondary}
-              color={colors.primary}
-              isLoading={isLoading}
-              isDisabled={isLoading}
-              onPress={onResetPassword}
-            />
           </VStack>
         </VStack>
       </KeyboardAwareScrollView>
