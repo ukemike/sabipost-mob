@@ -1,12 +1,35 @@
-import { FlatList, TouchableOpacity } from "react-native";
 import { Image, VStack, HStack, Text, Badge } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
+import { useRejectQuoteMutation } from "../../redux/services/quotes.service";
+import { useToast } from "react-native-toast-notifications";
+import { useAppSelector } from "../../redux/store";
 
-const Reject = () => {
-  const buyer_reqs = ["Warranty", "Charger", "Box"];
+const Reject = ({ item, post, onClose }: any) => {
+  const toast = useToast();
+  const { userInfo } = useAppSelector((state) => state.app.auth);
+  const [rejectQuote, { isLoading }] = useRejectQuoteMutation();
+
+  const handleReject = async () => {
+    await rejectQuote({
+      quoteID: item?.quoteID,
+      token: userInfo?.token,
+    })
+      .unwrap()
+      .then(() => {
+        toast.show("Quote Rejected Successfully", {
+          type: "success",
+        });
+        onClose();
+      })
+      .catch((e) => {
+        toast.show(e?.data?.message, {
+          type: "danger",
+        });
+      });
+  };
   return (
     <VStack flex={1}>
       <VStack flex={1} space="lg">
@@ -21,26 +44,36 @@ const Reject = () => {
         </Text>
 
         <VStack space="md" bg={colors.background11} p={"$3"} borderRadius={10}>
-          <VStack bg={colors.white} p={"$3"} borderRadius={10}>
+          <VStack bg={colors.white} p={"$3"} borderRadius={10} space="md">
             <HStack space="sm" alignItems="center">
-              <Image
-                source={require("../../../assets/images/phones.png")}
-                alt="img"
-                h={67}
-                w={46}
-                resizeMode="cover"
-              />
+              {item?.image ? (
+                <Image
+                  source={{ uri: item?.image }}
+                  alt="img"
+                  h={67}
+                  w={46}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Image
+                  source={{ uri: post?.image || post?.image_url }}
+                  alt="img"
+                  h={67}
+                  w={46}
+                  resizeMode="cover"
+                />
+              )}
               <Text
                 fontFamily="Urbanist-Bold"
                 fontSize={16}
                 color={colors.black}
               >
-                iPhone 12 Pro Max
+                {post?.name}
               </Text>
             </HStack>
 
             <HStack flexWrap="wrap" space="sm" alignItems="center">
-              {buyer_reqs?.map((item: any, index: any) => (
+              {post?.buyer_reqs?.map((item: any, index: any) => (
                 <Badge
                   bgColor={colors.background11}
                   borderRadius={10}
@@ -73,8 +106,8 @@ const Reject = () => {
           <VStack bg={colors.white} p={"$3"} borderRadius={10} space="md">
             <HStack space="sm" alignItems="center">
               <Avatar
-                name="John Doe"
-                // image={}
+                name={item?.seller?.profile?.businessName}
+                image={item?.seller?.image}
               />
               <VStack>
                 <Text
@@ -82,7 +115,7 @@ const Reject = () => {
                   fontSize={17}
                   color={colors.subText6}
                 >
-                  John Doe
+                  {item?.seller?.profile?.businessName}
                 </Text>
                 <HStack space="xs" alignItems="center">
                   <Image
@@ -96,7 +129,7 @@ const Reject = () => {
                     fontSize={14}
                     color={colors.subText8}
                   >
-                    Lagos, Nigeria
+                    {item?.seller?.profile?.state?.stateName}
                   </Text>
                 </HStack>
               </VStack>
@@ -110,13 +143,15 @@ const Reject = () => {
                   color={colors.subText}
                   textTransform="uppercase"
                 >
-                  Discount
+                  QTY
                 </Text>
-                <NairaNumberFormat
-                  value={30000}
+                <Text
+                  fontFamily="Urbanist-Bold"
                   fontSize={17}
-                  color={colors.subText6}
-                />
+                  color={colors.primary}
+                >
+                  {post?.quantity}
+                </Text>
               </VStack>
               <VStack>
                 <Text
@@ -128,30 +163,12 @@ const Reject = () => {
                   Total Payment
                 </Text>
                 <NairaNumberFormat
-                  value={30000}
-                  fontSize={17}
-                  color={colors.subText6}
+                  value={item?.quotePrice * item?.post?.quantity}
+                  fontSize={16}
+                  color={colors.subText}
                 />
               </VStack>
             </HStack>
-
-            <VStack>
-              <Text
-                fontFamily="Urbanist-Regular"
-                fontSize={14}
-                color={colors.subText}
-                textTransform="uppercase"
-              >
-                QTY
-              </Text>
-              <Text
-                fontFamily="Urbanist-Bold"
-                fontSize={17}
-                color={colors.primary}
-              >
-                1
-              </Text>
-            </VStack>
           </VStack>
         </VStack>
       </VStack>
@@ -159,10 +176,12 @@ const Reject = () => {
       <VStack py={"$5"}>
         <Button
           title="Reject Quote"
-          bgColor={colors.white}
-          color={colors.red}
-          borderColor={colors.red}
-          variant="outline"
+          size="lg"
+          bgColor={colors.red}
+          color={colors.white}
+          isLoading={isLoading}
+          isDisabled={isLoading}
+          onPress={handleReject}
         />
       </VStack>
     </VStack>

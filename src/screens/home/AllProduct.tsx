@@ -9,12 +9,14 @@ import Slider from "../../components/product/Slider";
 import { useCategoriesProductQuery } from "../../redux/services/product.service";
 import { useGetCategoriesQuery } from "../../redux/services/general.service";
 import Loader from "../../components/ui/Loader";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
-const AllProduct = () => {
+const AllProduct = ({ navigation }: any) => {
   const { data, isLoading, isFetching, refetch } =
     useCategoriesProductQuery("");
   const allProducts = data?.data;
+
+  const [search, setSearch] = useState<string>("");
 
   const { data: categoriesData, isLoading: loadingCategories } =
     useGetCategoriesQuery("");
@@ -23,6 +25,20 @@ const AllProduct = () => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  const onSearch = (text: string) => {
+    setSearch(text);
+  };
+
+  const sendSearch = () => {
+    if (search) {
+      navigation.navigate("SearchProducts", { searchTerm: search });
+      setSearch("");
+    } else {
+      return;
+    }
+  };
+
   return (
     <>
       <SafeAreaProvider style={styles.container}>
@@ -45,9 +61,12 @@ const AllProduct = () => {
             <VStack m={"$5"} space="lg" flex={1}>
               <VStack flex={1} space="lg">
                 <Input
-                  placeholder="Search Posts"
-                  leftIconName="search"
+                  placeholder="Search Products"
                   iconColor={"#4A5264"}
+                  rightIconName="search"
+                  onChange={(text: string) => onSearch(text)}
+                  value={search}
+                  onPress={sendSearch}
                 />
 
                 <Text

@@ -31,8 +31,6 @@ const Input2 = ({
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
-  // console.log(form.values[field]);
   
   return (
     <VStack>

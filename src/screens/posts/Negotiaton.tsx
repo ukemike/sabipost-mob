@@ -9,7 +9,7 @@ import Loader from "../../components/ui/Loader";
 import NegotiationAccordion from "../../components/post/NegotiationAccordion";
 import { useGetNegotiationsForPostQuery } from "../../redux/services/quotes.service";
 
-const Negotiaton = ({ route }: any) => {
+const Negotiaton = ({ route, navigation }: any) => {
   const postID = route?.params?.postID;
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const { data, isLoading, isFetching, refetch } = useGetPostByIdQuery(postID);
@@ -35,7 +35,7 @@ const Negotiaton = ({ route }: any) => {
   }, []);
 
   const renderItem = ({ item }: any) => (
-    <NegotiationAccordion post={post} item={item} />
+    <NegotiationAccordion post={post} item={item} navigation={navigation} />
   );
   return (
     <SafeAreaProvider style={styles.container}>
@@ -60,7 +60,7 @@ const Negotiaton = ({ route }: any) => {
               <VStack space="sm">
                 <FlatList
                   data={negotiations}
-                  keyExtractor={(item) => item?.quoteID}
+                  keyExtractor={(item, index: number) => index.toString()}
                   renderItem={renderItem}
                   scrollEnabled={false}
                   showsVerticalScrollIndicator={false}

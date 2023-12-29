@@ -1,14 +1,14 @@
-import {
-  Image,
-  HStack,
-  Avatar,
-  AvatarImage,
-  AvatarFallbackText,
-} from "@gluestack-ui/themed";
+import { Image, HStack } from "@gluestack-ui/themed";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../../constants";
+import { useAppSelector } from "../../redux/store";
+import Avatar from "./Avatar";
+import { useNavigation } from "@react-navigation/native";
 
 const DashboardMenu = ({ openDrawer }: any) => {
+  const { userInfo } = useAppSelector((state) => state.app.auth);
+  const user = userInfo?.data;
+  const navigation = useNavigation<any>();
   return (
     <HStack
       width="100%"
@@ -33,18 +33,8 @@ const DashboardMenu = ({ openDrawer }: any) => {
         height={41}
       />
 
-      <TouchableOpacity>
-        <Avatar size="md" bg={colors.secondary}>
-          <AvatarFallbackText size="lg" fontFamily="Urbanist-Bold">
-            John Doe
-          </AvatarFallbackText>
-          {/* <AvatarImage
-            source={{
-              uri: undefined,
-            }}
-            alt="avatar"
-          /> */}
-        </Avatar>
+      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <Avatar name={user?.fullName} image={user?.image} />
       </TouchableOpacity>
     </HStack>
   );

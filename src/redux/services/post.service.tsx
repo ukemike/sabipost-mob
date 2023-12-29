@@ -20,8 +20,8 @@ export const postApi = createApi({
     }),
 
     getAllPost: builder.query({
-      query: () => ({
-        url: `api/post/all`,
+      query: (data) => ({
+        url: `api/post/all?limit=${data?.limit}&page=${data?.page}&search=${data?.search}`,
         method: "GET",
         headers: {
           "Content-Type": "application/json",

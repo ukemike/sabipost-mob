@@ -20,14 +20,13 @@ import {
 import { useRef, useCallback, useMemo, useState, useEffect } from "react";
 import Filter from "../../components/product/Filter";
 import { shortenText } from "../../utils/functions";
-import { useGetProductsByCategoryQuery } from "../../redux/services/product.service";
+import { useGetAllProductQuery } from "../../redux/services/product.service";
 import Loader from "../../components/ui/Loader";
 import { useAppSelector } from "../../redux/store";
 import { useDebounce } from "@uidotdev/usehooks";
 
-const ProductCategory = ({ navigation, route }: any) => {
-  const { category, categoryID } = route.params;
-
+const SearchProducts = ({ navigation, route }: any) => {
+  const searchTerm = route.params?.searchTerm;
   const { productFilter } = useAppSelector((state) => state.app.product);
   const [search, setSearch] = useState<string>("");
   const [categoryIDFilter, setCategoryIDFilter] = useState<string>("");
@@ -44,18 +43,21 @@ const ProductCategory = ({ navigation, route }: any) => {
     }
   }, [productFilter]);
 
-  const { data, isLoading, isFetching, refetch } =
-    useGetProductsByCategoryQuery({
-      categoryID: categoryIDFilter || categoryID,
-      data: {
-        limit: "",
-        page: "",
-        search: debouncedSearch,
-        category: "",
-        state: stateFilter,
-        priceRange: priceRangeFilter,
-      },
-    });
+  useEffect(() => {
+    if (searchTerm) {
+      setSearch(searchTerm);
+    }
+  }, [searchTerm]);
+
+  const { data, isLoading, isFetching, refetch } = useGetAllProductQuery({
+    limit: "",
+    page: "",
+    search: debouncedSearch,
+    category: categoryIDFilter,
+    state: stateFilter,
+    priceRange: priceRangeFilter,
+  });
+  
   const allProducts = data?.data?.data;
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -86,7 +88,7 @@ const ProductCategory = ({ navigation, route }: any) => {
   const renderContent = () => (
     <>
       <Filter
-        actviveCategory={categoryIDFilter ? categoryIDFilter : categoryID}
+        actviveCategory={categoryIDFilter}
         setCategoryIDFilter={setCategoryIDFilter}
         onClose={handleCloseModalPress}
         setCategoryNameFilter={setCategoryNameFilter}
@@ -176,7 +178,7 @@ const ProductCategory = ({ navigation, route }: any) => {
                       >
                         {categoryNameFilter
                           ? shortenText(categoryNameFilter, 25)
-                          : shortenText(category, 25)}
+                          : "All Products"}
                       </Text>
                     </HStack>
                   </TouchableOpacity>
@@ -261,7 +263,7 @@ const ProductCategory = ({ navigation, route }: any) => {
   );
 };
 
-export default ProductCategory;
+export default SearchProducts;
 
 const styles = StyleSheet.create({
   container: {

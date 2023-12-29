@@ -7,3 +7,9 @@ export const pay4meSchema = yup.object().shape({
 export const deliverySchema = yup.object().shape({
   delivery_code: yup.string().required("Delivery code is required").length(6),
 });
+
+// discount_percentage: "",
+// description: "",
+// quantity: "",
+
+export const negotiateSchema = yup.object().shape({});

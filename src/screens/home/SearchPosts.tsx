@@ -10,7 +10,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../../constants";
 import Input from "../../components/ui/SearchInput";
 import Button from "../../components/ui/Button";
-import ProductCard from "../../components/product/ProductCard";
+import PostCard from "../../components/post/PostCard";
 import StatusBar from "../../components/StatusBar";
 import {
   BottomSheetModal,
@@ -18,44 +18,39 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { useRef, useCallback, useMemo, useState, useEffect } from "react";
-import Filter from "../../components/product/Filter";
+import Filter from "../../components/post/Filter";
 import { shortenText } from "../../utils/functions";
-import { useGetProductsByCategoryQuery } from "../../redux/services/product.service";
+import { useGetAllPostQuery } from "../../redux/services/post.service";
 import Loader from "../../components/ui/Loader";
 import { useAppSelector } from "../../redux/store";
 import { useDebounce } from "@uidotdev/usehooks";
 
-const ProductCategory = ({ navigation, route }: any) => {
-  const { category, categoryID } = route.params;
-
-  const { productFilter } = useAppSelector((state) => state.app.product);
+const SearchPosts = ({ navigation, route }: any) => {
+  const searchTerm = route.params?.searchTerm;
+  const { postFilter } = useAppSelector((state) => state.app.post);
   const [search, setSearch] = useState<string>("");
   const [categoryIDFilter, setCategoryIDFilter] = useState<string>("");
   const [categoryNameFilter, setCategoryNameFilter] = useState<string>("");
-  const [stateFilter, setStateFilter] = useState<string>("");
-  const [priceRangeFilter, setPriceRangeFilter] = useState<string>("");
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    if (productFilter) {
-      setCategoryIDFilter(productFilter?.categoryID || "");
-      setStateFilter(productFilter?.state || "");
-      setPriceRangeFilter(productFilter?.priceRange || "");
+    if (postFilter) {
+      setCategoryIDFilter(postFilter?.categoryID || "");
     }
-  }, [productFilter]);
+  }, [postFilter]);
 
-  const { data, isLoading, isFetching, refetch } =
-    useGetProductsByCategoryQuery({
-      categoryID: categoryIDFilter || categoryID,
-      data: {
-        limit: "",
-        page: "",
-        search: debouncedSearch,
-        category: "",
-        state: stateFilter,
-        priceRange: priceRangeFilter,
-      },
-    });
+  useEffect(() => {
+    if (searchTerm) {
+      setSearch(searchTerm);
+    }
+  }, [searchTerm]);
+
+  const { data, isLoading, isFetching, refetch } = useGetAllPostQuery({
+    limit: "",
+    page: "",
+    search: debouncedSearch,
+  });
+
   const allProducts = data?.data?.data;
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -86,26 +81,20 @@ const ProductCategory = ({ navigation, route }: any) => {
   const renderContent = () => (
     <>
       <Filter
-        actviveCategory={categoryIDFilter ? categoryIDFilter : categoryID}
+        actviveCategory={categoryIDFilter}
         setCategoryIDFilter={setCategoryIDFilter}
         onClose={handleCloseModalPress}
         setCategoryNameFilter={setCategoryNameFilter}
-        setStateFilter={setStateFilter}
-        stateFilter={stateFilter}
-        setPriceRangeFilter={setPriceRangeFilter}
       />
     </>
   );
 
   const renderItem = ({ item }: any) => (
-    <ProductCard
+    <PostCard
       title={item?.name}
-      image={item?.images[0]?.image}
-      amount={item?.price}
-      rating={item?.rating}
-      reviews={item?.reviews || 0}
-      inStock={+item?.quantity !== 0}
-      productID={item?.productID}
+      category={item?.category?.name}
+      image={item?.image_url || item?.image}
+      postID={item?.postID}
     />
   );
 
@@ -115,12 +104,11 @@ const ProductCategory = ({ navigation, route }: any) => {
 
   useEffect(() => {
     refetch();
-  }, [debouncedSearch, categoryIDFilter, stateFilter, priceRangeFilter]);
+  }, [debouncedSearch, categoryIDFilter]);
 
   const handleSearch = (text: string) => {
     setSearch(text);
   };
-
   return (
     <>
       <StatusBar
@@ -176,7 +164,7 @@ const ProductCategory = ({ navigation, route }: any) => {
                       >
                         {categoryNameFilter
                           ? shortenText(categoryNameFilter, 25)
-                          : shortenText(category, 25)}
+                          : "All Posts"}
                       </Text>
                     </HStack>
                   </TouchableOpacity>
@@ -261,7 +249,7 @@ const ProductCategory = ({ navigation, route }: any) => {
   );
 };
 
-export default ProductCategory;
+export default SearchPosts;
 
 const styles = StyleSheet.create({
   container: {

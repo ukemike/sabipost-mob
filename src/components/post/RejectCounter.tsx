@@ -3,27 +3,27 @@ import { colors } from "../../constants";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
-import { useAcceptQuoteMutation } from "../../redux/services/quotes.service";
+import { useRejectCounterNegotiationMutation } from "../../redux/services/quotes.service";
 import { useToast } from "react-native-toast-notifications";
 import { useAppSelector } from "../../redux/store";
+import { shortenText } from "../../utils/functions";
 
-const Accept = ({ item, post, onClose, navigation }: any) => {
+const RejectCounter = ({ item, post, onClose }: any) => {
   const toast = useToast();
   const { userInfo } = useAppSelector((state) => state.app.auth);
-  const [acceptQuote, { isLoading }] = useAcceptQuoteMutation();
+  const [rejectCounterNegotiation, { isLoading }] = useRejectCounterNegotiationMutation();
 
-  const handleAccept = async () => {
-    await acceptQuote({
-      quoteID: item?.quoteID,
+  const handleReject = async () => {
+    await rejectCounterNegotiation({
+      negotiationID: item?.seller?.negotiationID,
       token: userInfo?.token,
     })
       .unwrap()
       .then(() => {
-        toast.show("Quote Accepted Successfully", {
+        toast.show("Quote Rejected Successfully", {
           type: "success",
         });
         onClose();
-        navigation.navigate("Accepted", { postID: post.postID });
       })
       .catch((e) => {
         toast.show(e?.data?.message, {
@@ -41,7 +41,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
           color={colors.subText5}
           mt={"$3"}
         >
-          Accept Quote?
+          Reject Quote?
         </Text>
 
         <VStack space="md" bg={colors.background11} p={"$3"} borderRadius={10}>
@@ -107,8 +107,8 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
           <VStack bg={colors.white} p={"$3"} borderRadius={10} space="md">
             <HStack space="sm" alignItems="center">
               <Avatar
-                name={item?.seller?.profile?.businessName}
-                image={item?.seller?.image}
+                name={item?.seller?.sellerBusiness}
+                image={item?.seller?.sellerImage}
               />
               <VStack>
                 <Text
@@ -116,7 +116,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                   fontSize={17}
                   color={colors.subText6}
                 >
-                  {item?.seller?.profile?.businessName}
+                  {item?.seller?.sellerBusiness}
                 </Text>
                 <HStack space="xs" alignItems="center">
                   <Image
@@ -130,7 +130,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                     fontSize={14}
                     color={colors.subText8}
                   >
-                    {item?.seller?.profile?.state?.stateName}
+                    {shortenText(item?.seller?.sellerAddress, 20)}
                   </Text>
                 </HStack>
               </VStack>
@@ -151,7 +151,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                   fontSize={17}
                   color={colors.primary}
                 >
-                  {post?.quantity}
+                  {item?.seller?.newQuoteQuantity}
                 </Text>
               </VStack>
               <VStack>
@@ -164,7 +164,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                   Total Payment
                 </Text>
                 <NairaNumberFormat
-                  value={item?.quotePrice * item?.post?.quantity}
+                  value={item?.seller?.newQuoteAmount}
                   fontSize={16}
                   color={colors.subText}
                 />
@@ -176,17 +176,17 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
 
       <VStack py={"$5"}>
         <Button
-          title="Accept Quote"
+          title="Reject Quote"
           size="lg"
-          bgColor={colors.secondary}
-          color={colors.primary}
+          bgColor={colors.red}
+          color={colors.white}
           isLoading={isLoading}
           isDisabled={isLoading}
-          onPress={handleAccept}
+          onPress={handleReject}
         />
       </VStack>
     </VStack>
   );
 };
 
-export default Accept;
+export default RejectCounter;

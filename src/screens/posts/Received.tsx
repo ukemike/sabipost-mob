@@ -9,7 +9,7 @@ import Loader from "../../components/ui/Loader";
 import QuoteAccordion from "../../components/post/QuoteAccordion";
 import { useGetQuotesByPostQuery } from "../../redux/services/quotes.service";
 
-const Received = ({ route }: any) => {
+const Received = ({ route, navigation }: any) => {
   const postID = route?.params?.postID;
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const { data, isLoading, isFetching, refetch } = useGetPostByIdQuery(postID);
@@ -29,7 +29,7 @@ const Received = ({ route }: any) => {
   }, []);
 
   const renderItem = ({ item }: any) => (
-    <QuoteAccordion post={post} item={item} />
+    <QuoteAccordion post={post} item={item} navigation={navigation} />
   );
 
   return (
@@ -55,7 +55,7 @@ const Received = ({ route }: any) => {
               <VStack space="sm">
                 <FlatList
                   data={quotes}
-                  keyExtractor={(item) => item?.quoteID}
+                  keyExtractor={(item, index: number) => index.toString()}
                   renderItem={renderItem}
                   scrollEnabled={false}
                   showsVerticalScrollIndicator={false}

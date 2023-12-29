@@ -3,7 +3,9 @@ import {
   CheckboxIndicator,
   CheckboxIcon,
   CheckIcon,
+  CheckboxLabel,
 } from "@gluestack-ui/themed";
+import { colors } from "../../constants";
 
 type CheckboxProps = {
   size?: "sm" | "md" | "lg";
@@ -12,7 +14,16 @@ type CheckboxProps = {
   onChange?: (value: boolean) => void;
   value?: any;
   ariaLabel?: string;
+  label?: string;
 };
+
+{
+  /* <Checkbox
+isChecked={checked}
+onChange={() => setChecked(!checked)}
+ariaLabel="checkbox"
+/> */
+}
 
 const Checkbox = ({
   size = "md",
@@ -21,6 +32,7 @@ const Checkbox = ({
   onChange,
   value,
   ariaLabel,
+  label,
 }: CheckboxProps) => {
   return (
     <GluestackCheckbox
@@ -34,6 +46,13 @@ const Checkbox = ({
       <CheckboxIndicator mr="$2">
         <CheckboxIcon as={CheckIcon} />
       </CheckboxIndicator>
+      <CheckboxLabel
+        color={colors.subText}
+        fontSize={14}
+        fontFamily="Urbanist-Medium"
+      >
+        {label}
+      </CheckboxLabel>
     </GluestackCheckbox>
   );
 };

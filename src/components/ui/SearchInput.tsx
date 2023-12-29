@@ -111,11 +111,11 @@ const styles = {
     flex: 1,
     fontSize: 15,
     paddingVertical: Platform.OS === "ios" ? 17 : 12,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
   icon: {
     fontSize: 24,
-    marginHorizontal: 5,
+    marginHorizontal: 15,
   },
 };
 

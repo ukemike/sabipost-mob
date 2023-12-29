@@ -232,7 +232,7 @@ const Post = ({ route, navigation }: any) => {
           type: "success",
         });
         clearForm();
-        navigation.navigate("MyPosts");
+        navigation.navigate("InProgress");
       })
       .catch((err) => {
         toast.show(err?.data?.message, {

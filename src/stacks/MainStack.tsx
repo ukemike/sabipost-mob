@@ -5,15 +5,7 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  Image,
-  VStack,
-  HStack,
-  Avatar,
-  AvatarImage,
-  AvatarFallbackText,
-  Text,
-} from "@gluestack-ui/themed";
+import { Image, VStack, HStack, Text } from "@gluestack-ui/themed";
 import Home from "../screens/home/Home";
 import Profile from "../screens/profile/Profile";
 import Wallet from "../screens/wallet/Wallet";
@@ -26,12 +18,14 @@ import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { useAppSelector } from "../redux/store";
 import Button from "../components/ui/Button";
+import Avatar from "../components/ui/Avatar";
 
 const Drawer = createDrawerNavigator();
 
 const MainTab = () => {
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const role = userInfo.data.role;
+  const user = userInfo?.data;
 
   const drawerItems = [
     {
@@ -113,17 +107,7 @@ const MainTab = () => {
             <TouchableOpacity
               onPress={() => props.navigation.navigate("Profile")}
             >
-              <Avatar size="md" bg={colors.secondary}>
-                <AvatarFallbackText size="lg" fontFamily="Urbanist-Bold">
-                  John Doe
-                </AvatarFallbackText>
-                {/* <AvatarImage
-                  source={{
-                    uri: undefined,
-                  }}
-                  alt="avatar"
-                /> */}
-              </Avatar>
+              <Avatar name={user?.fullName} image={user?.image} />
             </TouchableOpacity>
             <VStack>
               <Text
@@ -131,14 +115,21 @@ const MainTab = () => {
                 fontSize={17}
                 color={colors.white}
               >
-                John Doe
+                {user?.fullName}
               </Text>
               <Text
                 fontFamily="Urbanist-Regular"
                 fontSize={13}
                 color={colors.subText2}
               >
-                adenike.tunmise@gmail.com
+                {user?.email}{" "}
+                <Text
+                  color={colors.secondary}
+                  fontSize={13}
+                  textTransform="capitalize"
+                >
+                  {role}
+                </Text>
               </Text>
             </VStack>
           </HStack>

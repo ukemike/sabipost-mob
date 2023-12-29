@@ -22,10 +22,11 @@ import {
 import { useRef, useCallback, useMemo, useState } from "react";
 import Negotiate from "./Negotiate";
 import Accept from "./Accept";
+import Reject from "./Reject";
 import Badge from "../ui/Badge";
 import Avatar from "../ui/Avatar";
 
-const QuoteAccordion = ({ item, post }: any) => {
+const QuoteAccordion = ({ item, post, navigation }: any) => {
   const [visible, setIsVisible] = useState(false);
   const [type, setType] = useState("");
 
@@ -94,8 +95,28 @@ const QuoteAccordion = ({ item, post }: any) => {
 
   const renderContent = () => (
     <>
-      {type === "negotiate" && <Negotiate />}
-      {type === "accept" && <Accept />}
+      {type === "negotiate" && <Negotiate 
+      post={post}
+      item={item}
+      onClose={handleCloseModalPress}
+      navigation={navigation}
+      />}
+      {type === "accept" && (
+        <Accept
+          post={post}
+          item={item}
+          onClose={handleCloseModalPress}
+          navigation={navigation}
+        />
+      )}
+      {type === "reject" && (
+        <Reject
+          post={post}
+          item={item}
+          onClose={handleCloseModalPress}
+          navigation={navigation}
+        />
+      )}
     </>
   );
 
@@ -359,40 +380,7 @@ const QuoteAccordion = ({ item, post }: any) => {
                   ))}
                 </VStack>
 
-                {item?.image && (
-                  <>
-                    <VStack space="lg">
-                      <Text
-                        fontFamily="Urbanist-Regular"
-                        fontSize={14}
-                        color={colors.subText11}
-                      >
-                        Product picture
-                      </Text>
-
-                      <TouchableOpacity onPress={() => setIsVisible(true)}>
-                        <Image
-                          source={{
-                            uri: item?.image ? item?.image : undefined,
-                          }}
-                          width={100}
-                          height={124}
-                          alt="img"
-                          resizeMode="cover"
-                        />
-                      </TouchableOpacity>
-                    </VStack>
-
-                    <ImageView
-                      images={[{ uri: item?.image }] as any}
-                      imageIndex={0}
-                      visible={visible}
-                      onRequestClose={() => setIsVisible(false)}
-                    />
-                  </>
-                )}
-
-                <VStack space="md">
+                <VStack>
                   <Button
                     title="Download Proforma Invoice"
                     size="lg"
@@ -405,33 +393,128 @@ const QuoteAccordion = ({ item, post }: any) => {
                       borderRadius: 4,
                     }}
                   />
+                </VStack>
+
+                <VStack space="lg">
+                  <Text
+                    fontFamily="Urbanist-Regular"
+                    fontSize={14}
+                    color={colors.subText11}
+                  >
+                    Product picture
+                  </Text>
+
+                  <TouchableOpacity onPress={() => setIsVisible(true)}>
+                    <>
+                      {item?.image ? (
+                        <>
+                          {item?.image && (
+                            <Image
+                              source={{
+                                uri: item?.image ? item?.image : undefined,
+                              }}
+                              width={100}
+                              height={124}
+                              alt="img"
+                              resizeMode="cover"
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {post?.image_url && (
+                            <Image
+                              source={{
+                                uri: post?.image_url
+                                  ? post?.image_url
+                                  : undefined,
+                              }}
+                              width={100}
+                              height={124}
+                              alt="img"
+                              resizeMode="cover"
+                            />
+                          )}
+
+                          {post?.image && (
+                            <Image
+                              source={{
+                                uri: post?.image ? post?.image : undefined,
+                              }}
+                              width={100}
+                              height={124}
+                              alt="img"
+                              resizeMode="cover"
+                            />
+                          )}
+                        </>
+                      )}
+                    </>
+                  </TouchableOpacity>
+                </VStack>
+
+                <ImageView
+                  images={[
+                    {
+                      uri: item?.image
+                        ? item?.image
+                        : post?.image_url
+                        ? post?.image_url
+                        : post?.image,
+                    },
+                  ]}
+                  imageIndex={0}
+                  visible={visible}
+                  onRequestClose={() => setIsVisible(false)}
+                />
+
+                <VStack
+                  space="md"
+                  display={
+                    item?.status === "accepted" ||
+                    item?.status === "rejected" ||
+                    item?.sellerCountered ||
+                    item?.buyerNegotiated
+                      ? "none"
+                      : "flex"
+                  }
+                >
+                  <Button
+                    title="Negotiate"
+                    size="lg"
+                    variant="outline"
+                    bgColor={colors.white}
+                    color={colors.primary}
+                    borderColor={colors.primary}
+                    style={{
+                      height: 45,
+                      borderRadius: 4,
+                    }}
+                    onPress={() => {
+                      setType("negotiate");
+                      handlePresentModalPress();
+                    }}
+                  />
+
                   <HStack
                     justifyContent="space-between"
                     alignItems="center"
                     width="100%"
-                    display={
-                      item?.status === "accepted" ||
-                      item?.status === "rejected" ||
-                      item?.sellerCountered ||
-                      item?.buyerNegotiated
-                        ? "none"
-                        : "flex"
-                    }
                   >
                     <Button
-                      title="Negotiate"
+                      title="Reject Quote"
                       size="lg"
                       variant="outline"
                       bgColor={colors.white}
-                      color={colors.primary}
-                      borderColor={colors.primary}
+                      color={colors.red}
+                      borderColor={colors.red}
                       style={{
                         height: 45,
                         width: "48%",
                         borderRadius: 4,
                       }}
                       onPress={() => {
-                        setType("negotiate");
+                        setType("reject");
                         handlePresentModalPress();
                       }}
                     />

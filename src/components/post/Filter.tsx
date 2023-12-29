@@ -1,55 +1,67 @@
 import { FlatList, TouchableOpacity } from "react-native";
-import { Image, VStack, HStack, Text } from "@gluestack-ui/themed";
+import { VStack, Text } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import Input from "../ui/Input";
-import Select from "../ui/Select";
 import Button from "../ui/Button";
+import { useGetCategoriesQuery } from "../../redux/services/general.service";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { setPostFilter } from "../../redux/slices/postSlice";
 
-const Filter = () => {
+type FilterProps = {
+  actviveCategory: string;
+  setCategoryIDFilter: any;
+  onClose: any;
+  setCategoryNameFilter: any;
+};
+
+const Filter = ({
+  actviveCategory,
+  setCategoryIDFilter,
+  onClose,
+  setCategoryNameFilter,
+}: FilterProps) => {
+  const dispatch = useAppDispatch();
+  const { postFilter } = useAppSelector((state) => state.app.post);
+  const { data } = useGetCategoriesQuery("");
+  const categories = data?.data;
+
+  const handleCategoryFilter = (category: any) => {
+    setCategoryIDFilter(category?.categoryID);
+    setCategoryNameFilter(category?.name);
+    dispatch(
+      setPostFilter({
+        ...postFilter,
+        categoryID: category?.categoryID,
+      })
+    );
+  };
+
   const renderItem = ({ item }: any) => (
-    <TouchableOpacity>
-      <HStack justifyContent="space-between" alignItems="center" mb={"$3"}>
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Regular"
-          color={colors.subText5}
-        >
-          {item.name}
-        </Text>
-
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Regular"
-          color={colors.subText5}
-        >
-          {item.count}
-        </Text>
-      </HStack>
+    <TouchableOpacity onPress={() => handleCategoryFilter(item)}>
+      <Text
+        fontSize={14}
+        fontFamily="Urbanist-Regular"
+        color={
+          actviveCategory === item?.categoryID
+            ? colors.secondary
+            : colors.subText5
+        }
+        mb={"$3"}
+      >
+        {item.name}
+      </Text>
     </TouchableOpacity>
   );
 
-  const categories = [
-    {
-      name: "Phones & Tablets",
-      count: 10,
-    },
-    {
-      name: "Electronics",
-      count: 10,
-    },
-    {
-      name: "Fashion",
-      count: 10,
-    },
-    {
-      name: "Home & Office",
-      count: 10,
-    },
-    {
-      name: "Health & Beauty",
-      count: 10,
-    },
-  ];
+  const clearFilter = () => {
+    setCategoryIDFilter("");
+    dispatch(
+      setPostFilter({
+        ...postFilter,
+        categoryID: "",
+        search: "",
+      })
+    );
+  };
 
   return (
     <VStack flex={1}>
@@ -81,68 +93,21 @@ const Filter = () => {
             scrollEnabled={false}
           />
         </VStack>
-
-        <VStack>
-          <Text
-            fontSize={15}
-            fontFamily="Urbanist-Bold"
-            textAlign="left"
-            color={colors.darkBlue2}
-            mb={"-$4"}
-          >
-            Location
-          </Text>
-
-          <Select
-            data={[{ label: "Lagos", value: 1 }]}
-            placeholder="Select your location"
-            search={true}
-          />
-        </VStack>
-
-        <VStack>
-          <Text
-            fontSize={15}
-            fontFamily="Urbanist-Bold"
-            textAlign="left"
-            color={colors.darkBlue2}
-            mb={"$1"}
-          >
-            Custom Price Range
-          </Text>
-          <HStack
-            width="100%"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Input placeholder="₦ Min" type="number" width="48%" />
-            <Input placeholder="₦ Max" type="number" width="48%" />
-          </HStack>
-        </VStack>
       </VStack>
 
-      <HStack
-        width="100%"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={"$4"}
-      >
+      <VStack width="100%" mb={"$4"}>
         <Button
           title="Clear Filter"
           size="lg"
-          variant="outline"
-          bgColor={colors.white}
-          color={colors.secondary}
-          style={{ width: "48%" }}
-        />
-        <Button
-          title="Apply Filter"
-          size="lg"
           bgColor={colors.secondary}
           color={colors.primary}
-          style={{ width: "48%" }}
+          onPress={() => {
+            clearFilter();
+            onClose();
+          }}
+          isDisabled={!postFilter?.categoryID}
         />
-      </HStack>
+      </VStack>
     </VStack>
   );
 };

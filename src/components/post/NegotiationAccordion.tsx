@@ -20,13 +20,13 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { useRef, useCallback, useMemo, useState } from "react";
-import Accept from "./Accept";
-import Reject from "./Reject";
+import AcceptCounter from "./AcceptCounter";
+import RejectCounter from "./RejectCounter";
 import { formatDays } from "../../utils/functions";
 import Badges from "../ui/Badge";
 import Avatar from "../ui/Avatar";
 
-const NegotiationAccordion = ({ item, post }: any) => {
+const NegotiationAccordion = ({ item, post, navigation }: any) => {
   const [type, setType] = useState("");
 
   const details = [
@@ -67,8 +67,22 @@ const NegotiationAccordion = ({ item, post }: any) => {
 
   const renderContent = () => (
     <>
-      {type === "accept" && <Accept />}
-      {type === "reject" && <Reject />}
+      {type === "accept" && (
+        <AcceptCounter
+          post={post}
+          item={item}
+          onClose={handleCloseModalPress}
+          navigation={navigation}
+        />
+      )}
+      {type === "reject" && (
+        <RejectCounter
+          post={post}
+          item={item}
+          onClose={handleCloseModalPress}
+          navigation={navigation}
+        />
+      )}
     </>
   );
 
@@ -605,45 +619,46 @@ const NegotiationAccordion = ({ item, post }: any) => {
                     </VStack>
                   )}
                 </VStack>
-
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="center"
-                  width="100%"
-                >
-                  <Button
-                    title="Reject"
-                    size="lg"
-                    variant="outline"
-                    bgColor={colors.white}
-                    color={colors.red}
-                    borderColor={colors.red}
-                    style={{
-                      height: 45,
-                      width: "48%",
-                      borderRadius: 4,
-                    }}
-                    onPress={() => {
-                      setType("reject");
-                      handlePresentModalPress();
-                    }}
-                  />
-                  <Button
-                    title="Accept Quote"
-                    size="lg"
-                    bgColor={colors.secondary}
-                    color={colors.primary}
-                    style={{
-                      height: 45,
-                      width: "48%",
-                      borderRadius: 4,
-                    }}
-                    onPress={() => {
-                      setType("accept");
-                      handlePresentModalPress();
-                    }}
-                  />
-                </HStack>
+                {item?.buyer?.status === "counter" && (
+                  <HStack
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%"
+                  >
+                    <Button
+                      title="Reject"
+                      size="lg"
+                      variant="outline"
+                      bgColor={colors.white}
+                      color={colors.red}
+                      borderColor={colors.red}
+                      style={{
+                        height: 45,
+                        width: "48%",
+                        borderRadius: 4,
+                      }}
+                      onPress={() => {
+                        setType("reject");
+                        handlePresentModalPress();
+                      }}
+                    />
+                    <Button
+                      title="Accept Quote"
+                      size="lg"
+                      bgColor={colors.secondary}
+                      color={colors.primary}
+                      style={{
+                        height: 45,
+                        width: "48%",
+                        borderRadius: 4,
+                      }}
+                      onPress={() => {
+                        setType("accept");
+                        handlePresentModalPress();
+                      }}
+                    />
+                  </HStack>
+                )}
               </VStack>
             </VStack>
           </AccordionContent>

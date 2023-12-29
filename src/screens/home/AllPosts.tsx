@@ -8,11 +8,13 @@ import CategoryCard from "../../components/post/CategoryCard";
 import { useCategoriesPostQuery } from "../../redux/services/post.service";
 import { useGetCategoriesQuery } from "../../redux/services/general.service";
 import Loader from "../../components/ui/Loader";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
-const AllPosts = () => {
+const AllPosts = ({ navigation }: any) => {
   const { data, isLoading, isFetching, refetch } = useCategoriesPostQuery("");
   const allPost = data?.data;
+
+  const [search, setSearch] = useState<string>("");
 
   const { data: categoriesData, isLoading: loadingCategories } =
     useGetCategoriesQuery("");
@@ -21,6 +23,19 @@ const AllPosts = () => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  const onSearch = (text: string) => {
+    setSearch(text);
+  };
+
+  const sendSearch = () => {
+    if (search) {
+      navigation.navigate("SearchPosts", { searchTerm: search });
+      setSearch("");
+    } else {
+      return;
+    }
+  };
 
   return (
     <>
@@ -45,8 +60,11 @@ const AllPosts = () => {
               <VStack flex={1} space="lg">
                 <Input
                   placeholder="Search Posts"
-                  leftIconName="search"
+                  rightIconName="search"
                   iconColor={"#4A5264"}
+                  onChange={(text: string) => onSearch(text)}
+                  value={search}
+                  onPress={sendSearch}
                 />
 
                 <Text

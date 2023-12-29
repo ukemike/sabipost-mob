@@ -17,22 +17,35 @@ import {
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { useRef, useCallback, useMemo } from "react";
+import { useRef, useCallback, useMemo, useState, useEffect } from "react";
 import Filter from "../../components/post/Filter";
 import { shortenText } from "../../utils/functions";
 import { useUseGetPostByCategoryQuery } from "../../redux/services/post.service";
 import Loader from "../../components/ui/Loader";
+import { useAppSelector } from "../../redux/store";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const PostCategory = ({ route, navigation }: any) => {
   const { category, categoryID } = route.params;
+  const { postFilter } = useAppSelector((state) => state.app.post);
+  const [search, setSearch] = useState<string>("");
+  const [categoryIDFilter, setCategoryIDFilter] = useState<string>("");
+  const [categoryNameFilter, setCategoryNameFilter] = useState<string>("");
+  const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    if (postFilter) {
+      setCategoryIDFilter(postFilter?.categoryID || "");
+    }
+  }, [postFilter]);
 
   const { data, isLoading, isFetching, refetch } = useUseGetPostByCategoryQuery(
     {
-      categoryID: categoryID,
+      categoryID: categoryIDFilter || categoryID,
       data: {
         limit: "",
         page: "",
-        search: "",
+        search: debouncedSearch,
       },
     }
   );
@@ -40,7 +53,7 @@ const PostCategory = ({ route, navigation }: any) => {
   const allPost = data?.data?.data;
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["25%", "80%"], []);
+  const snapPoints = useMemo(() => ["25%", "50%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -66,7 +79,12 @@ const PostCategory = ({ route, navigation }: any) => {
 
   const renderContent = () => (
     <>
-      <Filter />
+      <Filter
+        actviveCategory={categoryIDFilter ? categoryIDFilter : categoryID}
+        setCategoryIDFilter={setCategoryIDFilter}
+        onClose={handleCloseModalPress}
+        setCategoryNameFilter={setCategoryNameFilter}
+      />
     </>
   );
 
@@ -82,6 +100,14 @@ const PostCategory = ({ route, navigation }: any) => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [debouncedSearch, categoryIDFilter]);
+
+  const handleSearch = (text: string) => {
+    setSearch(text);
+  };
 
   return (
     <>
@@ -112,6 +138,8 @@ const PostCategory = ({ route, navigation }: any) => {
                   placeholder="Search Posts"
                   leftIconName="search"
                   iconColor={"#4A5264"}
+                  onChange={(text: string) => handleSearch(text)}
+                  value={search}
                 />
 
                 <HStack alignItems="center" justifyContent="space-between">
@@ -134,7 +162,9 @@ const PostCategory = ({ route, navigation }: any) => {
                         fontFamily="Urbanist-Bold"
                         textAlign="left"
                       >
-                        {shortenText(category, 25)}
+                        {categoryNameFilter
+                          ? shortenText(categoryNameFilter, 25)
+                          : shortenText(category, 25)}
                       </Text>
                     </HStack>
                   </TouchableOpacity>

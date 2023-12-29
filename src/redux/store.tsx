@@ -33,15 +33,19 @@ import { userApi } from "./services/user.service";
 
 // reducers
 import authReducer from "./slices/authSlice";
+import postReducer from "./slices/postSlice";
+import productReducer from "./slices/productSlice";
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["auth"],
+  whitelist: ["auth", "post", "product"],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  post: postReducer,
+  product: productReducer,
   [authApi.reducerPath]: authApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
   [generalApi.reducerPath]: generalApi.reducer,

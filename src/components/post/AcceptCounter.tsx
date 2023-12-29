@@ -3,18 +3,20 @@ import { colors } from "../../constants";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
-import { useAcceptQuoteMutation } from "../../redux/services/quotes.service";
+import { useAcceptCounterNegotiationMutation } from "../../redux/services/quotes.service";
 import { useToast } from "react-native-toast-notifications";
 import { useAppSelector } from "../../redux/store";
+import { shortenText } from "../../utils/functions";
 
-const Accept = ({ item, post, onClose, navigation }: any) => {
+const AcceptCounter = ({ item, post, onClose, navigation }: any) => {
   const toast = useToast();
   const { userInfo } = useAppSelector((state) => state.app.auth);
-  const [acceptQuote, { isLoading }] = useAcceptQuoteMutation();
+  const [acceptCounterNegotiation, { isLoading }] =
+    useAcceptCounterNegotiationMutation();
 
   const handleAccept = async () => {
-    await acceptQuote({
-      quoteID: item?.quoteID,
+    await acceptCounterNegotiation({
+      negotiationID: item?.seller?.negotiationID,
       token: userInfo?.token,
     })
       .unwrap()
@@ -107,8 +109,8 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
           <VStack bg={colors.white} p={"$3"} borderRadius={10} space="md">
             <HStack space="sm" alignItems="center">
               <Avatar
-                name={item?.seller?.profile?.businessName}
-                image={item?.seller?.image}
+                name={item?.seller?.sellerBusiness}
+                image={item?.seller?.sellerImage}
               />
               <VStack>
                 <Text
@@ -116,7 +118,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                   fontSize={17}
                   color={colors.subText6}
                 >
-                  {item?.seller?.profile?.businessName}
+                  {item?.seller?.sellerBusiness}
                 </Text>
                 <HStack space="xs" alignItems="center">
                   <Image
@@ -130,7 +132,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                     fontSize={14}
                     color={colors.subText8}
                   >
-                    {item?.seller?.profile?.state?.stateName}
+                    {shortenText(item?.seller?.sellerAddress, 20)}
                   </Text>
                 </HStack>
               </VStack>
@@ -151,7 +153,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                   fontSize={17}
                   color={colors.primary}
                 >
-                  {post?.quantity}
+                  {item?.seller?.newQuoteQuantity}
                 </Text>
               </VStack>
               <VStack>
@@ -164,7 +166,7 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
                   Total Payment
                 </Text>
                 <NairaNumberFormat
-                  value={item?.quotePrice * item?.post?.quantity}
+                  value={item?.seller?.newQuoteAmount}
                   fontSize={16}
                   color={colors.subText}
                 />
@@ -189,4 +191,4 @@ const Accept = ({ item, post, onClose, navigation }: any) => {
   );
 };
 
-export default Accept;
+export default AcceptCounter;
