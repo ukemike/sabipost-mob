@@ -56,7 +56,7 @@ const AcceptedAccordion = ({ item, post }: any) => {
 
   const renderContent = () => (
     <>
-      <Pay4Me />
+      <Pay4Me item={item} onClose={handleCloseModalPress} />
     </>
   );
 

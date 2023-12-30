@@ -13,6 +13,7 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { useRef, useCallback, useMemo, useState } from "react";
+import { formatDate2, shortenText } from "../../utils/functions";
 
 const OrderCard = ({ item }: any) => {
   const navigation = useNavigation<any>();
@@ -46,7 +47,7 @@ const OrderCard = ({ item }: any) => {
 
   const renderContent = () => (
     <>
-      <ConfirmDelivery />
+      <ConfirmDelivery item={item} onClose={handleCloseModalPress} />
     </>
   );
 
@@ -63,18 +64,20 @@ const OrderCard = ({ item }: any) => {
         <HStack space="sm" alignItems="center" justifyContent="space-between">
           <HStack space="sm" alignItems="center">
             <Image
-              source={require("../../../assets/images/phones.png")}
+              source={{
+                uri: item?.productImage || item?.productImageUrl,
+              }}
               alt="img"
               h={67}
               w={46}
               resizeMode="cover"
             />
             <Text fontFamily="Urbanist-Bold" fontSize={16} color={colors.black}>
-              iPhone 12 Pro Max
+              {shortenText(item?.productName, 30)}
             </Text>
           </HStack>
           <Text fontFamily="Urbanist-Bold" fontSize={14} color={colors.black}>
-            QTY: 2
+            QTY: {item?.quantity}
           </Text>
         </HStack>
 
@@ -93,16 +96,35 @@ const OrderCard = ({ item }: any) => {
               color={colors.subText}
               textTransform="capitalize"
             >
-              Total Price || Amount paid
+              {item?.isPaid === false ? "Amount" : "Amount paid"}
             </Text>
-            <Text
-              fontFamily="Urbanist-Bold"
+            <NairaNumberFormat
+              value={item?.amount * +item?.quantity}
               fontSize={16}
               color={colors.primary}
+            />
+          </HStack>
+          <HStack
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            borderBottomWidth={1}
+            borderBottomColor={colors.background}
+            pb={"$2"}
+          >
+            <Text
+              fontFamily="Urbanist-Bold"
+              fontSize={14}
+              color={colors.subText}
               textTransform="capitalize"
             >
-              DESCRIPTION
+              Shipping fee
             </Text>
+            <NairaNumberFormat
+              value={item?.shipping_fee || 0}
+              fontSize={16}
+              color={colors.primary}
+            />
           </HStack>
           <HStack
             justifyContent="space-between"
@@ -126,7 +148,7 @@ const OrderCard = ({ item }: any) => {
               color={colors.primary}
               textTransform="capitalize"
             >
-              DESCRIPTION
+              {item?.businessName}
             </Text>
           </HStack>
           <HStack
@@ -151,23 +173,49 @@ const OrderCard = ({ item }: any) => {
               color={colors.primary}
               textTransform="capitalize"
             >
-              DESCRIPTION
+              {formatDate2(item?.dateCreated)}
             </Text>
           </HStack>
         </VStack>
 
         <VStack alignItems="center">
-          {/* Confirm delivery */}
-          <Button
-            title="Proceed to payment"
-            size="lg"
-            bgColor={colors.secondary}
-            color={colors.primary}
-            style={{
-              height: 45,
-            }}
-            onPress={handlePresentModalPress}
-          />
+          {item?.status === "confirmed" ||
+          item?.status === "out_for_delivery" ? (
+            <Button
+              title="Confirm delivery"
+              size="lg"
+              bgColor={colors.secondary}
+              color={colors.primary}
+              style={{
+                height: 45,
+              }}
+              onPress={handlePresentModalPress}
+            />
+          ) : (
+            <Button
+              title="Proceed to payment"
+              size="lg"
+              bgColor={colors.secondary}
+              color={colors.primary}
+              style={{
+                height: 45,
+              }}
+              onPress={() => {
+                item?.orderFor === "product" &&
+                  navigation.navigate("ProductCheckout", {
+                    productID: item?.productID,
+                    qty: item?.quantity,
+                    price: item?.amount,
+                    orderID: item?.orderID,
+                  });
+
+                item?.orderFor !== "product" &&
+                  navigation.navigate("PostCheckOut", {
+                    quoteID: item?.quoteID,
+                  });
+              }}
+            />
+          )}
         </VStack>
       </VStack>
 

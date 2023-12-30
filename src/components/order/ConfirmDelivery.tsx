@@ -1,11 +1,39 @@
-import { Image, VStack, HStack, Text } from "@gluestack-ui/themed";
+import { Image, VStack, Text } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import Button from "../ui/Button";
 import Input from "../ui/Input2";
 import { Formik } from "formik";
 import { deliverySchema } from "../../schemas/post.shema";
+import { useConfirmDeliveryMutation } from "../../redux/services/order.service";
+import { useToast } from "react-native-toast-notifications";
+import { useAppSelector } from "../../redux/store";
 
-const ConfirmDelivery = () => {
+const ConfirmDelivery = ({ item, onClose }: any) => {
+  const toast = useToast();
+  const { userInfo } = useAppSelector((state) => state.app.auth);
+  const [confirmDelivery, { isLoading }] = useConfirmDeliveryMutation();
+
+  const handleConfirmDelivery = async (values: any) => {
+    await confirmDelivery({
+      body: {
+        delivery_code: values?.delivery_code,
+      },
+      orderID: item?.orderID,
+      token: userInfo?.token,
+    })
+      .unwrap()
+      .then(() => {
+        onClose();
+        toast.show("Delivery confirmed successfully", {
+          type: "success",
+        });
+      })
+      .catch((e) => {
+        toast.show(e?.data?.message, {
+          type: "danger",
+        });
+      });
+  };
   return (
     <VStack flex={1}>
       <VStack flex={1} space="lg">
@@ -65,6 +93,8 @@ const ConfirmDelivery = () => {
                   size="lg"
                   bgColor={colors.secondary}
                   color={colors.primary}
+                  isLoading={isLoading}
+                  isDisabled={isLoading}
                 />
               </VStack>
             </>

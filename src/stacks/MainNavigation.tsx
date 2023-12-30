@@ -24,6 +24,7 @@ import VendorProfile from "../screens/products/VendorProfile";
 import BankDetails from "../screens/profile/BankDetails";
 import SearchProducts from "../screens/home/SearchProducts";
 import SearchPosts from "../screens/home/SearchPosts";
+import MyOffers from "../screens/offers/MyOffers";
 
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -82,6 +83,7 @@ function MainNavigation() {
             <Stack.Screen name="BankDetails" component={BankDetails} />
             <Stack.Screen name="SearchProducts" component={SearchProducts} />
             <Stack.Screen name="SearchPosts" component={SearchPosts} />
+            <Stack.Screen name="MyOffers" component={MyOffers} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

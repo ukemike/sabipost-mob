@@ -31,6 +31,7 @@ const RejectCounter = ({ item, post, onClose }: any) => {
         });
       });
   };
+  
   return (
     <VStack flex={1}>
       <VStack flex={1} space="lg">

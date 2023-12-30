@@ -79,7 +79,7 @@ const OfferDetail = ({ route }: any) => {
   };
 
   const images = product?.images.map((item: any) => ({
-    uri: item.image,
+    uri: item?.image,
   }));
 
   return (
@@ -305,7 +305,7 @@ const OfferDetail = ({ route }: any) => {
 
                 {negotiation?.status === "counter" ||
                   (negotiation?.status === "accepted" &&
-                    negotiation?.sellerDiscountPercentage !== null && (
+                    negotiation?.sellerDiscountPercentage === 0 && (
                       <Negotiation3
                         negotiation={negotiation}
                         product={product}
@@ -313,7 +313,7 @@ const OfferDetail = ({ route }: any) => {
                     ))}
 
                 {negotiation?.status === "accepted" &&
-                  negotiation?.sellerDiscountPercentage === null && (
+                  negotiation?.sellerDiscountPercentage !== 0 && (
                     <Negotiation4 negotiation={negotiation} product={product} />
                   )}
 
@@ -322,7 +322,7 @@ const OfferDetail = ({ route }: any) => {
                 )}
 
                 {negotiation?.status === "rejected" &&
-                  negotiation?.sellerDiscountPercentage === null && (
+                  negotiation?.sellerDiscountPercentage === 0 && (
                     <Negotiation5 negotiation={negotiation} product={product} />
                   )}
               </VStack>

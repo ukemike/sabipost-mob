@@ -4,8 +4,39 @@ import Button from "../ui/Button";
 import Input from "../ui/Input2";
 import { Formik } from "formik";
 import { pay4meSchema } from "../../schemas/post.shema";
+import { useInitiatePayForMeMutation } from "../../redux/services/payment.service";
+import { useToast } from "react-native-toast-notifications";
+import { useAppSelector } from "../../redux/store";
 
-const Pay4Me = () => {
+const Pay4Me = ({ item, onClose }: any) => {
+  const toast = useToast();
+  const { userInfo } = useAppSelector((state) => state.app.auth);
+  const [initiatePayForMe, { isLoading }] = useInitiatePayForMeMutation();
+
+  const handlePayForMe = async (values: any) => {
+    await initiatePayForMe({
+      orderID: item?.orderID,
+      body: {
+        email: values?.email,
+        name: userInfo?.data?.fullName,
+        for: "product",
+      },
+      token: userInfo?.token,
+    })
+      .unwrap()
+      .then(() => {
+        toast.show("Payment link sent successfully", {
+          type: "success",
+        });
+        onClose();
+      })
+      .catch((e) => {
+        toast.show(e?.data?.message, {
+          type: "danger",
+        });
+      });
+  };
+  
   return (
     <VStack flex={1}>
       <VStack flex={1} space="lg">
@@ -44,7 +75,7 @@ const Pay4Me = () => {
             email: "",
           }}
           onSubmit={(values) => {
-            console.log(values);
+            handlePayForMe(values);
           }}
           validationSchema={pay4meSchema}
         >
@@ -65,6 +96,8 @@ const Pay4Me = () => {
                   size="lg"
                   bgColor={colors.secondary}
                   color={colors.primary}
+                  isLoading={isLoading}
+                  isDisabled={isLoading}
                 />
               </VStack>
             </>

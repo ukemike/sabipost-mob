@@ -30,6 +30,7 @@ import { quoteApi } from "./services/quotes.service";
 import { orderApi } from "./services/order.service";
 import { notificationApi } from "./services/notification.service";
 import { userApi } from "./services/user.service";
+import { paymentApi } from "./services/payment.service";
 
 // reducers
 import authReducer from "./slices/authSlice";
@@ -55,6 +56,7 @@ const rootReducer = combineReducers({
   [orderApi.reducerPath]: orderApi.reducer,
   [notificationApi.reducerPath]: notificationApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
+  [paymentApi.reducerPath]: paymentApi.reducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -70,6 +72,7 @@ export const store: any = configureStore({
     [orderApi.reducerPath]: orderApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [paymentApi.reducerPath]: paymentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -86,6 +89,7 @@ export const store: any = configureStore({
       orderApi.middleware,
       notificationApi.middleware,
       userApi.middleware,
+      paymentApi.middleware,
     ]),
 });
 

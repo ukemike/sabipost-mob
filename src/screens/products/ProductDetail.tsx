@@ -11,8 +11,7 @@ import { colors } from "../../constants";
 import Loader from "../../components/ui/Loader";
 import {
   useGetSingleProductQuery,
-  useGetProductsByCategoryQuery,
-  useNegotiateProductMutation,
+  useGetProductsByCategoryQuery
 } from "../../redux/services/product.service";
 import StatusBar from "../../components/StatusBar";
 import Header from "../../components/Header";
@@ -146,7 +145,12 @@ const ProductDetail = ({ route, navigation }: any) => {
 
   const renderContent = () => (
     <>
-      <NegotiateProduct />
+      <NegotiateProduct
+        product={product}
+        navigation={navigation}
+        qty={quantity}
+        onClose={handleCloseModalPress}
+      />
     </>
   );
 
@@ -466,6 +470,22 @@ const ProductDetail = ({ route, navigation }: any) => {
                         variant="solid"
                         width="48%"
                         style={{ height: 50 }}
+                        // onPress={() =>
+                        //   navigation.navigate("ProductCheckout", {
+                        //     productID: product?.productID,
+                        //     qty: negotiation?.desiredQuantity,
+                        //     price: negotiation?.desiredAmount,
+                        //     orderID: negotiation?.orderID,
+                        //   })
+                        // }
+                        onPress={() =>
+                          navigation.navigate("ProductCheckout", {
+                            productID: product?.productID,
+                            qty: quantity,
+                            price: product?.price,
+                            orderID: "",
+                          })
+                        }
                       />
                     </HStack>
                     <Divider bg={colors.border2} />

@@ -3,24 +3,24 @@ import { colors } from "../../constants";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
-import { useAcceptCounterNegotiationMutation } from "../../redux/services/product.service";
+import { useRejectCounterNegotiationMutation } from "../../redux/services/product.service";
 import { useToast } from "react-native-toast-notifications";
 import { useAppSelector } from "../../redux/store";
 
-const Accept = ({ item, product, onClose }: any) => {
+const Reject = ({ item, product, onClose }: any) => {
   const toast = useToast();
   const { userInfo } = useAppSelector((state) => state.app.auth);
-  const [acceptCounterNegotiation, { isLoading }] =
-    useAcceptCounterNegotiationMutation();
+  const [rejectCounterNegotiation, { isLoading }] =
+    useRejectCounterNegotiationMutation();
 
-  const handleAccept = async () => {
-    await acceptCounterNegotiation({
+  const handleReject = async () => {
+    await rejectCounterNegotiation({
       negotiationID: item?.negotiationID,
       token: userInfo?.token,
     })
       .unwrap()
       .then((res) => {
-        toast.show("Offer accepted successfully", {
+        toast.show("Offer rejected successfully", {
           type: "success",
         });
         onClose();
@@ -41,7 +41,7 @@ const Accept = ({ item, product, onClose }: any) => {
           color={colors.subText5}
           mt={"$3"}
         >
-          Accept Quote?
+          Reject Quote?
         </Text>
 
         <VStack space="md" bg={colors.background11} p={"$3"} borderRadius={10}>
@@ -136,17 +136,17 @@ const Accept = ({ item, product, onClose }: any) => {
 
       <VStack py={"$5"}>
         <Button
-          title="Accept Quote"
+          title="Reject Quote"
           size="lg"
-          bgColor={colors.secondary}
-          color={colors.primary}
+          bgColor={colors.red}
+          color={colors.white}
           isLoading={isLoading}
           isDisabled={isLoading}
-          onPress={handleAccept}
+          onPress={handleReject}
         />
       </VStack>
     </VStack>
   );
 };
 
-export default Accept;
+export default Reject;

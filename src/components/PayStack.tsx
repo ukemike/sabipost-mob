@@ -26,7 +26,7 @@ const PayStack = ({
             paystackKey={"pk_test_5d6272a098a3ee1a3a73a1cc24bdee33ba2f5cff"}
             amount={amount}
             billingEmail={billingEmail}
-            activityIndicatorColor="green"
+            activityIndicatorColor="yellow"
             autoStart={isPayStack}
             onSuccess={(resp: any) => {
               onSuccess(resp);
@@ -43,6 +43,3 @@ const PayStack = ({
 };
 
 export default PayStack;
-
-// public_key: "FLWPUBK-ed5c07df34a2c5b33ac9b7f959c36ec4-X",
-// // public_key: "FLWPUBK_TEST-e584df27e1689eefa5f355fc9af9dca7-X",

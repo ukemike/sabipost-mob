@@ -77,7 +77,6 @@ const PostCheckOut = ({ route, navigation }: any) => {
         navigation.navigate("OrderSucess");
       })
       .catch((err: any) => {
-        navigation.navigate("OrderSucess");
         toast.show(err?.data?.message, {
           type: "danger",
         });
@@ -96,10 +95,11 @@ const PostCheckOut = ({ route, navigation }: any) => {
     })
       .unwrap()
       .then((res) => {
+        setShowModal(false);
         navigation.navigate("OrderSucess");
       })
       .catch((err: any) => {
-        navigation.navigate("OrderSucess");
+        setShowModal(false);
         toast.show(err?.data?.message, {
           type: "danger",
         });

@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, RefreshControl, FlatList } from "react-native";
-import { VStack, Text, Image } from "@gluestack-ui/themed";
+import { VStack, Text } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import StatusBar from "../../components/StatusBar";

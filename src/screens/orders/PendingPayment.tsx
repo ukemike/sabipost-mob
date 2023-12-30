@@ -27,7 +27,7 @@ const PendingPayment = () => {
   }, []);
 
   const renderItem = ({ item }: any) => {
-    return <OrderCard post={item} />;
+    return <OrderCard item={item} />;
   };
 
   return (
@@ -62,7 +62,7 @@ const PendingPayment = () => {
 
                 <FlatList
                   data={orderPendingPayment}
-                  keyExtractor={(item) => item?.postID}
+                  keyExtractor={(item) => item?.orderID}
                   renderItem={renderItem}
                   scrollEnabled={false}
                   showsVerticalScrollIndicator={false}

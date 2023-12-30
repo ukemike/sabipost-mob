@@ -1,5 +1,4 @@
-import { FlatList, TouchableOpacity } from "react-native";
-import { Image, VStack, HStack, Text } from "@gluestack-ui/themed";
+import { VStack, HStack, Text } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
@@ -149,12 +148,13 @@ const Negotiate = ({ item, post, onClose, navigation }: any) => {
                   <>
                     {" "}
                     which is{" "}
-                    <NairaNumberFormat
-                      value={discount_percentage || 0}
+                    <Text
+                      color={colors.primary}
                       fontSize={12}
-                      color={colors.subText}
-                    />{" "}
-                    % discount
+                      fontFamily="Urbanist"
+                    >
+                      {discount_percentage}% discount
+                    </Text>
                   </>
                 )}
               </Text>

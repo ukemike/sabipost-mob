@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, RefreshControl } from "react-native";
-import { VStack, Text, Image, HStack, Badge } from "@gluestack-ui/themed";
+import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import StatusBar from "../../components/StatusBar";
@@ -20,7 +20,7 @@ import PayStack from "../../components/PayStack";
 import Modal from "../../components/Modal";
 import { useToast } from "react-native-toast-notifications";
 
-const ProductCheckout = ({ route }: any) => {
+const ProductCheckout = ({ route, navigation }: any) => {
   const toast = useToast();
   const { productID, qty, price, orderID } = route.params;
 
@@ -90,50 +90,45 @@ const ProductCheckout = ({ route }: any) => {
   }, []);
 
   const payWithWalletHandler = async () => {
-    try {
-      const res = await payForProduct({
-        body: {
-          payment_method: "wallet",
-          amount,
-          delivery_address,
-          state_id,
-        },
-        productID: orderID,
-        token: userInfo?.token,
-      }).unwrap();
-
-      if (res.status === 200) {
+    await payForProduct({
+      body: {
+        payment_method: "wallet",
+        amount,
+        delivery_address,
+        state_id,
+      },
+      productID: orderID,
+      token: userInfo?.token,
+    })
+      .unwrap()
+      .then((res) => {
         setShowModal(false);
-        toast.show("Payment successful", {
-          type: "success",
+        navigation.navigate("OrderSucess");
+      })
+      .catch((err: any) => {
+        setShowModal(false);
+        toast.show(err?.data?.message, {
+          type: "danger",
         });
-      }
-    } catch (error: any) {
-      toast.show(error.data.message, {
-        type: "danger",
       });
-    }
   };
 
   const payForProductHandler = async (body: any) => {
-    try {
-      const res = await payForProduct({
-        body,
-        productID: orderID,
-        token: userInfo?.token,
-      }).unwrap();
-
-      if (res.status === 200) {
-        toast.show("Payment successful", {
-          type: "success",
+    await payForProduct({
+      body: body,
+      productID: orderID,
+      token: userInfo?.token,
+    })
+      .unwrap()
+      .then((res) => {
+        navigation.navigate("OrderSucess");
+      })
+      .catch((err: any) => {
+        toast.show(err?.data?.message, {
+          type: "danger",
         });
-      }
-    } catch (error: any) {
-      toast.show(error.data.message, {
-        type: "danger",
       });
-    }
-  }
+  };
 
   return (
     <>
@@ -388,8 +383,8 @@ const ProductCheckout = ({ route }: any) => {
                               onPress={() => {
                                 setIsPayStack(true);
                               }}
-                                isDisabled={isLoadingPay}
-                                isLoading={isLoadingPay}
+                              isDisabled={isLoadingPay}
+                              isLoading={isLoadingPay}
                             />
                           </HStack>
                         </VStack>
@@ -412,13 +407,13 @@ const ProductCheckout = ({ route }: any) => {
         }}
         onSuccess={(res: any) => {
           setIsPayStack(false);
-            payForProductHandler({
-              payment_reference: res?.transactionRef?.reference,
-              payment_method: "paystack",
-              amount,
-              delivery_address,
-              state_id,
-            });
+          payForProductHandler({
+            payment_reference: res?.transactionRef?.reference,
+            payment_method: "paystack",
+            amount,
+            delivery_address,
+            state_id,
+          });
         }}
       />
 
@@ -459,11 +454,11 @@ const ProductCheckout = ({ route }: any) => {
                 height: 45,
                 borderRadius: 4,
               }}
-                onPress={() => {
-                  payWithWalletHandler();
-                }}
-                isLoading={isLoadingPay}
-                isDisabled={isLoadingPay}
+              onPress={() => {
+                payWithWalletHandler();
+              }}
+              isLoading={isLoadingPay}
+              isDisabled={isLoadingPay}
             />
           </HStack>
         }

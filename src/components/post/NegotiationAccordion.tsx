@@ -641,6 +641,10 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                         setType("reject");
                         handlePresentModalPress();
                       }}
+                      isDisabled={
+                        item?.seller?.status === "accepted" ||
+                        item?.seller?.status === "rejected"
+                      }
                     />
                     <Button
                       title="Accept Quote"
@@ -656,6 +660,10 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                         setType("accept");
                         handlePresentModalPress();
                       }}
+                      isDisabled={
+                        item?.seller?.status === "accepted" ||
+                        item?.seller?.status === "rejected"
+                      }
                     />
                   </HStack>
                 )}

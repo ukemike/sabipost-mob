@@ -33,6 +33,7 @@ const AcceptCounter = ({ item, post, onClose, navigation }: any) => {
         });
       });
   };
+  
   return (
     <VStack flex={1}>
       <VStack flex={1} space="lg">

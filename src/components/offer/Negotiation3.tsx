@@ -3,6 +3,7 @@ import NairaNumberFormat from "../ui/NairaNumberFormat";
 import { colors } from "../../constants";
 import Button from "../ui/Button";
 import Accept from "../product/Accept";
+import Reject from "../product/Reject";
 import Pay4Me from "../product/Pay4Me";
 import {
   BottomSheetModal,
@@ -42,8 +43,23 @@ const Negotiation3 = ({ negotiation, product }: any) => {
 
   const renderContent = () => (
     <>
-      {type === "pay4me" && <Pay4Me />}
-      {type === "accept" && <Accept />}
+      {type === "pay4me" && (
+        <Pay4Me item={negotiation} onClose={handleCloseModalPress} />
+      )}
+      {type === "accept" && (
+        <Accept
+          item={negotiation}
+          product={product}
+          onClose={handleCloseModalPress}
+        />
+      )}
+      {type === "reject" && (
+        <Reject
+          item={negotiation}
+          product={product}
+          onClose={handleCloseModalPress}
+        />
+      )}
     </>
   );
   return (
@@ -174,7 +190,7 @@ const Negotiation3 = ({ negotiation, product }: any) => {
                   borderRadius: 4,
                 }}
                 onPress={() => {
-                  setType("accept");
+                  setType("reject");
                   handlePresentModalPress();
                 }}
               />
@@ -191,7 +207,7 @@ const Negotiation3 = ({ negotiation, product }: any) => {
             Accepted
           </Text>
         )}
-       
+
         {negotiation?.status === "accepted" && (
           <VStack space="xs" mt={"$5"}>
             <HStack
@@ -232,8 +248,11 @@ const Negotiation3 = ({ negotiation, product }: any) => {
                 onPress={() =>
                   navigation.navigate("ProductCheckout", {
                     productID: product?.productID,
-                    qty: negotiation?.sellerQuantity || negotiation?.desiredQuantity,
-                    price: negotiation?.sellerAmount || negotiation?.desiredAmount,
+                    qty:
+                      negotiation?.sellerQuantity ||
+                      negotiation?.desiredQuantity,
+                    price:
+                      negotiation?.sellerAmount || negotiation?.desiredAmount,
                     orderID: negotiation?.orderID,
                   })
                 }

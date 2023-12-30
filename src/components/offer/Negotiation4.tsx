@@ -8,9 +8,11 @@ import {
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { useRef, useCallback, useMemo, useState } from "react";
+import { useRef, useCallback, useMemo } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const Negotiation4 = ({ negotiation, product }: any) => {
+  const navigation = useNavigation<any>();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["25%", "65%"], []);
 
@@ -36,7 +38,7 @@ const Negotiation4 = ({ negotiation, product }: any) => {
     []
   );
 
-  const renderContent = () => <Pay4Me />;
+  const renderContent = () => <Pay4Me item={negotiation} onClose={handleCloseModalPress} />;
   return (
     <>
       <VStack space="xs">
@@ -129,6 +131,14 @@ const Negotiation4 = ({ negotiation, product }: any) => {
                 width: "48%",
                 borderRadius: 4,
               }}
+              onPress={() =>
+                navigation.navigate("ProductCheckout", {
+                  productID: product?.productID,
+                  qty: negotiation?.desiredQuantity,
+                  price: negotiation?.desiredAmount,
+                  orderID: negotiation?.orderID,
+                })
+              }
             />
           </HStack>
         </VStack>

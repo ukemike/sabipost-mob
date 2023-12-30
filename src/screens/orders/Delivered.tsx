@@ -60,7 +60,7 @@ const Delivered = () => {
 
                 <FlatList
                   data={orderDelivered}
-                  keyExtractor={(item) => item?.postID}
+                  keyExtractor={(item) => item?.orderID}
                   renderItem={renderItem}
                   scrollEnabled={false}
                   showsVerticalScrollIndicator={false}

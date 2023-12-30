@@ -3,6 +3,7 @@ import NairaNumberFormat from "../ui/NairaNumberFormat";
 import { colors } from "../../constants";
 import Button from "../ui/Button";
 import Accept from "../product/Accept";
+import Reject from "../product/Reject";
 import {
   BottomSheetModal,
   BottomSheetBackdrop,
@@ -13,6 +14,7 @@ import { useRef, useCallback, useMemo, useState } from "react";
 const Negotiation2 = ({ negotiation, product }: any) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["25%", "65%"], []);
+  const [type, setType] = useState("");
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -36,7 +38,24 @@ const Negotiation2 = ({ negotiation, product }: any) => {
     []
   );
 
-  const renderContent = () => <Accept />;
+  const renderContent = () => (
+    <>
+      {type === "accept" && (
+        <Accept
+          item={negotiation}
+          product={product}
+          onClose={handleCloseModalPress}
+        />
+      )}
+      {type === "reject" && (
+        <Reject
+          item={negotiation}
+          product={product}
+          onClose={handleCloseModalPress}
+        />
+      )}
+    </>
+  );
   return (
     <>
       <VStack space="xs">
@@ -156,7 +175,10 @@ const Negotiation2 = ({ negotiation, product }: any) => {
                   width: "48%",
                   borderRadius: 4,
                 }}
-                onPress={handlePresentModalPress}
+                onPress={() => {
+                  setType("accept");
+                  handlePresentModalPress();
+                }}
               />
               <Button
                 title="Reject"
@@ -171,7 +193,10 @@ const Negotiation2 = ({ negotiation, product }: any) => {
                   width: "48%",
                   borderRadius: 4,
                 }}
-                onPress={handlePresentModalPress}
+                onPress={() => {
+                  setType("reject");
+                  handlePresentModalPress();
+                }}
               />
             </HStack>
           </VStack>
