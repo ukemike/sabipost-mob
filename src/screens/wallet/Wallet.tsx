@@ -1,37 +1,36 @@
-import { StyleSheet, ScrollView } from "react-native";
-import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
+import { StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { colors } from "../../constants";
 import StatusBar from "../../components/StatusBar";
+import { colors } from "../../constants";
+import WalletTabs from "../../stacks/WalletTabs";
+import { VStack, Text } from "@gluestack-ui/themed";
 import Header from "../../components/Header";
 
 const Wallet = () => {
   return (
     <SafeAreaProvider style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <Header backgroundColor={colors.white} />
-      <ScrollView
-        alwaysBounceVertical={false}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <VStack m={"$5"} space="lg" flex={1}>
-          <VStack flex={1} space="lg">
-            <VStack>
-              <Text
-                color={colors.primary}
-                fontSize={20}
-                fontFamily="Urbanist-Bold"
-                textAlign="left"
-              >
-                Wallet
-              </Text>
-            </VStack>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.background11} />
+      <Header backgroundColor={colors.background11} />
+      <VStack m={"$5"}>
+        <Text
+          color={colors.primary}
+          fontSize={20}
+          fontFamily="Urbanist-Bold"
+          textAlign="left"
+        >
+          Wallet
+        </Text>
 
-            <VStack></VStack>
-          </VStack>
-        </VStack>
-      </ScrollView>
+        <Text
+          color={colors.subText}
+          fontSize={15}
+          fontFamily="Urbanist-Regular"
+          textAlign="left"
+        >
+          Your earnings are shown here
+        </Text>
+      </VStack>
+      <WalletTabs />
     </SafeAreaProvider>
   );
 };
@@ -41,6 +40,6 @@ export default Wallet;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.background11,
   },
 });

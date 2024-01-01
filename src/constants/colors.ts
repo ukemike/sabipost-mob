@@ -17,6 +17,7 @@ export default {
   subText10: '#131313',
   subText11: '#6B7280',
   subText12: '#25252D',
+  subText13: '#273240',
   shadowColor: 'rgb(35,35,35)',
   secondary: '#FBA100',
   background: '#ECECEC',

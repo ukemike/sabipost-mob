@@ -7,16 +7,18 @@ type BadgeProps = {
   bgColor?: string;
   borderColor?: string;
   width?: any;
+  height?: any;
   style?: any;
   children?: any;
 };
 
-const Badge = ({
+const Badge2 = ({
   variant = "solid",
   size = "lg",
   bgColor = colors.secondary,
   borderColor = colors.secondary,
   width,
+  height,
   style,
   children,
 }: BadgeProps) => {
@@ -25,6 +27,7 @@ const Badge = ({
       variant={variant}
       size={size}
       width={width}
+      height={height}
       style={style}
       borderColor={borderColor}
       bg={bgColor}
@@ -35,4 +38,4 @@ const Badge = ({
   );
 };
 
-export default Badge;
+export default Badge2;
