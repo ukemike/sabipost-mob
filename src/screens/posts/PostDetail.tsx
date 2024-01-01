@@ -3,7 +3,7 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  FlatList
+  FlatList,
 } from "react-native";
 import { VStack, Text, Image, HStack, Badge } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -21,7 +21,7 @@ import {
 import { useCallback, useRef } from "react";
 import PostCard from "../../components/post/PostCard";
 
-const PostDetail = ({ route }: any) => {
+const PostDetail = ({ route, navigation }: any) => {
   const { postID } = route.params;
   const pageRef = useRef<any>(null);
 
@@ -292,11 +292,16 @@ const PostDetail = ({ route }: any) => {
                       title="Create similar post"
                       size="lg"
                       variant="solid"
+                      onPress={() =>
+                        navigation.navigate("Post", {
+                          postID: post?.postID,
+                        })
+                      }
                     />
                   </VStack>
 
                   <VStack mt={"$6"} space="md">
-                  <Text
+                    <Text
                       color={colors.primary}
                       fontSize={18}
                       fontFamily="Urbanist-Bold"

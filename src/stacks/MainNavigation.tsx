@@ -25,12 +25,13 @@ import BankDetails from "../screens/profile/BankDetails";
 import SearchProducts from "../screens/home/SearchProducts";
 import SearchPosts from "../screens/home/SearchPosts";
 import MyOffers from "../screens/offers/MyOffers";
+import MyPosts from "../screens/posts/MyPosts";
 
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
 
   const [fontsLoaded] = useFonts({
-    "Urbanist": require("../../assets/fonts/Urbanist-Black.ttf"),
+    Urbanist: require("../../assets/fonts/Urbanist-Black.ttf"),
     "Urbanist-Bold": require("../../assets/fonts/Urbanist-Bold.ttf"),
     "Urbanist-ExtraBold": require("../../assets/fonts/Urbanist-ExtraBold.ttf"),
     "Urbanist-ExtraLight": require("../../assets/fonts/Urbanist-ExtraLight.ttf"),
@@ -84,6 +85,7 @@ function MainNavigation() {
             <Stack.Screen name="SearchProducts" component={SearchProducts} />
             <Stack.Screen name="SearchPosts" component={SearchPosts} />
             <Stack.Screen name="MyOffers" component={MyOffers} />
+            <Stack.Screen name="MyPosts" component={MyPosts} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

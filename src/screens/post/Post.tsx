@@ -28,7 +28,6 @@ import TextArea from "../../components/ui/TextArea";
 import Button from "../../components/ui/Button";
 import useImageSearch from "../../hooks/useImageSearch";
 import { useState, useEffect } from "react";
-import moment from "moment";
 import { useDebounce } from "@uidotdev/usehooks";
 import {
   useGetStatesQuery,
@@ -49,53 +48,21 @@ import {
 } from "../../utils/functions";
 
 const Post = ({ route, navigation }: any) => {
+  const { postID } = route?.params || { postID: null };
   const toast = useToast();
   const { userInfo } = useAppSelector((state) => state.app.auth);
-  const { selectedImage, pickFromGallery, base64, setBase64, setSelectedImage } = useImagePicker();
+  const {
+    selectedImage,
+    pickFromGallery,
+    base64,
+    setBase64,
+    setSelectedImage,
+  } = useImagePicker();
 
-  // statess
-  const [name, setName] = useState<string>("");
-  const [quantity, setQuantity] = useState<string>("");
-  const [category_id, setCategory_id] = useState<string>("");
-  const [delivery_address, setDelivery_address] = useState<string>("");
-  const [state_id, setState_id] = useState<string>("");
-  const [vendor_state_id, setVendor_state_id] = useState<string>("");
-  const [quote_deadline, setQuote_deadline] = useState<string>("");
-  const [additional_info, setAdditional_info] = useState<string>("");
-  const [buyer_reqs, setBuyer_reqs] = useState<Array<string>>([]);
-  const [image_url, setImage_url] = useState<string>("");
-  const [formErrors, setFormErrors] = useState<any>({});
-  const [selectedCategory, setSelectedCategory] = useState<any>({});
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const { data: postData, isLoading: loadingPost } =
+    useGetPostByIdQuery(postID);
 
-  const clearForm = () => {
-    setName("");
-    setQuantity("");
-    setCategory_id("");
-    setDelivery_address("");
-    setState_id("");
-    setVendor_state_id("");
-    setQuote_deadline("");
-    setAdditional_info("");
-    setBuyer_reqs([]);
-    setImage_url("");
-    setSelectedCategory({});
-    setSelectedImage(null);
-    setBase64(null);
-  }
-
-  const debouncedSearchName = useDebounce(name, 900);
-
-  const [images, isLoading] = useImageSearch(debouncedSearchName);
-
-  useEffect(() => {
-    if (userInfo) {
-      setDelivery_address(userInfo?.data?.address);
-      setState_id(userInfo?.data?.state?.stateID);
-    }
-  }, [userInfo]);
-
-  const [postProduct, { isLoading: isPosting }] = usePostProductMutation();
+  const post = postData?.data;
 
   const { data: statesData, isLoading: statesLoading } = useGetStatesQuery("");
 
@@ -116,6 +83,74 @@ const Post = ({ route, navigation }: any) => {
       label: category.name,
     };
   });
+
+  // statess
+  const [name, setName] = useState<string>("");
+  const [quantity, setQuantity] = useState<string>("");
+  const [category_id, setCategory_id] = useState<string>("");
+  const [delivery_address, setDelivery_address] = useState<string>("");
+  const [state_id, setState_id] = useState<string>("");
+  const [vendor_state_id, setVendor_state_id] = useState<string>("");
+  const [quote_deadline, setQuote_deadline] = useState<string>("");
+  const [additional_info, setAdditional_info] = useState<string>("");
+  const [buyer_reqs, setBuyer_reqs] = useState<Array<string>>([]);
+  const [image_url, setImage_url] = useState<string>("");
+  const [formErrors, setFormErrors] = useState<any>({});
+  const [selectedCategory, setSelectedCategory] = useState<any>({});
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (post) {
+      setName(post?.name || "");
+      setQuantity(post?.quantity || "");
+      setCategory_id(post?.category?.categoryID || "");
+      setDelivery_address(post?.deliveryAddress || "");
+      setState_id(post?.state?.stateID || "");
+      setAdditional_info(post.additional_info || "");
+      setImage_url(post?.image_url || post?.image || "");
+      setBuyer_reqs(post.buyer_reqs || []);
+      setVendor_state_id(post?.vendorState?.stateID);
+    }
+  }, [post]);
+
+  useEffect(() => {
+    if (post) {
+      setSelectedCategory(
+        categories?.find(
+          (category: any) => category?.categoryID === post?.category?.categoryID
+        )
+      );
+    }
+  }, [post, allCategories]);
+
+  const clearForm = () => {
+    setName("");
+    setQuantity("");
+    setCategory_id("");
+    setDelivery_address("");
+    setState_id("");
+    setVendor_state_id("");
+    setQuote_deadline("");
+    setAdditional_info("");
+    setBuyer_reqs([]);
+    setImage_url("");
+    setSelectedCategory({});
+    setSelectedImage(null);
+    setBase64(null);
+  };
+
+  const debouncedSearchName = useDebounce(name, 900);
+
+  const [images, isLoading] = useImageSearch(debouncedSearchName);
+
+  useEffect(() => {
+    if (userInfo) {
+      setDelivery_address(userInfo?.data?.address);
+      setState_id(userInfo?.data?.state?.stateID);
+    }
+  }, [userInfo]);
+
+  const [postProduct, { isLoading: isPosting }] = usePostProductMutation();
 
   const renderItem = ({ item }: any) => (
     <>
@@ -189,6 +224,12 @@ const Post = ({ route, navigation }: any) => {
       });
     }
 
+    if (!base64 && !image_url) {
+      return toast.show("Please upload image", {
+        type: "danger",
+      });
+    }
+
     if (!quote_deadline) {
       return toast.show("Please add quote deadline", {
         type: "danger",
@@ -232,7 +273,7 @@ const Post = ({ route, navigation }: any) => {
           type: "success",
         });
         clearForm();
-        navigation.navigate("InProgress");
+        navigation.navigate("MyPosts");
       })
       .catch((err) => {
         toast.show(err?.data?.message, {
@@ -251,8 +292,10 @@ const Post = ({ route, navigation }: any) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1 }}
         >
-          {statesLoading || categoriesLoading ? (
-            <Loader isLoading={statesLoading || categoriesLoading} />
+          {statesLoading || categoriesLoading || loadingPost ? (
+            <Loader
+              isLoading={statesLoading || categoriesLoading || loadingPost}
+            />
           ) : (
             <VStack m={"$5"} space="lg" flex={1}>
               <VStack flex={1} space="lg">
@@ -327,40 +370,6 @@ const Post = ({ route, navigation }: any) => {
                       Upload product image
                     </Text>
 
-                    <TouchableOpacity onPress={pickFromGallery}>
-                      <VStack
-                        bg={colors.background11}
-                        borderWidth={1}
-                        borderColor={colors.border4}
-                        borderStyle="dashed"
-                        borderRadius={10}
-                        p={"$2"}
-                        space="sm"
-                        alignItems="center"
-                        justifyContent="center"
-                        height={100}
-                      >
-                        <Image
-                          source={
-                            selectedImage
-                              ? { uri: selectedImage }
-                              : require("../../../assets/images/upload2.png")
-                          }
-                          alt="upload"
-                          width={selectedImage ? 50 : 20}
-                          height={selectedImage ? 50 : 20}
-                          objectFit="contain"
-                        />
-                        <Text
-                          color={colors.subText9}
-                          fontSize={12}
-                          fontFamily="Urbanist-Medium"
-                        >
-                          Upload image
-                        </Text>
-                      </VStack>
-                    </TouchableOpacity>
-
                     <TouchableOpacity onPress={openModal}>
                       <VStack
                         bg={colors.background11}
@@ -393,6 +402,52 @@ const Post = ({ route, navigation }: any) => {
                             Use system generated image
                           </Text>
                         </HStack>
+                      </VStack>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (!name || !quantity || !category_id) {
+                          return toast.show(
+                            "Please add item name, quantity and category before uploading image",
+                            {
+                              type: "danger",
+                            }
+                          );
+                        }
+                        pickFromGallery();
+                      }}
+                    >
+                      <VStack
+                        bg={colors.background11}
+                        borderWidth={1}
+                        borderColor={colors.border4}
+                        borderStyle="dashed"
+                        borderRadius={10}
+                        p={"$2"}
+                        space="sm"
+                        alignItems="center"
+                        justifyContent="center"
+                        height={100}
+                      >
+                        <Image
+                          source={
+                            selectedImage
+                              ? { uri: selectedImage }
+                              : require("../../../assets/images/upload2.png")
+                          }
+                          alt="upload"
+                          width={selectedImage ? 50 : 20}
+                          height={selectedImage ? 50 : 20}
+                          objectFit="contain"
+                        />
+                        <Text
+                          color={colors.subText9}
+                          fontSize={12}
+                          fontFamily="Urbanist-Medium"
+                        >
+                          Upload from gallery
+                        </Text>
                       </VStack>
                     </TouchableOpacity>
                   </VStack>
