@@ -46,7 +46,7 @@ const CategoryCard = ({ allProducts }: any) => {
             <FlatList
               data={item?.products}
               renderItem={renderItemC}
-              keyExtractor={(item) => item.postID}
+              keyExtractor={(item) => item.productID}
               showsVerticalScrollIndicator={false}
               numColumns={2}
               columnWrapperStyle={{

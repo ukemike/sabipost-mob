@@ -167,7 +167,6 @@ const OfferDetail = ({ route }: any) => {
                     renderItem={renderItem}
                     keyExtractor={(item) => item.imageID}
                     horizontal
-                    pagingEnabled
                     showsHorizontalScrollIndicator={false}
                   />
                   <ImageView

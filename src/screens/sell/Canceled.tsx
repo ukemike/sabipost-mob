@@ -1,44 +1,35 @@
 import { StyleSheet, ScrollView, RefreshControl, FlatList } from "react-native";
-import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
+import { VStack, Text, Image } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../../constants";
-import StatusBar from "../../components/StatusBar";
-import { useGetNegotiationByUserQuery } from "../../redux/services/product.service";
 import { useCallback, useMemo } from "react";
 import { useAppSelector } from "../../redux/store";
 import Loader from "../../components/ui/Loader";
-import MyProductCard from "../../components/product/MyProductCard";
-import DashboardMenu from "../../components/ui/DashboardMenu";
+import MyPostCard2 from "../../components/post/MyPostCard2";
+import { useGetAllQuotesSellerQuery } from "../../redux/services/quotes.service";
 
-const MyOffers = ({ navigation }: any) => {
-  const openDrawer = () => {
-    navigation.openDrawer();
-  };
+const Canceled = () => {
   const { userInfo } = useAppSelector((state) => state.app.auth);
+  const token = userInfo?.token;
 
-  const { data, isLoading, refetch, isFetching } = useGetNegotiationByUserQuery(
-    {
-      token: userInfo?.token,
-      data: {
-        limit: "",
-        page: "",
-      },
-    }
-  ) as any;
-  const allNegotiations = useMemo(() => data?.data?.data, [data]);
+  const { data, isLoading, refetch, isFetching } =
+    useGetAllQuotesSellerQuery(token);
+  const allQuotes = useMemo(() => data?.data, [data]);
+
+  const rejectedQuotes = useMemo(
+    () => allQuotes?.filter((quote: any) => quote.status === "rejected"),
+    [allQuotes]
+  );
 
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
 
   const renderItem = ({ item }: any) => {
-    return <MyProductCard post={item} />;
+    return <MyPostCard2 post={item} />;
   };
-
   return (
     <SafeAreaProvider style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
-      <DashboardMenu openDrawer={openDrawer} />
       <ScrollView
         alwaysBounceVertical={false}
         showsVerticalScrollIndicator={false}
@@ -57,25 +48,6 @@ const MyOffers = ({ navigation }: any) => {
         ) : (
           <VStack m={"$5"} space="lg" flex={1}>
             <VStack flex={1} space="lg">
-              <VStack>
-                <Text
-                  color={colors.primary}
-                  fontSize={20}
-                  fontFamily="Urbanist-Bold"
-                  textAlign="left"
-                >
-                  Your Offers
-                </Text>
-                <Text
-                  color={colors.subText}
-                  fontSize={15}
-                  fontFamily="Urbanist-Regular"
-                  textAlign="left"
-                >
-                  View all your offers here
-                </Text>
-              </VStack>
-
               <VStack space="sm">
                 <Text
                   color={colors.subText}
@@ -83,12 +55,12 @@ const MyOffers = ({ navigation }: any) => {
                   fontFamily="Urbanist-Bold"
                   textAlign="left"
                 >
-                  Records found: {allNegotiations?.length}
+                  Records found: {rejectedQuotes?.length}
                 </Text>
 
                 <FlatList
-                  data={allNegotiations}
-                  keyExtractor={(item) => item?.negotiationID}
+                  data={rejectedQuotes}
+                  keyExtractor={(item, index) => index.toString()}
                   renderItem={renderItem}
                   scrollEnabled={false}
                   showsVerticalScrollIndicator={false}
@@ -113,7 +85,7 @@ const MyOffers = ({ navigation }: any) => {
                         textAlign="center"
                         mt={"$2"}
                       >
-                        No post found
+                        No quote found
                       </Text>
                     </VStack>
                   )}
@@ -127,7 +99,7 @@ const MyOffers = ({ navigation }: any) => {
   );
 };
 
-export default MyOffers;
+export default Canceled;
 
 const styles = StyleSheet.create({
   container: {

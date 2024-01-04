@@ -108,7 +108,7 @@ const InputComponent: React.FC<InputProps> = ({
         {renderRightIcon()}
       </HStack>
       {error && (
-        <Text color="red" fontSize={12} mt={2} fontFamily="Urbanist-Regular">
+        <Text color="red" fontSize={12} fontFamily="Urbanist-Regular">
           {error}
         </Text>
       )}

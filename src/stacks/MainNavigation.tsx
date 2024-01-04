@@ -26,6 +26,11 @@ import SearchProducts from "../screens/home/SearchProducts";
 import SearchPosts from "../screens/home/SearchPosts";
 import MyOffers from "../screens/offers/MyOffers";
 import MyPosts from "../screens/posts/MyPosts";
+import CreateProduct from "../screens/products/CreateProduct";
+import ProductOffers from "../screens/offers/ProductOffers";
+import PostDetailSeller from "../screens/sell/PostDetailSeller";
+import SubmitQuote from "../screens/sell/SubmitQuote";
+import QuoteDetail from "../screens/sell/QuoteDetail";
 
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -86,6 +91,14 @@ function MainNavigation() {
             <Stack.Screen name="SearchPosts" component={SearchPosts} />
             <Stack.Screen name="MyOffers" component={MyOffers} />
             <Stack.Screen name="MyPosts" component={MyPosts} />
+            <Stack.Screen name="CreateProduct" component={CreateProduct} />
+            <Stack.Screen name="ProductOffers" component={ProductOffers} />
+            <Stack.Screen
+              name="PostDetailSeller"
+              component={PostDetailSeller}
+            />
+            <Stack.Screen name="SubmitQuote" component={SubmitQuote} />
+            <Stack.Screen name="QuoteDetail" component={QuoteDetail} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

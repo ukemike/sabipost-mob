@@ -4,13 +4,16 @@ import StatusBar from "../../components/StatusBar";
 import { colors } from "../../constants";
 import MyOrdersTabs from "../../stacks/MyOrdersTabs";
 import { VStack, Text } from "@gluestack-ui/themed";
-import Header from "../../components/Header";
+import DashboardMenu from "../../components/ui/DashboardMenu";
 
-const Orders = () => {
+const Orders = ({ navigation }: any) => {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   return (
     <SafeAreaProvider style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <Header backgroundColor={colors.white} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+      <DashboardMenu openDrawer={openDrawer} />
       <VStack m={"$5"}>
         <Text
           color={colors.primary}

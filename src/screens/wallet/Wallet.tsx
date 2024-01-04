@@ -4,13 +4,16 @@ import StatusBar from "../../components/StatusBar";
 import { colors } from "../../constants";
 import WalletTabs from "../../stacks/WalletTabs";
 import { VStack, Text } from "@gluestack-ui/themed";
-import Header from "../../components/Header";
+import DashboardMenu from "../../components/ui/DashboardMenu";
 
-const Wallet = () => {
+const Wallet = ({ navigation }: any) => {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   return (
     <SafeAreaProvider style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background11} />
-      <Header backgroundColor={colors.background11} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+      <DashboardMenu openDrawer={openDrawer} />
       <VStack m={"$5"}>
         <Text
           color={colors.primary}

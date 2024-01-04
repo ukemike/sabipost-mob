@@ -24,8 +24,12 @@ import { useUpdateProfilePictureMutation } from "../../redux/services/user.servi
 import { useToast } from "react-native-toast-notifications";
 import { setCredentials } from "../../redux/slices/authSlice";
 import * as Application from "expo-application";
+import DashboardMenu from "../../components/ui/DashboardMenu";
 
 const Profile = ({ navigation }: any) => {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   const toast = useToast();
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState(false);
@@ -117,10 +121,8 @@ const Profile = ({ navigation }: any) => {
   return (
     <>
       <SafeAreaProvider style={styles.container}>
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor={colors.background8}
-        />
+        <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+        <DashboardMenu openDrawer={openDrawer} />
 
         <ScrollView
           alwaysBounceVertical={false}

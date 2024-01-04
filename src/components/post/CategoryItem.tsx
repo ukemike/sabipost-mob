@@ -51,7 +51,6 @@ const CategoryItem = ({ categories, isProduct }: any) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.categoryID}
           horizontal
-          pagingEnabled
           showsHorizontalScrollIndicator={false}
         />
       </GestureHandlerRootView>

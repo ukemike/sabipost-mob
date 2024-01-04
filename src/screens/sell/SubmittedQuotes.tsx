@@ -2,10 +2,11 @@ import { StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import StatusBar from "../../components/StatusBar";
 import { colors } from "../../constants";
-import MyPostTabs from "../../stacks/MyPostTabs";
+import SubmitedQuotesTabs from "../../stacks/SubmitedQuotesTabs";
 import { VStack, Text } from "@gluestack-ui/themed";
 import DashboardMenu from "../../components/ui/DashboardMenu";
-const MyPosts = ({ navigation }: any) => {
+
+const SubmittedQuotes = ({ navigation }: any) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
@@ -21,16 +22,16 @@ const MyPosts = ({ navigation }: any) => {
             fontFamily="Urbanist-Bold"
             textAlign="left"
           >
-            My Posts
+            Submitted Quotes
           </Text>
         </VStack>
-        <MyPostTabs />
+        <SubmitedQuotesTabs />
       </SafeAreaProvider>
     </>
   );
 };
 
-export default MyPosts;
+export default SubmittedQuotes;
 
 const styles = StyleSheet.create({
   container: {

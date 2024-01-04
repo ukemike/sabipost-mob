@@ -13,6 +13,11 @@ import MyPosts from "../screens/posts/MyPosts";
 import MyOffers from "../screens/offers/MyOffers";
 import Notification from "../screens/notification/Notification";
 import Orders from "../screens/orders/Orders";
+import Dashboard from "../screens/dashboard/Dashboard";
+import Products from "../screens/products/Products";
+import SubmittedQuotes from "../screens/sell/SubmittedQuotes";
+import Sell from "../screens/sell/Sell";
+import BuyersOrders from "../screens/orders/BuyersOrders";
 import { colors } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
@@ -29,11 +34,39 @@ const MainTab = () => {
 
   const drawerItems = [
     {
+      name: "Dashboard",
+      label: "Dashboard",
+      icon: require("../../assets/images/home.png"),
+      isHidden: role === "buyer" ? true : false,
+      component: Dashboard,
+    },
+    {
       name: "Home",
-      label: "Homepage",
+      label: "Home",
       icon: require("../../assets/images/home.png"),
       isHidden: false,
       component: Home,
+    },
+    {
+      name: "Products",
+      label: "Products",
+      icon: require("../../assets/images/products.png"),
+      isHidden: role === "buyer" ? true : false,
+      component: Products,
+    },
+    {
+      name: "Sell",
+      label: "Sell",
+      icon: require("../../assets/images/sell.png"),
+      isHidden: role === "buyer" ? true : false,
+      component: Sell,
+    },
+    {
+      name: "SubmittedQuotes",
+      label: "Submitted Quotes",
+      icon: require("../../assets/images/gear.png"),
+      isHidden: role === "buyer" ? true : false,
+      component: SubmittedQuotes,
     },
     {
       name: "Posts",
@@ -51,10 +84,17 @@ const MainTab = () => {
     },
     {
       name: "Orders",
-      label: "Orders",
+      label: "My Orders",
       icon: require("../../assets/images/orders.png"),
       isHidden: false,
       component: Orders,
+    },
+    {
+      name: "BuyersOrders",
+      label: "Orders from Buyers",
+      icon: require("../../assets/images/cart.png"),
+      isHidden: role === "buyer" ? true : false,
+      component: BuyersOrders,
     },
     {
       name: "Wallet",
@@ -159,7 +199,7 @@ const MainTab = () => {
           onPress={() => console.log("Login")}
         />
 
-        <VStack mx={"$3"} mt={"$10"}>
+        <VStack mx={"$3"} mt={"$10"} mb={"$5"} space="lg">
           <Button
             title="Create New Post"
             size="lg"
@@ -167,6 +207,16 @@ const MainTab = () => {
             color={colors.primary}
             onPress={() => props.navigation.navigate("Post")}
           />
+
+          {role === "seller" && (
+            <Button
+              title="Create Product"
+              size="lg"
+              bgColor={colors.subText}
+              color={colors.secondary}
+              onPress={() => props.navigation.navigate("CreateProduct")}
+            />
+          )}
         </VStack>
       </DrawerContentScrollView>
     );
@@ -175,7 +225,7 @@ const MainTab = () => {
   return (
     <SafeAreaProvider>
       <Drawer.Navigator
-        initialRouteName="Home"
+        initialRouteName={role === "buyer" ? "Home" : "Dashboard"}
         screenOptions={{
           headerShown: false,
           drawerStyle: {
@@ -199,24 +249,29 @@ const MainTab = () => {
         }}
         drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
-        {drawerItems.map((item, index) => (
-          <Drawer.Screen
-            key={index}
-            name={item.name}
-            component={item.component}
-            options={{
-              drawerIcon: ({ focused, size }) => (
-                <Image
-                  source={item.icon}
-                  alt="home"
-                  width={size}
-                  height={size}
-                />
-              ),
-              drawerLabel: item.label,
-            }}
-          />
-        ))}
+        {drawerItems.map((item, index) => {
+          if (item.isHidden) {
+            return null;
+          }
+          return (
+            <Drawer.Screen
+              key={index}
+              name={item.name}
+              component={item.component}
+              options={{
+                drawerIcon: ({ focused, size }) => (
+                  <Image
+                    source={item.icon}
+                    alt="home"
+                    width={size}
+                    height={size}
+                  />
+                ),
+                drawerLabel: item.label,
+              }}
+            />
+          );
+        })}
       </Drawer.Navigator>
     </SafeAreaProvider>
   );

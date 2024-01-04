@@ -9,8 +9,12 @@ import { useCallback, useMemo } from "react";
 import { useAppSelector } from "../../redux/store";
 import { useGetNotificationQuery } from "../../redux/services/notification.service";
 import Notifi from "../../components/notification/Notification";
+import DashboardMenu from "../../components/ui/DashboardMenu";
 
-const Notification = () => {
+const Notification = ({ navigation }: any) => {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const { data, isLoading, isFetching, refetch } = useGetNotificationQuery(
     userInfo?.token
@@ -28,8 +32,8 @@ const Notification = () => {
 
   return (
     <SafeAreaProvider style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <Header backgroundColor={colors.white} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+      <DashboardMenu openDrawer={openDrawer} />
       <ScrollView
         alwaysBounceVertical={false}
         showsVerticalScrollIndicator={false}
@@ -71,7 +75,7 @@ const Notification = () => {
 
                 <FlatList
                   data={allNotifications}
-                  keyExtractor={(item) => item?.action}
+                  keyExtractor={(item, index: any) => index.toString()}
                   renderItem={renderItem}
                   scrollEnabled={false}
                   showsVerticalScrollIndicator={false}

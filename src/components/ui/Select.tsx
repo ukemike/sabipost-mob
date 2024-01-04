@@ -63,7 +63,7 @@ const Select = ({
         }}
       />
       {error && (
-        <Text color="red" fontSize={12} mt={2}>
+        <Text color="red" fontSize={12}>
           {error}
         </Text>
       )}

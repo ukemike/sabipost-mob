@@ -3,7 +3,6 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  FlatList,
 } from "react-native";
 import { VStack, Text, Image, HStack, Badge } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -14,50 +13,19 @@ import Header from "../../components/Header";
 import ImageView from "react-native-image-viewing";
 import { useState } from "react";
 import Button from "../../components/ui/Button";
-import {
-  useGetPostByIdQuery,
-  useUseGetPostByCategoryQuery,
-} from "../../redux/services/post.service";
-import { useCallback, useRef } from "react";
-import PostCard from "../../components/post/PostCard";
+import { useGetPostByIdQuery } from "../../redux/services/post.service";
+import { useCallback } from "react";
 
-const PostDetail = ({ route, navigation }: any) => {
+const PostDetailSeller = ({ route, navigation }: any) => {
   const { postID } = route.params;
-  const pageRef = useRef<any>(null);
 
   const [visible, setIsVisible] = useState(false);
   const { data, isLoading, isFetching, refetch } = useGetPostByIdQuery(postID);
   const post = data?.data;
-  const postCategoryID = post?.category?.categoryID;
-
-  const {
-    data: categoryData,
-    isLoading: categoryLoading,
-    isFetching: categoryFetching,
-    refetch: categoryRefetch,
-  } = useUseGetPostByCategoryQuery({
-    categoryID: postCategoryID,
-    data: {
-      limit: 10,
-      page: 1,
-      search: "",
-    },
-  });
-  const allPosts = categoryData?.data?.data;
 
   const onRefresh = useCallback(() => {
     refetch();
-    categoryRefetch();
   }, []);
-
-  const renderItem = ({ item }: any) => (
-    <PostCard
-      title={item?.name}
-      category={item?.category?.name}
-      image={item?.image_url || item?.image}
-      postID={item?.postID}
-    />
-  );
 
   return (
     <>
@@ -68,7 +36,6 @@ const PostDetail = ({ route, navigation }: any) => {
         />
         <Header backgroundColor={colors.background10} />
         <ScrollView
-          ref={pageRef}
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1 }}
@@ -80,21 +47,9 @@ const PostDetail = ({ route, navigation }: any) => {
               colors={[colors.secondary]}
             />
           }
-          onContentSizeChange={() => {
-            pageRef.current?.scrollTo({
-              y: 0,
-              animated: true,
-            });
-          }}
-          onLayout={() => {
-            pageRef.current?.scrollTo({
-              y: 0,
-              animated: true,
-            });
-          }}
         >
-          {isLoading || categoryLoading ? (
-            <Loader isLoading={isLoading || categoryLoading} />
+          {isLoading ? (
+            <Loader isLoading={isLoading} />
           ) : (
             <VStack m={"$5"} space="lg" flex={1}>
               <VStack flex={1} space="lg">
@@ -221,7 +176,9 @@ const PostDetail = ({ route, navigation }: any) => {
                             fontFamily="Urbanist-Medium"
                             textAlign="left"
                           >
-                            {post?.additional_info ? post?.additional_info : "No description"}
+                            {post?.additional_info
+                              ? post?.additional_info
+                              : "No description"}
                           </Text>
                         </HStack>
                       </VStack>
@@ -286,48 +243,22 @@ const PostDetail = ({ route, navigation }: any) => {
                       </VStack>
                     </VStack>
                   </VStack>
-
-                  <VStack>
-                    <Button
-                      title="Create similar post"
-                      size="lg"
-                      variant="solid"
-                      onPress={() =>
-                        navigation.navigate("Post", {
-                          postID: post?.postID,
-                        })
-                      }
-                    />
-                  </VStack>
-
-                  <VStack mt={"$6"} space="md">
-                    <Text
-                      color={colors.primary}
-                      fontSize={18}
-                      fontFamily="Urbanist-Bold"
-                      textAlign="left"
-                      textTransform="uppercase"
-                    >
-                      Similar posts by buyers
-                    </Text>
-                    <FlatList
-                      data={allPosts}
-                      renderItem={renderItem}
-                      keyExtractor={(item) => item.postID}
-                      showsVerticalScrollIndicator={false}
-                      numColumns={2}
-                      columnWrapperStyle={{
-                        justifyContent: "space-between",
-                        marginBottom: 10,
-                      }}
-                      scrollEnabled={false}
-                      style={{
-                        paddingHorizontal: 8,
-                        marginVertical: 10,
-                      }}
-                    />
-                  </VStack>
                 </VStack>
+              </VStack>
+
+              <VStack>
+                <Button
+                  title="Submit Quote"
+                  size="lg"
+                  variant="solid"
+                  onPress={() =>
+                    navigation.navigate("SubmitQuote", {
+                      postID: post?.postID,
+                      commissionPercent: post?.category?.commission,
+                      buyer_req: post?.buyer_reqs,
+                    })
+                  }
+                />
               </VStack>
             </VStack>
           )}
@@ -337,7 +268,7 @@ const PostDetail = ({ route, navigation }: any) => {
   );
 };
 
-export default PostDetail;
+export default PostDetailSeller;
 
 const styles = StyleSheet.create({
   container: {

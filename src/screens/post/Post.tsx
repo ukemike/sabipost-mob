@@ -41,6 +41,7 @@ import { useAppSelector } from "../../redux/store";
 import useImagePicker from "../../hooks/useImagePicker";
 import Modal from "../../components/Modal";
 import { useToast } from "react-native-toast-notifications";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   validatemail,
   validatephone,
@@ -287,11 +288,7 @@ const Post = ({ route, navigation }: any) => {
       <SafeAreaProvider style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         <Header backgroundColor={colors.white} />
-        <ScrollView
-          alwaysBounceVertical={false}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1 }}
-        >
+        <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {statesLoading || categoriesLoading || loadingPost ? (
             <Loader
               isLoading={statesLoading || categoriesLoading || loadingPost}
@@ -577,13 +574,14 @@ const Post = ({ route, navigation }: any) => {
                   <Button
                     title="Post"
                     isLoading={isPosting}
+                    isDisabled={isPosting}
                     onPress={createPost}
                   />
                 </VStack>
               </VStack>
             </VStack>
           )}
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </SafeAreaProvider>
 
       <Modal

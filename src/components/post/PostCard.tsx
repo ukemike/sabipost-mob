@@ -8,14 +8,24 @@ type PostCardProps = {
   category: string;
   image: string;
   postID?: any;
+  isSeller?: boolean;
 };
 
-const PostCard = ({ title, category, image, postID }: PostCardProps) => {
+const PostCard = ({
+  title,
+  category,
+  image,
+  postID,
+  isSeller = false,
+}: PostCardProps) => {
   const navigation = useNavigation<any>();
   return (
     <VStack bg={colors.white} w={"48%"}>
       <TouchableOpacity
-      onPress={() => navigation.navigate("PostDetail", { postID })}
+        onPress={() => {
+          !isSeller && navigation.navigate("PostDetail", { postID });
+          isSeller && navigation.navigate("PostDetailSeller", { postID });
+        }}
       >
         <VStack
           bg={"#f5f5f5"}
