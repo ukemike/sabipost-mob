@@ -72,7 +72,7 @@ const ConfirmDelivery = ({ item, onClose }: any) => {
             delivery_code: "",
           }}
           onSubmit={(values) => {
-            console.log(values);
+            handleConfirmDelivery(values);
           }}
           validationSchema={deliverySchema}
         >

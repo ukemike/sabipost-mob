@@ -1,55 +1,12 @@
-import { TouchableOpacity } from "react-native";
 import { VStack, Text, HStack, Image } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
 import Button from "../ui/Button";
-import { useConfirmDeliveryMutation } from "../../redux/services/order.service";
-import { useAppSelector } from "../../redux/store";
 import { useNavigation } from "@react-navigation/native";
-import ConfirmDelivery from "./ConfirmDelivery";
-import {
-  BottomSheetModal,
-  BottomSheetBackdrop,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
-import { useRef, useCallback, useMemo, useState } from "react";
 import { formatDate2, shortenText } from "../../utils/functions";
 
-const OrderCard = ({ item }: any) => {
+const OrderCardSeller = ({ item }: any) => {
   const navigation = useNavigation<any>();
-  const [confirmDelivery] = useConfirmDeliveryMutation();
-  const { userInfo } = useAppSelector((state) => state.app.auth);
-
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["25%", "65%"], []);
-
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleCloseModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.close();
-  }, []);
-
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        backdropStyle={{
-          backgroundColor: "rgba(2, 0, 44, 0.4)",
-        }}
-      />
-    ),
-    []
-  );
-
-  const renderContent = () => (
-    <>
-      <ConfirmDelivery item={item} onClose={handleCloseModalPress} />
-    </>
-  );
 
   return (
     <>
@@ -201,67 +158,22 @@ const OrderCard = ({ item }: any) => {
         </VStack>
 
         <VStack alignItems="center">
-          {item?.status === "confirmed" ||
-          item?.status === "out_for_delivery" ? (
-            <Button
-              title="Confirm delivery"
-              size="lg"
-              bgColor={colors.secondary}
-              color={colors.primary}
-              style={{
-                height: 45,
-              }}
-              onPress={handlePresentModalPress}
-            />
-          ) : (
-            <Button
-              title="Proceed to payment"
-              size="lg"
-              bgColor={colors.secondary}
-              color={colors.primary}
-              style={{
-                height: 45,
-              }}
-              onPress={() => {
-                item?.orderFor === "product" &&
-                  navigation.navigate("ProductCheckout", {
-                    productID: item?.productID,
-                    qty: item?.quantity,
-                    price: item?.amount,
-                    orderID: item?.orderID,
-                  });
-
-                item?.orderFor !== "product" &&
-                  navigation.navigate("PostCheckOut", {
-                    quoteID: item?.quoteID,
-                  });
-              }}
-            />
-          )}
+          <Button
+            title={"View Order"}
+            size="lg"
+            bgColor={colors.secondary}
+            color={colors.primary}
+            style={{
+              height: 45,
+            }}
+            onPress={() =>
+              navigation.navigate("OrderDetail", { orderID: item?.orderID })
+            }
+          />
         </VStack>
       </VStack>
-
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={1}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        enableOverDrag={true}
-        backdropComponent={renderBackdrop}
-        keyboardBehavior="extend"
-      >
-        <BottomSheetScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            flexGrow: 1,
-            marginHorizontal: 20,
-          }}
-        >
-          {renderContent()}
-        </BottomSheetScrollView>
-      </BottomSheetModal>
     </>
   );
 };
 
-export default OrderCard;
+export default OrderCardSeller;

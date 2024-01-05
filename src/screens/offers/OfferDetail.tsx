@@ -13,11 +13,7 @@ import { colors } from "../../constants";
 import { useAppSelector } from "../../redux/store";
 import { useCallback, useMemo, useState, useRef } from "react";
 import Loader from "../../components/ui/Loader";
-import {
-  useAcceptCounterNegotiationMutation,
-  useRejectCounterNegotiationMutation,
-  useGetNegotiationByIDQuery,
-} from "../../redux/services/product.service";
+import { useGetNegotiationByIDQuery } from "../../redux/services/product.service";
 import NairaNumberFormat from "../../components/ui/NairaNumberFormat";
 import ImageView from "react-native-image-viewing";
 import { shortenText } from "../../utils/functions";

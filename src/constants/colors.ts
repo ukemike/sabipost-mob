@@ -19,6 +19,7 @@ export default {
   subText12: '#25252D',
   subText13: '#273240',
   subText14: '#303030',
+  subText16: '#27272A',
   shadowColor: 'rgb(35,35,35)',
   secondary: '#FBA100',
   background: '#ECECEC',
@@ -49,4 +50,5 @@ export default {
   green2: '#009839',
   transparent: 'transparent',
   grey: '#DEDBDB',
+  grey2: '#808089',
   };

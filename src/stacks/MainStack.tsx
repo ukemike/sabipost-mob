@@ -17,7 +17,7 @@ import Dashboard from "../screens/dashboard/Dashboard";
 import Products from "../screens/products/Products";
 import SubmittedQuotes from "../screens/sell/SubmittedQuotes";
 import Sell from "../screens/sell/Sell";
-import BuyersOrders from "../screens/orders/BuyersOrders";
+import BuyersOrders from "../screens/orders/vendor/BuyersOrders";
 import { colors } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
