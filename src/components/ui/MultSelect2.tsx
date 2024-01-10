@@ -11,6 +11,7 @@ type MultSelectProps = {
   search?: boolean;
   placeholder?: string;
   maxSelect?: number;
+  disable?: boolean;
 };
 
 const MultSelect2 = ({
@@ -21,6 +22,7 @@ const MultSelect2 = ({
   search,
   placeholder,
   maxSelect,
+  disable,
 }: MultSelectProps) => {
   return (
     <>
@@ -58,6 +60,7 @@ const MultSelect2 = ({
           onBlur={() => form.setFieldTouched(field)}
           maxSelect={maxSelect}
           containerStyle={{ marginBottom: 10 }}
+          disable={disable}
         />
         {form.errors[field] && form.touched[field] && (
           <Text color={colors.red} fontSize={12}>

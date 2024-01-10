@@ -1,15 +1,5 @@
 import { TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import {
-  Image,
-  VStack,
-  HStack,
-  Text,
-  Avatar,
-  AvatarBadge,
-  AvatarImage,
-  AvatarFallbackText,
-  Spinner,
-} from "@gluestack-ui/themed";
+import { Image, VStack, HStack, Text } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import StatusBar from "../../components/StatusBar";
 import { colors } from "../../constants";
@@ -20,11 +10,16 @@ import { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import useImagePicker from "../../hooks/useImagePicker";
 import Modal from "../../components/Modal";
-import { useUpdateProfilePictureMutation } from "../../redux/services/user.service";
+import {
+  useUpdateProfilePictureMutation,
+  useUploadBannerMutation,
+} from "../../redux/services/user.service";
 import { useToast } from "react-native-toast-notifications";
 import { setCredentials } from "../../redux/slices/authSlice";
 import * as Application from "expo-application";
 import DashboardMenu from "../../components/ui/DashboardMenu";
+import ProfileImg from "../../components/profile/ProfileImg";
+import Banner from "../../components/profile/Banner";
 
 const Profile = ({ navigation }: any) => {
   const openDrawer = () => {
@@ -33,8 +28,11 @@ const Profile = ({ navigation }: any) => {
   const toast = useToast();
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState(false);
+  const [isImageUpdate, setIsImageUpdate] = useState(false);
+  const [isBannerUpdate, setIsBannerUpdate] = useState(false);
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const token = userInfo?.token;
+  const role = userInfo?.data?.role;
 
   const {
     selectedImage,
@@ -47,6 +45,9 @@ const Profile = ({ navigation }: any) => {
   const [updateProfilePicture, { isLoading: isUpdatingPicture }] =
     useUpdateProfilePictureMutation();
 
+  const [uploadBanner, { isLoading: isUploadingBanner }] =
+    useUploadBannerMutation();
+
   const handleLogout = () => {
     dispatch(logOut());
   };
@@ -54,21 +55,38 @@ const Profile = ({ navigation }: any) => {
   const profileMenu = [
     {
       id: 1,
-      title: "Edit profile",
+      title: "Edit Profile",
       icon: require("../../../assets/images/user-star.png"),
       onPress: () => navigation.navigate("EditProfile"),
+      isVisible: true,
     },
     {
       id: 2,
       title: "Bank Details",
       icon: require("../../../assets/images/medal.png"),
       onPress: () => navigation.navigate("BankDetails"),
+      isVisible: true,
+    },
+    {
+      id: 5,
+      title: "Edit Business Details",
+      icon: require("../../../assets/images/user-star.png"),
+      onPress: () => navigation.navigate("Business"),
+      isVisible: role === "seller",
+    },
+    {
+      id: 6,
+      title: "Business Documents",
+      icon: require("../../../assets/images/user-star.png"),
+      onPress: () => navigation.navigate("BusinessDoc"),
+      isVisible: role === "seller",
     },
     {
       id: 3,
       title: "Change Password",
       icon: require("../../../assets/images/lock.png"),
       onPress: () => navigation.navigate("ChangePassword"),
+      isVisible: true,
     },
     {
       id: 4,
@@ -76,6 +94,7 @@ const Profile = ({ navigation }: any) => {
       icon: require("../../../assets/images/logout.png"),
       onPress: () => setShowModal(true),
       isLogout: true,
+      isVisible: true,
     },
   ];
 
@@ -109,9 +128,45 @@ const Profile = ({ navigation }: any) => {
       });
   };
 
+  const handleUploadBanner = async () => {
+    await uploadBanner({
+      body: { banner: base64 },
+      token: token,
+    })
+      .unwrap()
+      .then((res) => {
+        const banner = res.data.banner;
+        dispatch(
+          setCredentials({
+            ...userInfo,
+            data: {
+              ...userInfo?.data,
+              banner,
+            },
+          })
+        );
+        toast.show("Banner uploaded successfully", {
+          type: "success",
+        });
+        setSelectedImage(null);
+        setBase64(null);
+      })
+      .catch((err: any) => {
+        toast.show(err?.data?.message, {
+          type: "danger",
+        });
+      });
+  };
+
   useEffect(() => {
-    if (base64) {
+    if (base64 && isImageUpdate) {
       handleUpdateProfilePicture();
+    }
+  }, [base64]);
+
+  useEffect(() => {
+    if (base64 && isBannerUpdate) {
+      handleUploadBanner();
     }
   }, [base64]);
 
@@ -142,67 +197,27 @@ const Profile = ({ navigation }: any) => {
                 </Text>
               </VStack>
 
-              <VStack space={"sm"} alignItems="center">
-                <Avatar
-                  size="2xl"
-                  borderRadius={"$full"}
-                  bg={colors.background3}
-                >
-                  <AvatarFallbackText>
-                    {userInfo?.data?.firstName + " " + userInfo?.data?.lastName}
-                  </AvatarFallbackText>
-                  {selectedImage && (
-                    <AvatarImage
-                      source={{
-                        uri: selectedImage,
-                      }}
-                      alt="profile"
-                    />
-                  )}
+              {/* img */}
+              <ProfileImg
+                selectedImage={selectedImage}
+                userInfo={userInfo}
+                pickFromGallery={pickFromGallery}
+                isLoading={isUpdatingPicture || isUploadingBanner}
+                setIsImageUpdate={setIsImageUpdate}
+                setIsBannerUpdate={setIsBannerUpdate}
+                isImageUpdate={isImageUpdate}
+              />
 
-                  {userInfo.data.image && (
-                    <AvatarImage
-                      source={{
-                        uri: userInfo.data.image,
-                      }}
-                      alt="profile"
-                    />
-                  )}
-
-                  <AvatarBadge
-                    bg={colors.background4}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    width={40}
-                    height={40}
-                  >
-                    <TouchableOpacity
-                      onPress={pickFromGallery}
-                      disabled={isUpdatingPicture}
-                    >
-                      {isUpdatingPicture ? (
-                        <Spinner color={colors.secondary} size="large" />
-                      ) : (
-                        <Image
-                          source={require("../../../assets/images/edit.png")}
-                          width={20}
-                          height={20}
-                          alt="edit"
-                        />
-                      )}
-                    </TouchableOpacity>
-                  </AvatarBadge>
-                </Avatar>
-                <Text
-                  color={colors.darkBlue}
-                  fontSize={18}
-                  fontFamily="Urbanist-Bold"
-                  textAlign="center"
-                >
-                  {userInfo?.data?.firstName + " " + userInfo?.data?.lastName}
-                </Text>
-              </VStack>
+              {/* banner */}
+              <Banner
+                selectedImage={selectedImage}
+                userInfo={userInfo}
+                pickFromGallery={pickFromGallery}
+                isLoading={isUpdatingPicture || isUploadingBanner}
+                setIsImageUpdate={setIsImageUpdate}
+                setIsBannerUpdate={setIsBannerUpdate}
+                isBannerUpdate={isBannerUpdate}
+              />
 
               <VStack space="md" mt={"$5"}>
                 {profileMenu.map((item) => (

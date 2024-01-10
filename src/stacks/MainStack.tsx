@@ -21,16 +21,22 @@ import BuyersOrders from "../screens/orders/vendor/BuyersOrders";
 import { colors } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-import { useAppSelector } from "../redux/store";
+import { useAppSelector, useAppDispatch } from "../redux/store";
 import Button from "../components/ui/Button";
 import Avatar from "../components/ui/Avatar";
+import Modal from "../components/Modal";
+import { logOut } from "../redux/slices/authSlice";
+import { useState } from "react";
 
 const Drawer = createDrawerNavigator();
 
 const MainTab = () => {
+  const dispatch = useAppDispatch();
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const role = userInfo.data.role;
   const user = userInfo?.data;
+
+  const [showModal, setShowModal] = useState(false);
 
   const drawerItems = [
     {
@@ -119,6 +125,10 @@ const MainTab = () => {
     },
   ];
 
+  const handleLogout = () => {
+    dispatch(logOut());
+  };
+
   // custom drawer content
   const CustomDrawerContent = (props: any) => {
     return (
@@ -196,7 +206,7 @@ const MainTab = () => {
               height={24}
             />
           )}
-          onPress={() => console.log("Login")}
+          onPress={() => setShowModal(true)}
         />
 
         <VStack mx={"$3"} mt={"$10"} mb={"$5"} space="lg">
@@ -223,57 +233,105 @@ const MainTab = () => {
   };
 
   return (
-    <SafeAreaProvider>
-      <Drawer.Navigator
-        initialRouteName={role === "buyer" ? "Home" : "Dashboard"}
-        screenOptions={{
-          headerShown: false,
-          drawerStyle: {
-            backgroundColor: colors.primary,
-            width: "100%",
-          },
-          drawerActiveTintColor: colors.white,
-          drawerInactiveTintColor: colors.white,
-          drawerActiveBackgroundColor: colors.primary2,
-          drawerLabelStyle: {
-            fontFamily: "Urbanist-Bold",
-            fontSize: 15,
-            lineHeight: 24,
-            letterSpacing: -0.15,
-            color: colors.white,
-            marginLeft: -16,
-          },
-          drawerItemStyle: {
-            marginVertical: 5,
-          },
-        }}
-        drawerContent={(props) => <CustomDrawerContent {...props} />}
-      >
-        {drawerItems.map((item, index) => {
-          if (item.isHidden) {
-            return null;
-          }
-          return (
-            <Drawer.Screen
-              key={index}
-              name={item.name}
-              component={item.component}
-              options={{
-                drawerIcon: ({ focused, size }) => (
-                  <Image
-                    source={item.icon}
-                    alt="home"
-                    width={size}
-                    height={size}
-                  />
-                ),
-                drawerLabel: item.label,
+    <>
+      <SafeAreaProvider>
+        <Drawer.Navigator
+          initialRouteName={role === "buyer" ? "Home" : "Dashboard"}
+          screenOptions={{
+            headerShown: false,
+            drawerStyle: {
+              backgroundColor: colors.primary,
+              width: "100%",
+            },
+            drawerActiveTintColor: colors.white,
+            drawerInactiveTintColor: colors.white,
+            drawerActiveBackgroundColor: colors.primary2,
+            drawerLabelStyle: {
+              fontFamily: "Urbanist-Bold",
+              fontSize: 15,
+              lineHeight: 24,
+              letterSpacing: -0.15,
+              color: colors.white,
+              marginLeft: -16,
+            },
+            drawerItemStyle: {
+              marginVertical: 5,
+            },
+          }}
+          drawerContent={(props) => <CustomDrawerContent {...props} />}
+        >
+          {drawerItems.map((item, index) => {
+            if (item.isHidden) {
+              return null;
+            }
+            return (
+              <Drawer.Screen
+                key={index}
+                name={item.name}
+                component={item.component}
+                options={{
+                  drawerIcon: ({ focused, size }) => (
+                    <Image
+                      source={item.icon}
+                      alt="home"
+                      width={size}
+                      height={size}
+                    />
+                  ),
+                  drawerLabel: item.label,
+                }}
+              />
+            );
+          })}
+        </Drawer.Navigator>
+      </SafeAreaProvider>
+
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        modalTitle="Logout"
+        modalBody={
+          <>
+            <Text color="#65676B" fontSize={16} fontWeight="medium">
+              Are you sure you want to logout?
+            </Text>
+          </>
+        }
+        modalFooter={
+          <HStack space="md">
+            <Button
+              title="Cancel"
+              size="lg"
+              variant="outline"
+              bgColor={colors.white}
+              color={colors.red}
+              borderColor={colors.red}
+              style={{
+                height: 45,
+                borderRadius: 4,
+              }}
+              onPress={() => {
+                setShowModal(false);
               }}
             />
-          );
-        })}
-      </Drawer.Navigator>
-    </SafeAreaProvider>
+            <Button
+              title="Logout"
+              size="lg"
+              bgColor={colors.secondary}
+              color={colors.primary}
+              style={{
+                height: 45,
+                borderRadius: 4,
+              }}
+              onPress={() => {
+                setShowModal(false);
+                handleLogout();
+              }}
+            />
+          </HStack>
+        }
+      />
+    </>
   );
 };
 

@@ -32,6 +32,8 @@ import PostDetailSeller from "../screens/sell/PostDetailSeller";
 import SubmitQuote from "../screens/sell/SubmitQuote";
 import QuoteDetail from "../screens/sell/QuoteDetail";
 import OrderDetail from "../screens/orders/vendor/OrderDetail";
+import Business from "../screens/profile/Business";
+import BusinessDoc from "../screens/profile/BusinessDoc";
 
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -101,6 +103,8 @@ function MainNavigation() {
             <Stack.Screen name="SubmitQuote" component={SubmitQuote} />
             <Stack.Screen name="QuoteDetail" component={QuoteDetail} />
             <Stack.Screen name="OrderDetail" component={OrderDetail} />
+            <Stack.Screen name="Business" component={Business} />
+            <Stack.Screen name="BusinessDoc" component={BusinessDoc} />
           </Stack.Navigator>
         )}
       </NavigationContainer>
