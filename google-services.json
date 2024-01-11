@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "685010180778",
+    "firebase_url": "https://sabi-post-default-rtdb.firebaseio.com",
+    "project_id": "sabi-post",
+    "storage_bucket": "sabi-post.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685010180778:android:81b9a5fe0ef4e27e2a4ed3",
+        "android_client_info": {
+          "package_name": "com.sabipost.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685010180778-75mq3rj453dk5itdf8ind8togeo9ieoq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sabipost.app",
+            "certificate_hash": "70ec4a869530c2ef58f39a6e8765b856b2c1550c"
+          }
+        },
+        {
+          "client_id": "685010180778-h4u1k97nn5evv8mojhtdec606nf7q5m2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sabipost.app",
+            "certificate_hash": "419961c6c01796acdc74ac4606d8b5cd454dad9b"
+          }
+        },
+        {
+          "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIDoFPyWiJSc_UUTz7gzGxu3RFlUlMbNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "685010180778-l59spbuqqusl9c5738v60pdo8igj5e9v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.ionic.starter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685010180778:android:502e7d9464e284702a4ed3",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIDoFPyWiJSc_UUTz7gzGxu3RFlUlMbNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "685010180778-l59spbuqqusl9c5738v60pdo8igj5e9v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.ionic.starter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

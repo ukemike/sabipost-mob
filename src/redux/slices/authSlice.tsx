@@ -4,12 +4,18 @@ type AuthState = {
   userInfo: any;
   viewedOnboarding: boolean;
   signupData: any;
+
+  isPushTokenUpdated: boolean;
+  pushToken: string;
 };
 
 const initialState: AuthState = {
   userInfo: null,
   viewedOnboarding: false,
   signupData: null,
+
+  isPushTokenUpdated: false,
+  pushToken: "",
 };
 
 const authSlice = createSlice({
@@ -28,10 +34,23 @@ const authSlice = createSlice({
     setSignupData: (state, action) => {
       state.signupData = action.payload;
     },
+
+    setPushTokenUpdated: (state, action) => {
+      state.isPushTokenUpdated = action.payload;
+    },
+    setPushToken: (state, action) => {
+      state.pushToken = action.payload;
+    },
   },
 });
 
-export const { setCredentials, setViewedOnboarding, logOut, setSignupData } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  setViewedOnboarding,
+  logOut,
+  setSignupData,
+  setPushTokenUpdated,
+  setPushToken,
+} = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>685010180778-7788lhinplbc00tkosdrgrsa72d7kh69.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.685010180778-7788lhinplbc00tkosdrgrsa72d7kh69</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>685010180778-75mq3rj453dk5itdf8ind8togeo9ieoq.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCmrT5h04ydUkMvDKcjn-uo34bBQUYdDKc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>685010180778</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.sabipost.app</string>
+	<key>PROJECT_ID</key>
+	<string>sabi-post</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sabi-post.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:685010180778:ios:92bbf58e9f461e642a4ed3</string>
+	<key>DATABASE_URL</key>
+	<string>https://sabi-post-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

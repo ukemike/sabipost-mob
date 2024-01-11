@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "../ui/Button";
 
 const Notification = ({ item }: any) => {
+  // console.log(item.for);
+  // console.log(item.id);
   const navigation = useNavigation<any>();
   return (
     <VStack
