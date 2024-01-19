@@ -1,15 +1,10 @@
-import { useEffect, useCallback, useState } from "react";
-import { Alert, AppState } from "react-native";
+import { useEffect, useCallback } from "react";
+import { Alert } from "react-native";
 import messaging from "@react-native-firebase/messaging";
-import { useNavigation } from "@react-navigation/native"; // Import from your navigation library
+import { useNavigation } from "@react-navigation/native";
 import { setPushTokenUpdated, setPushToken } from "../redux/slices/authSlice";
-import { useAppDispatch, useAppSelector } from "../redux/store";
+import { useAppDispatch } from "../redux/store";
 import { useToast } from "react-native-toast-notifications";
-import Modal from "../components/Modal";
-import Button from "../components/ui/Button";
-import { VStack, HStack, Text } from "@gluestack-ui/themed";
-import { colors } from "../constants";
-import * as Clipboard from "expo-clipboard";
 
 type UsePushNotificationsProps = {
   onMessageReceived?: (remoteMessage: any) => void;
@@ -19,20 +14,8 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
   const toast = useToast();
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
-  const [showModal, setShowModal] = useState(false);
 
-  const { userInfo, isPushTokenUpdated, pushToken } = useAppSelector(
-    (state) => state.app.auth
-  );
-  const userToken = userInfo?.token;
-
-  const copyToClipboard = useCallback((code: any) => {
-    Clipboard.setStringAsync(code);
-    toast.show("Delivery code copied to clipboard", {
-      type: "success",
-    });
-  }, []);
-
+  // request permission for push notifications
   const requestUserPermission = async () => {
     try {
       const authStatus = await messaging().requestPermission();
@@ -43,57 +26,38 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
       if (enabled) {
         return;
       } else {
-        console.log("Notification permission denied");
+        toast.show("Notification permission denied", {
+          type: "danger",
+        });
       }
     } catch (error) {
-      console.error("Error requesting notification permission:", error);
+      toast.show("Error requesting notification permission", {
+        type: "danger",
+      });
     }
   };
 
+  // refresh push token on app state change
   const refreshPushToken = useCallback(async () => {
     try {
       const token = await messaging().getToken();
-      Alert.alert("Token", token, [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        {
-          text: "Copy",
-          onPress: () => {
-            copyToClipboard(token);
-          },
-        },
-      ]);
-
-      if (!isPushTokenUpdated) {
-        dispatch(setPushToken(token));
-        dispatch(setPushTokenUpdated(true));
-      }
+      dispatch(setPushToken(token));
+      dispatch(setPushTokenUpdated(true));
     } catch (error) {
-      console.error("Error updating push token:", error);
+      toast.show("Error updating push token", {
+        type: "danger",
+      });
     }
-  }, [isPushTokenUpdated]);
+  }, [dispatch]);
 
+  // handle notification when app is in background (app is closed)
   const handleNotificationOpenedApp = useCallback(
     async (remoteMessage: any) => {
-      // Handle the notification when the app is opened from background
       if (options.onMessageReceived) {
         options.onMessageReceived(remoteMessage);
-        toast.show("Notification received from background state", {
-          type: "success",
-        });
-      }
-    },
-    [options.onMessageReceived]
-  );
-
-  useEffect(() => {
-    requestUserPermission();
-
-    const unsubscribeOnMessage = messaging().onMessage(
-      async (remoteMessage: any) => {
+        // console.log("A new FCM message arrived!", remoteMessage);
+        const mobile_action = JSON.parse(remoteMessage.data.mobile_action);
+        console.log("mobile_action", mobile_action);
         Alert.alert(
           remoteMessage.notification.title,
           remoteMessage.notification.body,
@@ -106,14 +70,44 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
             {
               text: "View",
               onPress: () => {
-                // Navigate to a particular screen when the app is in foreground
-                navigation.navigate("YourTargetScreen", {
-                  messageId: remoteMessage.messageId,
-                });
+                navigation.navigate(
+                  `${mobile_action?.screen}`,
+                  mobile_action?.params
+                );
+              },
+            },
+          ]
+        );
+      }
+    },
+    []
+  );
 
-                if (options.onMessageReceived) {
-                  options.onMessageReceived(remoteMessage);
-                }
+  // handle notification when app is in foreground (app is open)
+  useEffect(() => {
+    requestUserPermission();
+
+    const unsubscribeOnMessage = messaging().onMessage(
+      async (remoteMessage: any) => {
+        // console.log("A new FCM message arrived!", remoteMessage);
+        const mobile_action = JSON.parse(remoteMessage.data.mobile_action);
+        console.log("mobile_action", mobile_action);
+        Alert.alert(
+          remoteMessage.notification.title,
+          remoteMessage.notification.body,
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            {
+              text: "View",
+              onPress: () => {
+                navigation.navigate(
+                  `${mobile_action?.screen}`,
+                  mobile_action?.params
+                );
               },
             },
           ]
@@ -121,6 +115,7 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
       }
     );
 
+    // handle notification when app is in background (app is closed)
     const unsubscribeOnNotificationOpenedApp =
       messaging().onNotificationOpenedApp(handleNotificationOpenedApp);
 
@@ -129,14 +124,6 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
 
       if (initialNotification) {
         handleNotificationOpenedApp(initialNotification);
-
-        if (options.onMessageReceived) {
-          options.onMessageReceived(initialNotification);
-
-          toast.show("Notification received from quit state", {
-            type: "success",
-          });
-        }
       }
     };
 

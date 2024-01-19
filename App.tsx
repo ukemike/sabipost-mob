@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toast-notifications";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { StatusBar } from "expo-status-bar";
+import usePushNotifications from "./src/hooks/usePushNotifications";
 
 export default function App() {
   return (

@@ -7,20 +7,28 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useToast } from "react-native-toast-notifications";
 import { setCredentials } from "../../redux/slices/authSlice";
 import { useLoginMutation } from "../../redux/services/auth.service";
-import { useAppDispatch } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Input from "../../components/ui/Input2";
 import { Formik } from "formik";
 import { loginSchema } from "../../schemas/auth.schema";
+import usePushNotifications from "../../hooks/usePushNotifications";
+import { useEffect } from "react";
 
 const Login = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
   const toast = useToast();
 
+  const { pushToken } = useAppSelector((state) => state.app.auth);
+
   const [login, { isLoading }] = useLoginMutation();
 
   const onLogin = async (values: any) => {
-    await login(values)
+    await login({
+      email: values.email,
+      password: values.password,
+      device_token: pushToken,
+    })
       .unwrap()
       .then((res) => {
         dispatch(setCredentials(res));
@@ -34,6 +42,17 @@ const Login = ({ navigation }: any) => {
         });
       });
   };
+
+  // notification handler
+  const { refreshPushToken } = usePushNotifications({
+    onMessageReceived: (remoteMessage: any) => {
+      console.log("A new FCM message arrived!", remoteMessage);
+    },
+  });
+
+  useEffect(() => {
+    refreshPushToken();
+  }, [refreshPushToken]);
 
   return (
     <SafeAreaProvider style={styles.constainer}>

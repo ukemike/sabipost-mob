@@ -15,7 +15,7 @@ const Home = ({ navigation }: any) => {
   // notification handler
   const { refreshPushToken } = usePushNotifications({
     onMessageReceived: (remoteMessage: any) => {
-      console.log("A new FCM message arrived!", remoteMessage);
+      return remoteMessage;
     },
   });
 
