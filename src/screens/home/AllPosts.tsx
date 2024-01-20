@@ -73,7 +73,7 @@ const AllPosts = ({ navigation }: any) => {
                   fontFamily="Urbanist-Bold"
                   textAlign="left"
                 >
-                  All Categories 11
+                  All Categories
                 </Text>
 
                 <CategoryItem categories={allCategories} />

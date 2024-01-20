@@ -111,7 +111,7 @@ const SubmitQuote = ({ route, navigation }: any) => {
       }
     }
 
-    if (provided_reqs.length !== requirements.length) {
+    if (provided_reqs?.length !== requirements?.length) {
       return toast.show("Please accept all buyer's conditions", {
         type: "danger",
       });
@@ -324,7 +324,7 @@ const SubmitQuote = ({ route, navigation }: any) => {
                             setProvided_reqs([...provided_reqs, condition]);
                           } else {
                             setProvided_reqs(
-                              provided_reqs.filter(
+                              provided_reqs?.filter(
                                 (item: any) => item !== condition
                               )
                             );
@@ -341,7 +341,7 @@ const SubmitQuote = ({ route, navigation }: any) => {
                           fontSize={14}
                           fontFamily="Urbanist-Medium"
                         >
-                          {condition?.condition}
+                          {condition}
                         </CheckboxLabel>
                       </Checkbox>
                     </Badge>

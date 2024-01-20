@@ -209,19 +209,27 @@ const Profile = ({ navigation }: any) => {
               />
 
               {/* banner */}
-              <Banner
-                selectedImage={selectedImage}
-                userInfo={userInfo}
-                pickFromGallery={pickFromGallery}
-                isLoading={isUpdatingPicture || isUploadingBanner}
-                setIsImageUpdate={setIsImageUpdate}
-                setIsBannerUpdate={setIsBannerUpdate}
-                isBannerUpdate={isBannerUpdate}
-              />
+              {role === "seller" && (
+                <Banner
+                  selectedImage={selectedImage}
+                  userInfo={userInfo}
+                  pickFromGallery={pickFromGallery}
+                  isLoading={isUpdatingPicture || isUploadingBanner}
+                  setIsImageUpdate={setIsImageUpdate}
+                  setIsBannerUpdate={setIsBannerUpdate}
+                  isBannerUpdate={isBannerUpdate}
+                />
+              )}
 
               <VStack space="md" mt={"$5"}>
                 {profileMenu.map((item) => (
-                  <TouchableOpacity key={item.id} onPress={item.onPress}>
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={item.onPress}
+                    style={{
+                      display: item.isVisible ? "flex" : "none",
+                    }}
+                  >
                     <HStack
                       px={"$3"}
                       py={"$5"}
