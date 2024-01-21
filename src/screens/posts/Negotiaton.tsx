@@ -8,6 +8,7 @@ import { useCallback, useMemo } from "react";
 import Loader from "../../components/ui/Loader";
 import NegotiationAccordion from "../../components/post/NegotiationAccordion";
 import { useGetNegotiationsForPostQuery } from "../../redux/services/quotes.service";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Negotiaton = ({ route, navigation }: any) => {
   const postID = route?.params?.postID;
@@ -33,6 +34,13 @@ const Negotiaton = ({ route, navigation }: any) => {
     refetch();
     quotesRefetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      quotesRefetch();
+    }, [])
+  );
 
   const renderItem = ({ item }: any) => (
     <NegotiationAccordion post={post} item={item} navigation={navigation} />

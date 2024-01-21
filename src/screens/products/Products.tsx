@@ -9,6 +9,7 @@ import { useAppSelector } from "../../redux/store";
 import { useCallback } from "react";
 import Loader from "../../components/ui/Loader";
 import ProductCard2 from "../../components/product/ProductCard2";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Products = ({ navigation }: any) => {
   const openDrawer = () => {
@@ -46,6 +47,13 @@ const Products = ({ navigation }: any) => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
+
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor={colors.primary} />

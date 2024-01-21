@@ -3,8 +3,6 @@ import { VStack, Text, HStack, Image } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
 import Button from "../ui/Button";
-import { useConfirmDeliveryMutation } from "../../redux/services/order.service";
-import { useAppSelector } from "../../redux/store";
 import { useNavigation } from "@react-navigation/native";
 import ConfirmDelivery from "./ConfirmDelivery";
 import {
@@ -17,8 +15,6 @@ import { formatDate2, shortenText } from "../../utils/functions";
 
 const OrderCard = ({ item }: any) => {
   const navigation = useNavigation<any>();
-  const [confirmDelivery] = useConfirmDeliveryMutation();
-  const { userInfo } = useAppSelector((state) => state.app.auth);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["25%", "65%"], []);
@@ -63,6 +59,8 @@ const OrderCard = ({ item }: any) => {
       >
         <HStack space="sm" alignItems="center" justifyContent="space-between">
           <HStack space="sm" alignItems="center">
+            {/* check if item?.productImage or item?.productImageUrl is prsent */}
+            {item?.productImage || item?.productImageUrl ? (
             <Image
               source={{
                 uri: item?.productImage || item?.productImageUrl,
@@ -72,6 +70,9 @@ const OrderCard = ({ item }: any) => {
               w={46}
               resizeMode="cover"
             />
+            ) : (
+             null
+            )}
             <Text fontFamily="Urbanist-Bold" fontSize={16} color={colors.black}>
               {shortenText(item?.productName, 30)}
             </Text>

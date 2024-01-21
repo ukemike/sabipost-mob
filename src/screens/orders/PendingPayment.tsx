@@ -9,6 +9,7 @@ import { useCallback, useMemo } from "react";
 import { useAppSelector } from "../../redux/store";
 import Loader from "../../components/ui/Loader";
 import OrderCard from "../../components/order/OrderCard";
+import { useFocusEffect } from "@react-navigation/native";
 
 const PendingPayment = () => {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -25,6 +26,12 @@ const PendingPayment = () => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   const renderItem = ({ item }: any) => {
     return <OrderCard item={item} />;

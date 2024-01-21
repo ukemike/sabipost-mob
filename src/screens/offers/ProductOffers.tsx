@@ -14,6 +14,7 @@ import StatusBar from "../../components/StatusBar";
 import NairaNumberFormat from "../../components/ui/NairaNumberFormat";
 import Button from "../../components/ui/Button";
 import OfferAccordion from "../../components/offer/OfferAccordion";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ProductOffers = ({ route }: any) => {
   const { productID } = route.params;
@@ -41,6 +42,13 @@ const ProductOffers = ({ route }: any) => {
     refetch();
     productRefetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      productRefetch();
+    }, [])
+  );
 
   const renderItem = useCallback(
     ({ item, index }: any) => (

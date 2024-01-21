@@ -26,6 +26,7 @@ const Sell = ({ navigation }: any) => {
     });
 
   const allPost = data?.data?.data;
+  // console.log("allPost", allPost[0]);
 
   const renderItem = ({ item }: any) => (
     <PostCard
@@ -34,6 +35,8 @@ const Sell = ({ navigation }: any) => {
       image={item?.image_url || item?.image}
       postID={item?.postID}
       isSeller={true}
+      hasUserSubmittedQuote={item?.hasUserSubmittedQuote}
+      quote_deadline={item?.quote_deadline}
     />
   );
 

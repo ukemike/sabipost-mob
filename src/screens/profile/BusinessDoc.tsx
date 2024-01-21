@@ -54,7 +54,6 @@ const BusinessDoc = ({ navigation }: any) => {
         navigation.goBack();
       })
       .catch((err: any) => {
-        console.log(err);
         toast.show(err?.data?.message, {
           type: "danger",
         });

@@ -79,7 +79,6 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
       if (options.onMessageReceived) {
         options.onMessageReceived(remoteMessage);
         const mobile_action = JSON.parse(remoteMessage?.data?.mobile_action);
-        // console.log("mobile_action", mobile_action);
         Alert.alert(
           remoteMessage.notification.title,
           remoteMessage.notification.body,
@@ -112,7 +111,6 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
     const unsubscribeOnMessage = messaging().onMessage(
       async (remoteMessage: any) => {
         const mobile_action = JSON.parse(remoteMessage?.data?.mobile_action);
-        // console.log("mobile_action", mobile_action);
         Alert.alert(
           remoteMessage.notification.title,
           remoteMessage.notification.body,
@@ -125,7 +123,6 @@ const usePushNotifications = (options: UsePushNotificationsProps = {}) => {
             {
               text: "View",
               onPress: () => {
-                console.log("remoteMessage", remoteMessage);
                 navigation.navigate(
                   `${mobile_action?.screen}`,
                   mobile_action?.params

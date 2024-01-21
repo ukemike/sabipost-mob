@@ -139,7 +139,7 @@ const NegotiateProduct = ({ product, navigation, qty, onClose }: any) => {
                       fontSize={12}
                       fontFamily="Urbanist"
                     >
-                      {discount_percentage}% discount
+                      {discount_percentage?.toFixed(2)}% discount
                     </Text>
                   </>
                 )}

@@ -40,8 +40,8 @@ const GenerateCode = ({ code }: any) => {
               fontFamily="Urbanist-Medium"
               textAlign="center"
             >
-              Delivery code has been generated and sent to buyer and will
-              confirm once product has been received
+              Delivery code has been generated. Please share this code with the
+              delivery person.
             </Text>
 
             <TouchableOpacity onPress={copyToClipboard}>
@@ -52,7 +52,14 @@ const GenerateCode = ({ code }: any) => {
                   fontFamily="Urbanist-Medium"
                   textAlign="center"
                 >
-                  Delivery code: {code}
+                  Delivery code:{" "}
+                  <Text
+                    color={colors.primary}
+                    fontSize={15}
+                    fontFamily="Urbanist-Bold"
+                  >
+                    {code}
+                  </Text>
                 </Text>
               </VStack>
             </TouchableOpacity>

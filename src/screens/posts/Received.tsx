@@ -8,6 +8,7 @@ import { useCallback, useMemo } from "react";
 import Loader from "../../components/ui/Loader";
 import QuoteAccordion from "../../components/post/QuoteAccordion";
 import { useGetQuotesByPostQuery } from "../../redux/services/quotes.service";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Received = ({ route, navigation }: any) => {
   const postID = route?.params?.postID;
@@ -27,6 +28,13 @@ const Received = ({ route, navigation }: any) => {
     refetch();
     quotesRefetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      quotesRefetch();
+    }, [])
+  );
 
   const renderItem = ({ item }: any) => (
     <QuoteAccordion post={post} item={item} navigation={navigation} />

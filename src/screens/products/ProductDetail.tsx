@@ -39,7 +39,7 @@ const ProductDetail = ({ route, navigation }: any) => {
   const { data, isLoading, isFetching, refetch } =
     useGetSingleProductQuery(productID);
   const product = data?.data;
-console.log(product?.images)
+  
   const productCategoryID = product?.category?.categoryID;
 
   const {

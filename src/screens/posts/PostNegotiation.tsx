@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 
 const PostNegotiation = ({ route }: any) => {
   const postID = route?.params?.postID;
+  const initialRoute = route?.params?.initialRoute;
   return (
     <SafeAreaProvider style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -30,7 +31,7 @@ const PostNegotiation = ({ route }: any) => {
           Below are the activities for this post
         </Text>
       </VStack>
-      <PostNegotiationTabs postID={postID} />
+      <PostNegotiationTabs postID={postID} initialRoute={initialRoute} />
     </SafeAreaProvider>
   );
 };

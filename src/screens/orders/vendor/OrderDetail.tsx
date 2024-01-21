@@ -80,7 +80,9 @@ const OrderDetail = ({ route }: any) => {
     []
   );
 
-  const renderContent = () => <GenerateCode code={code} />;
+  const renderContent = () => (
+    <GenerateCode code={order?.deliveryCode || code} />
+  );
 
   const handleInitiateDelivery = useCallback(async () => {
     await initiateDelivery({
@@ -93,7 +95,7 @@ const OrderDetail = ({ route }: any) => {
         toast.show("Delivery code generated", {
           type: "success",
         });
-        handleCloseModalPress();
+        handlePresentModalPress();
       })
       .catch((err) => {
         toast.show(err?.data?.message, {

@@ -9,6 +9,7 @@ import { useAppSelector } from "../../redux/store";
 import Loader from "../../components/ui/Loader";
 import MyProductCard from "../../components/product/MyProductCard";
 import DashboardMenu from "../../components/ui/DashboardMenu";
+import { useFocusEffect } from "@react-navigation/native";
 
 const MyOffers = ({ navigation }: any) => {
   const openDrawer = () => {
@@ -30,6 +31,12 @@ const MyOffers = ({ navigation }: any) => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   const renderItem = ({ item }: any) => {
     return <MyProductCard post={item} />;

@@ -9,6 +9,8 @@ type PostCardProps = {
   image: string;
   postID?: any;
   isSeller?: boolean;
+  hasUserSubmittedQuote?: boolean;
+  quote_deadline?: any;
 };
 
 const PostCard = ({
@@ -17,10 +19,57 @@ const PostCard = ({
   image,
   postID,
   isSeller = false,
+  hasUserSubmittedQuote,
+  quote_deadline,
 }: PostCardProps) => {
   const navigation = useNavigation<any>();
+
+  // check if quote deadline is passed
+  const currentDate = new Date();
+  const quoteDeadline = new Date(quote_deadline);
+
   return (
     <VStack bg={colors.white} w={"48%"}>
+      {isSeller && (
+        <>
+          {currentDate > quoteDeadline ? (
+            <VStack
+              bg={hasUserSubmittedQuote ? colors.green : colors.red}
+              borderTopEndRadius={7}
+              borderTopStartRadius={7}
+            >
+              <Text
+                color={colors.white}
+                fontSize={12}
+                fontFamily="Urbanist-Regular"
+                textAlign="center"
+              >
+                {hasUserSubmittedQuote
+                  ? "Quote Submitted"
+                  : "Quote Deadline Passed"}
+              </Text>
+            </VStack>
+          ) : (
+            <VStack
+              bg={hasUserSubmittedQuote ? colors.green : colors.red}
+              borderTopEndRadius={7}
+              borderTopStartRadius={7}
+            >
+              <Text
+                color={colors.white}
+                fontSize={12}
+                fontFamily="Urbanist-Regular"
+                textAlign="center"
+              >
+                {hasUserSubmittedQuote
+                  ? "Quote Submitted"
+                  : "No Quote Submitted"}
+              </Text>
+            </VStack>
+          )}
+        </>
+      )}
+
       <TouchableOpacity
         onPress={() => {
           !isSeller && navigation.navigate("PostDetail", { postID });
@@ -29,7 +78,9 @@ const PostCard = ({
       >
         <VStack
           bg={"#f5f5f5"}
-          borderRadius={7}
+          borderBottomEndRadius={isSeller ? 7 : 0}
+          borderBottomStartRadius={isSeller ? 7 : 0}
+          borderRadius={!isSeller ? 7 : 0}
           overflow="hidden"
           p={"$2"}
           alignItems="center"

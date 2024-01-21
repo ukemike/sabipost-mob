@@ -7,6 +7,7 @@ import { useAppSelector } from "../../redux/store";
 import Loader from "../../components/ui/Loader";
 import MyPostCard2 from "../../components/post/MyPostCard2";
 import { useGetAllQuotesSellerQuery } from "../../redux/services/quotes.service";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Canceled = () => {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -24,6 +25,12 @@ const Canceled = () => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   const renderItem = ({ item }: any) => {
     return <MyPostCard2 post={item} />;

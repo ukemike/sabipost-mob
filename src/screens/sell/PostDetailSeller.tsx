@@ -23,6 +23,29 @@ const PostDetailSeller = ({ route, navigation }: any) => {
   const { data, isLoading, isFetching, refetch } = useGetPostByIdQuery(postID);
   const post = data?.data;
 
+  const details = [
+    {
+      title: "Quantity",
+      icon: require("../../../assets/images/detail.png"),
+      value: post?.quantity,
+    },
+    {
+      title: "Post Deadline",
+      icon: require("../../../assets/images/detail.png"),
+      value: post?.quote_deadline,
+    },
+    {
+      title: "Delivery Address",
+      icon: require("../../../assets/images/detail.png"),
+      value: post?.deliveryAddress,
+    },
+    {
+      title: "Post Description",
+      icon: require("../../../assets/images/info.png"),
+      value: post?.additional_info || "No description",
+    },
+  ]
+
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
@@ -114,48 +137,16 @@ const PostDetailSeller = ({ route, navigation }: any) => {
                   </VStack>
 
                   <VStack space="lg" width={"100%"} mt={"$3"}>
-                    <VStack space="sm">
-                      <Text
-                        color={colors.subText8}
-                        fontSize={18}
-                        fontFamily="Urbanist-Medium"
-                        textAlign="left"
-                      >
-                        Quantity
-                      </Text>
-                      <VStack
-                        borderBottomWidth={1}
-                        borderColor={"rgba(208, 212, 220, 0.3)"}
-                        pb={"$4"}
-                      >
-                        <HStack space="sm" alignItems="center">
-                          <Image
-                            source={require("../../../assets/images/detail.png")}
-                            alt="product"
-                            h={25}
-                            w={25}
-                            resizeMode="contain"
-                          />
-                          <Text
-                            color={colors.subText}
-                            fontSize={15}
-                            fontFamily="Urbanist-Medium"
-                            textAlign="left"
-                          >
-                            {post?.quantity}
-                          </Text>
-                        </HStack>
-                      </VStack>
-                    </VStack>
 
-                    <VStack space="sm">
+                    {details.map((item: any, index: any) => (
+                    <VStack space="sm" key={index}>
                       <Text
                         color={colors.subText8}
                         fontSize={18}
                         fontFamily="Urbanist-Medium"
                         textAlign="left"
                       >
-                        Post Description
+                        {item.title}
                       </Text>
                       <VStack
                         borderBottomWidth={1}
@@ -164,7 +155,7 @@ const PostDetailSeller = ({ route, navigation }: any) => {
                       >
                         <HStack space="sm" alignItems="center">
                           <Image
-                            source={require("../../../assets/images/info.png")}
+                            source={item.icon}
                             alt="product"
                             h={25}
                             w={25}
@@ -176,13 +167,14 @@ const PostDetailSeller = ({ route, navigation }: any) => {
                             fontFamily="Urbanist-Medium"
                             textAlign="left"
                           >
-                            {post?.additional_info
-                              ? post?.additional_info
-                              : "No description"}
+                            {item.value}
                           </Text>
                         </HStack>
                       </VStack>
                     </VStack>
+                    ))}
+
+                 
 
                     <VStack space="sm">
                       <Text

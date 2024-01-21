@@ -2,15 +2,16 @@ import { StyleSheet, ScrollView, RefreshControl, FlatList } from "react-native";
 import { VStack, Text, Image } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../../../constants";
-import { useGetOrdersQuery } from "../../../redux/services/order.service";
+import { useGetOrderVendorQuery } from "../../../redux/services/order.service";
 import { useCallback, useMemo } from "react";
 import { useAppSelector } from "../../../redux/store";
 import Loader from "../../../components/ui/Loader";
 import OrderCardSeller from "../../../components/order/OrderCardSeller";
+import { useFocusEffect } from "@react-navigation/native";
 
 const PendingDelivery = () => {
   const { userInfo } = useAppSelector((state) => state.app.auth);
-  const { data, isLoading, refetch, isFetching } = useGetOrdersQuery(
+  const { data, isLoading, refetch, isFetching } = useGetOrderVendorQuery(
     userInfo?.token
   );
   const orders = useMemo(() => data?.data?.data, [data]);
@@ -27,9 +28,15 @@ const PendingDelivery = () => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+  
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   const renderItem = ({ item }: any) => {
-    return <OrderCardSeller post={item} />;
+    return <OrderCardSeller item={item} />;
   };
 
   return (

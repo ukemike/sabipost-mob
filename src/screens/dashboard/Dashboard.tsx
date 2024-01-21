@@ -251,7 +251,7 @@ const Dashboard = ({ navigation }: any) => {
                   />
                 </VStack>
 
-                <VStack bg={colors.white} borderRadius={10}>
+                <VStack bg={colors.white} borderRadius={10} display="none">
                   <HStack
                     alignItems="center"
                     justifyContent="space-between"

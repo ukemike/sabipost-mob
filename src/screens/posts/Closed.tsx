@@ -7,6 +7,8 @@ import { useCallback, useMemo } from "react";
 import { useAppSelector } from "../../redux/store";
 import Loader from "../../components/ui/Loader";
 import MyPostCard from "../../components/post/MyPostCard";
+import { useFocusEffect } from "@react-navigation/native";
+
 const Closed = () => {
   const { userInfo } = useAppSelector((state) => state.app.auth);
 
@@ -30,6 +32,12 @@ const Closed = () => {
   const onRefresh = useCallback(() => {
     refetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   const renderItem = ({ item }: any) => {
     return <MyPostCard post={item} />;

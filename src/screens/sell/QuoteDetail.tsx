@@ -15,6 +15,7 @@ import { useGetNegotiationsForPostVendorQuery } from "../../redux/services/quote
 import { useAppSelector } from "../../redux/store";
 import NegotiationAccordionVendor from "../../components/post/NegotiationAccordionVendor";
 import { useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 const QuoteDetail = ({ route, navigation }: any) => {
   const { postID } = route?.params;
@@ -41,6 +42,13 @@ const QuoteDetail = ({ route, navigation }: any) => {
     refetch();
     postRefetch();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      postRefetch();
+    }, [])
+  );
   return (
     <SafeAreaProvider style={styles.container}>
       <StatusBar

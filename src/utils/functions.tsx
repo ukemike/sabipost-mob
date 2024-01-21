@@ -54,7 +54,8 @@ export const calculateDiscountPercentage = (
   }
 
   const discountPercentage = (discountAmount / amount) * 100;
-  return Math.round(discountPercentage * 100) / 100; // Round to two decimal places
+  return discountPercentage;
+  // return Math.round(discountPercentage * 100) / 100; // Round to two decimal places
 };
 
 export const validatemail = (email: string) => {

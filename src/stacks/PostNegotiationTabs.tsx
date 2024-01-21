@@ -5,9 +5,10 @@ import { colors } from "../constants";
 
 const Tab = createMaterialTopTabNavigator();
 
-function PostNegotiationTabs({ postID }: any) {
+function PostNegotiationTabs({ postID, initialRoute }: any) {
   return (
     <Tab.Navigator
+      initialRouteName={initialRoute}
       screenOptions={{
         tabBarLabelStyle: {
           fontSize: 14,

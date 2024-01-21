@@ -44,6 +44,7 @@ const Badge = ({
         fontSize={fontSize}
         lineHeight={24}
         letterSpacing={-0.15}
+        textAlign="center"
       >
         {title}
       </BadgeText>
