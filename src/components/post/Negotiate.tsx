@@ -125,7 +125,8 @@ const Negotiate = ({ item, post, onClose, navigation }: any) => {
             <Text color={colors.subText9} fontSize={12}>
               Enter the amount you want to reduce from the quote price{" "}
               <NairaNumberFormat
-                value={item?.quotePrice * item?.post?.quantity}
+                value={item?.quotePrice}
+                // value={item?.quotePrice * item?.post?.quantity}
                 fontSize={12}
                 color={colors.subText}
               />
@@ -140,7 +141,8 @@ const Negotiate = ({ item, post, onClose, navigation }: any) => {
                 />{" "}
                 from the quote price{" "}
                 <NairaNumberFormat
-                  value={item?.quotePrice * item?.post?.quantity}
+                  value={item?.quotePrice}
+                  // value={item?.quotePrice * item?.post?.quantity}
                   fontSize={12}
                   color={colors.subText}
                 />

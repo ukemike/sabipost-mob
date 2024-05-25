@@ -124,7 +124,7 @@ const NegotiateProduct = ({ product, navigation, qty, onClose }: any) => {
                   fontSize={12}
                   color={colors.subText}
                 />{" "}
-                from the quote price{" "}
+                from the original price{" "}
                 <NairaNumberFormat
                   value={product?.price}
                   fontSize={12}

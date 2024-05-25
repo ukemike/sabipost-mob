@@ -91,7 +91,7 @@ const PostDetailSeller = ({ route, navigation }: any) => {
                     fontFamily="Urbanist-Regular"
                     textAlign="left"
                   >
-                    View post details and make a request
+                    View post details and submit your quote
                   </Text>
                 </VStack>
 

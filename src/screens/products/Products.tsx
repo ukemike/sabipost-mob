@@ -96,7 +96,7 @@ const Products = ({ navigation }: any) => {
                       fontSize={14}
                       fontFamily="Urbanist-Bold"
                     >
-                      {products?.length} listed on Marketplace
+                      {products?.length} products listed on Marketplace
                     </Text>
                   </HStack>
                   <Divider bg={colors.border} height={1} mb={"$3"} />

@@ -9,9 +9,19 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toast-notifications";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { StatusBar } from "expo-status-bar";
-import usePushNotifications from "./src/hooks/usePushNotifications";
+import { Text } from "@gluestack-ui/themed";
+import { TextInput, Text as RNText } from "react-native";
 
 export default function App() {
+  // diable font scaling
+  Text.defaultProps = Text.defaultProps || {};
+  Text.defaultProps.allowFontScaling = false;
+
+  TextInput.defaultProps = TextInput.defaultProps || {};
+  TextInput.defaultProps.allowFontScaling = false;
+
+  RNText.defaultProps = RNText.defaultProps || {};
+  RNText.defaultProps.allowFontScaling = false;
   return (
     <Provider store={store}>
       <StatusBar style="light" backgroundColor="#1E2329" />

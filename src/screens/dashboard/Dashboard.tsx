@@ -191,7 +191,7 @@ const Dashboard = ({ navigation }: any) => {
                       fontSize={14}
                       fontFamily="Urbanist-Bold"
                     >
-                      {products?.length} listed on Marketplace
+                      {products?.length} listed on Marketplace...
                     </Text>
 
                     <Button

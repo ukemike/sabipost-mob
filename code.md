@@ -13,5 +13,3 @@ eas submit -p android --latest
 
 <!-- To publish a new change -->
 expo update
-
-Modupe54321

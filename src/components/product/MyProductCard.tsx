@@ -90,7 +90,7 @@ const MyProductCard = ({ post }: any) => {
             </VStack>
           )}
 
-          {post?.status === "accepted" && (
+          {post?.status === "accepted" && !post?.isPaid && (
             <VStack
               bg={colors.green}
               borderBottomEndRadius={8}
