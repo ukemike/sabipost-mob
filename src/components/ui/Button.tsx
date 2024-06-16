@@ -42,47 +42,49 @@ const Button = ({
   fontSize = 16,
 }: ButtonProps) => {
   return (
-      <GluestackButton
-        onPress={onPress}
-        isDisabled={isDisabled}
-        variant={variant}
-        size={size}
-        width={width}
-        style={style}
-        borderColor={borderColor}
-        bg={bgColor}
-        borderRadius={50}
-        alignItems="center"
-        justifyContent="center"
-        height={55}
-      >
-        {isLoading && <ButtonSpinner mr="$2" color={color} />}
-        {icon && !isLoading && iconPosition === "left" && (
-          <ButtonIcon mr="$2">
-            <Image
-              source={icon}
-              alt="icon"
-              width={20}
-              height={20}
-              resizeMode="contain"
-            />
-          </ButtonIcon>
-        )}
-        <ButtonText color={color} fontSize={fontSize} fontFamily="Urbanist-Bold">
-          {isLoading ? "Loading..." : title}
-        </ButtonText>
-        {icon && !isLoading && iconPosition === "right" && (
-          <ButtonIcon ml="$2">
-            <Image
-              source={icon}
-              alt="icon"
-              width={20}
-              height={20}
-              resizeMode="contain"
-            />
-          </ButtonIcon>
-        )}
-      </GluestackButton>
+    <GluestackButton
+      onPress={onPress}
+      isDisabled={isDisabled}
+      variant={variant}
+      size={size}
+      width={width}
+      style={style}
+      borderColor={borderColor}
+      bg={bgColor}
+      borderRadius={50}
+      alignItems="center"
+      justifyContent="center"
+      height={55}
+    >
+      {isLoading && <ButtonSpinner mr="$2" color={color} />}
+      {icon && !isLoading && iconPosition === "left" && (
+        <ButtonIcon>
+          <Image
+            source={icon}
+            alt="icon"
+            width={20}
+            height={20}
+            resizeMode="contain"
+            mr="$2"
+          />
+        </ButtonIcon>
+      )}
+      <ButtonText color={color} fontSize={fontSize} fontFamily="Urbanist-Bold">
+        {isLoading ? "Loading..." : title}
+      </ButtonText>
+      {icon && !isLoading && iconPosition === "right" && (
+        <ButtonIcon>
+          <Image
+            source={icon}
+            alt="icon"
+            width={20}
+            height={20}
+            resizeMode="contain"
+            ml="$2"
+          />
+        </ButtonIcon>
+      )}
+    </GluestackButton>
   );
 };
 

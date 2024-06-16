@@ -264,44 +264,45 @@ const AcceptedAccordion = ({ item, post }: any) => {
 
           <AccordionContent>
             <VStack space="md" pb={"$4"}>
-              <HStack
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
-                mb={"$2"}
-              >
-                <Button
-                  title="Pay For Me"
-                  size="lg"
-                  variant="outline"
-                  bgColor={colors.white}
-                  color={colors.primary}
-                  borderColor={colors.primary}
-                  style={{
-                    height: 45,
-                    width: "48%",
-                    borderRadius: 4,
-                  }}
-                  onPress={handlePresentModalPress}
-                />
-                <Button
-                  title="Proceed to payment"
-                  size="lg"
-                  bgColor={colors.secondary}
-                  color={colors.primary}
-                  fontSize={14}
-                  style={{
-                    height: 45,
-                    width: "48%",
-                    borderRadius: 4,
-                  }}
-                  onPress={() =>
-                    navigation.navigate("PostCheckOut", {
-                      quoteID: item?.quoteID,
-                    })
-                  }
-                />
-              </HStack>
+              {post?.status !== "confirmed" && (
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
+                  width="100%"
+                  mb={"$2"}
+                >
+                  <Button
+                    title="Pay 4 Me"
+                    size="lg"
+                    variant="outline"
+                    bgColor={colors.white}
+                    color={colors.primary}
+                    borderColor={colors.primary}
+                    style={{
+                      height: 45,
+                      width: "48%",
+                      borderRadius: 4,
+                    }}
+                    onPress={handlePresentModalPress}
+                  />
+                  <Button
+                    title="Pay Now"
+                    size="lg"
+                    bgColor={colors.secondary}
+                    color={colors.primary}
+                    style={{
+                      height: 45,
+                      width: "48%",
+                      borderRadius: 4,
+                    }}
+                    onPress={() =>
+                      navigation.navigate("PostCheckOut", {
+                        quoteID: item?.quoteID,
+                      })
+                    }
+                  />
+                </HStack>
+              )}
 
               <Divider bg={colors.border} height={1} width="100%" />
 

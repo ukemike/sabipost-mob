@@ -2,6 +2,7 @@ import { Image, VStack, Text } from "@gluestack-ui/themed";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
+import { shortenText } from "../../utils/functions";
 
 type PostCardProps = {
   title: string;
@@ -100,15 +101,15 @@ const PostCard = ({
       <VStack py={"$3"}>
         <Text
           color={colors.subText3}
-          fontSize={16}
+          fontSize={14}
           fontFamily="Urbanist-Bold"
           textAlign="left"
         >
-          {title}
+          {shortenText(title, 25)}
         </Text>
         <Text
           color={colors.subText4}
-          fontSize={14}
+          fontSize={12}
           fontFamily="Urbanist-Regular"
           textAlign="left"
         >

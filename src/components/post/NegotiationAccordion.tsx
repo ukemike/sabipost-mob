@@ -27,6 +27,7 @@ import Badges from "../ui/Badge";
 import Avatar from "../ui/Avatar";
 
 const NegotiationAccordion = ({ item, post, navigation }: any) => {
+  console.log("item", item?.buyer);
   const [type, setType] = useState("");
 
   const details = [
@@ -481,6 +482,14 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                           borderRadius={40}
                         ></Badge>
                       )}
+                      {item?.seller?.status === "accepted" && (
+                        <Badge
+                          bg={colors.green}
+                          width={20}
+                          height={20}
+                          borderRadius={40}
+                        ></Badge>
+                      )}
                     </Badge>
 
                     {item?.buyer?.status === "pending" &&
@@ -535,6 +544,16 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                           You rejected offer
                         </Text>
                       )}
+
+                    {item?.seller?.status === "accepted" && (
+                      <Text
+                        fontFamily="Urbanist-Bold"
+                        fontSize={14}
+                        color={colors.green}
+                      >
+                        You accepted offer
+                      </Text>
+                    )}
                   </HStack>
 
                   {item?.buyer?.status === "counter" && (
@@ -619,54 +638,76 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                     </VStack>
                   )}
                 </VStack>
-                {item?.buyer?.status === "counter" && (
-                  <HStack
-                    justifyContent="space-between"
-                    alignItems="center"
-                    width="100%"
-                  >
-                    <Button
-                      title="Reject"
-                      size="lg"
-                      variant="outline"
-                      bgColor={colors.white}
-                      color={colors.red}
-                      borderColor={colors.red}
-                      style={{
-                        height: 45,
-                        width: "48%",
-                        borderRadius: 4,
-                      }}
-                      onPress={() => {
-                        setType("reject");
-                        handlePresentModalPress();
-                      }}
-                      isDisabled={
-                        item?.seller?.status === "accepted" ||
-                        item?.seller?.status === "rejected"
-                      }
-                    />
-                    <Button
-                      title="Accept Quote"
-                      size="lg"
-                      bgColor={colors.secondary}
-                      color={colors.primary}
-                      style={{
-                        height: 45,
-                        width: "48%",
-                        borderRadius: 4,
-                      }}
-                      onPress={() => {
-                        setType("accept");
-                        handlePresentModalPress();
-                      }}
-                      isDisabled={
-                        item?.seller?.status === "accepted" ||
-                        item?.seller?.status === "rejected"
-                      }
-                    />
-                  </HStack>
-                )}
+                {item?.buyer?.status === "counter" &&
+                  item?.seller?.status !== "accepted" && (
+                    <HStack
+                      justifyContent="space-between"
+                      alignItems="center"
+                      width="100%"
+                    >
+                      <Button
+                        title="Reject"
+                        size="lg"
+                        variant="outline"
+                        bgColor={colors.white}
+                        color={colors.red}
+                        borderColor={colors.red}
+                        style={{
+                          height: 45,
+                          width: "48%",
+                          borderRadius: 4,
+                        }}
+                        onPress={() => {
+                          setType("reject");
+                          handlePresentModalPress();
+                        }}
+                        isDisabled={
+                          item?.seller?.status === "accepted" ||
+                          item?.seller?.status === "rejected"
+                        }
+                      />
+                      <Button
+                        title="Accept Quote"
+                        size="lg"
+                        bgColor={colors.secondary}
+                        color={colors.primary}
+                        style={{
+                          height: 45,
+                          width: "48%",
+                          borderRadius: 4,
+                        }}
+                        onPress={() => {
+                          setType("accept");
+                          handlePresentModalPress();
+                        }}
+                        isDisabled={
+                          item?.seller?.status === "accepted" ||
+                          item?.seller?.status === "rejected"
+                        }
+                      />
+                    </HStack>
+                  )}
+
+                {item?.seller?.status === "accepted" ||
+                  (item?.buyer?.status === "accepted" && (
+                    <VStack space="sm">
+                      <Button
+                        title="Pay Now"
+                        size="lg"
+                        bgColor={colors.secondary}
+                        color={colors.primary}
+                        style={{
+                          height: 45,
+                          borderRadius: 4,
+                        }}
+                        onPress={() => {
+                          navigation.navigate("Accepted", {
+                            postID: post?.postID,
+                          });
+                        }}
+                      />
+                    </VStack>
+                  ))}
               </VStack>
             </VStack>
           </AccordionContent>

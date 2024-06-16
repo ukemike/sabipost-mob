@@ -1,4 +1,9 @@
-import { StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import {
   VStack,
   Text,
@@ -42,6 +47,10 @@ import {
   validatephone,
   validateUrl,
 } from "../../utils/functions";
+
+// import Input from "../../components/ui/Input2";
+// import Select from "../../components/ui/Select2";
+import { Formik } from "formik";
 
 const Post = ({ route, navigation }: any) => {
   const { postID } = route?.params || { postID: null };
@@ -588,7 +597,7 @@ const Post = ({ route, navigation }: any) => {
             <FlatList
               data={images}
               renderItem={renderItem}
-              keyExtractor={(_, index) => index.toString()}
+              keyExtractor={(item) => item.title}
               showsVerticalScrollIndicator={false}
               numColumns={2}
               columnWrapperStyle={{
@@ -618,7 +627,6 @@ const Post = ({ route, navigation }: any) => {
             <Button
               variant="outline"
               title="Cancel"
-              fontSize={14}
               bgColor={colors.white}
               color={colors.red}
               borderColor={colors.red}
@@ -628,7 +636,6 @@ const Post = ({ route, navigation }: any) => {
 
             <Button
               title="Select"
-              fontSize={14}
               bgColor={colors.secondary}
               color={colors.primary}
               style={{ height: 45 }}

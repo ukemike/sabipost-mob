@@ -88,7 +88,7 @@ const Filter = ({
           <FlatList
             data={categories}
             renderItem={renderItem}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(_, index) => index.toString()}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
           />

@@ -70,7 +70,9 @@ const Accepted = ({ route }: any) => {
                   fontFamily="Urbanist-Regular"
                   textAlign="left"
                 >
-                  You can proceed to select your preferred payment method.
+                  {post?.status === "confirmed"
+                    ? "You have accpeted this quote and completed payment."
+                    : "You can proceed to select your preferred payment method."}
                 </Text>
               </VStack>
               <VStack space="sm">

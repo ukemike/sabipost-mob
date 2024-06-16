@@ -10,17 +10,22 @@ import { colors } from "../../constants";
 import Timer from "../../hooks/useTimer";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useWindowDimensions } from "react-native";
+import { shortenText } from "../../utils/functions";
 
 const MyPostCard = ({ post }: any) => {
   const navigation = useNavigation<any>();
+  const { width } = useWindowDimensions();
   return (
     <TouchableOpacity
       onPress={() => {
-        post?.status === "accepted"
+        post?.status === "confirmed"
           ? navigation.navigate("Accepted", { postID: post.postID })
           : navigation.navigate("PostNegotiation", {
               postID: post.postID,
-              initialRoute: post?.hasSellerCountered ? "Negotiaton" : "Received",
+              initialRoute: post?.hasSellerCountered
+                ? "Negotiaton"
+                : "Received",
             });
       }}
     >
@@ -32,6 +37,8 @@ const MyPostCard = ({ post }: any) => {
         space="md"
         borderWidth={1}
         borderColor={colors.background}
+        position="relative"
+        width="100%"
       >
         <HStack bg={colors.background12} borderRadius={30} p={"$1"} space="md">
           <Image
@@ -50,87 +57,15 @@ const MyPostCard = ({ post }: any) => {
           </Text>
         </HStack>
 
-        <VStack>
+        <VStack mb={"$3"}>
           <Image
             source={{ uri: post?.image || post?.image_url }}
             alt="post-image"
-            width={"100%"}
+            width={width}
             height={200}
             borderTopLeftRadius={8}
             borderTopRightRadius={8}
           />
-
-          {post?.hasBuyerReceivedQuote && !post?.hasSellerCountered && (
-            <VStack
-              bg={colors.secondary}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.primary}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                New Quote Received
-              </Text>
-            </VStack>
-          )}
-
-          {post?.hasSellerCountered && (
-            <VStack
-              bg={colors.green}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.white}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                New Counter Offer Received!
-              </Text>
-            </VStack>
-          )}
-
-          {post?.status === "accepted" && (
-            <VStack
-              bg={colors.green}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.white}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                Accepted!
-              </Text>
-            </VStack>
-          )}
-
-          {post?.status === "confirmed" && (
-            <VStack
-              bg={colors.green}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.white}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                Accepted and paid
-              </Text>
-            </VStack>
-          )}
 
           <VStack py={"$3"}>
             <Text
@@ -139,7 +74,7 @@ const MyPostCard = ({ post }: any) => {
               fontFamily="Urbanist-Bold"
               textAlign="left"
             >
-              {post?.name}
+              {shortenText(post?.name, 30)}
             </Text>
             <Text
               color={colors.subText4}
@@ -164,7 +99,7 @@ const MyPostCard = ({ post }: any) => {
             <Badge bg={colors.background14} borderRadius={30} p={"$1"}>
               <BadgeText
                 color={colors.subText10}
-                fontSize={18}
+                fontSize={16}
                 fontFamily="Urbanist-Bold"
               >
                 {post?.noOfQuotes}
@@ -172,6 +107,96 @@ const MyPostCard = ({ post }: any) => {
             </Badge>
           </HStack>
         </VStack>
+
+        {post?.hasBuyerReceivedQuote &&
+          !post?.hasSellerCountered &&
+          post?.status !== "confirmed" && (
+            <VStack
+              bg={colors.secondary}
+              borderBottomEndRadius={8}
+              borderBottomStartRadius={8}
+              p={"$1"}
+              position="absolute"
+              bottom={0}
+              left={0}
+              right={0}
+            >
+              <Text
+                color={colors.primary}
+                fontSize={14}
+                fontFamily="Urbanist-Bold"
+                textAlign="center"
+              >
+                New Quote Received
+              </Text>
+            </VStack>
+          )}
+
+        {post?.hasSellerCountered && (
+          <VStack
+            bg={colors.green}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.white}
+              fontSize={14}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              New Counter Offer Received!
+            </Text>
+          </VStack>
+        )}
+
+        {post?.status === "accepted" && (
+          <VStack
+            bg={colors.green}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.white}
+              fontSize={14}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              Accepted!
+            </Text>
+          </VStack>
+        )}
+
+        {post?.status === "confirmed" && (
+          <VStack
+            bg={colors.green}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.white}
+              fontSize={14}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              Accepted and paid
+            </Text>
+          </VStack>
+        )}
       </VStack>
     </TouchableOpacity>
   );

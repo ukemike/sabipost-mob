@@ -1,20 +1,18 @@
-import {
-  VStack,
-  Text,
-  HStack,
-  Image,
-} from "@gluestack-ui/themed";
+import { VStack, Text, HStack, Image } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, useWindowDimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { formatDate } from "../../utils/functions";
 
 const MyProductCard = ({ post }: any) => {
   const navigation = useNavigation<any>();
+  const { width } = useWindowDimensions();
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("OfferDetail", { negotiationID: post.negotiationID });
+        navigation.navigate("OfferDetail", {
+          negotiationID: post.negotiationID,
+        });
       }}
     >
       <VStack
@@ -25,6 +23,8 @@ const MyProductCard = ({ post }: any) => {
         space="md"
         borderWidth={1}
         borderColor={colors.background}
+        position="relative"
+        width="100%"
       >
         <HStack bg={colors.background12} borderRadius={30} p={"$1"} space="md">
           <Image
@@ -47,102 +47,11 @@ const MyProductCard = ({ post }: any) => {
           <Image
             source={{ uri: post?.product?.images[0]?.image }}
             alt="post-image"
-            width={"100%"}
+            width={width}
             height={200}
             borderTopLeftRadius={8}
             borderTopRightRadius={8}
           />
-
-          {post?.status === "pending" && (
-            <VStack
-              bg={colors.secondary}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.primary}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-                textTransform="capitalize"
-              >
-                pending Vendor response
-              </Text>
-            </VStack>
-          )}
-
-          {post?.status === "counter" && (
-            <VStack
-              bg={colors.green}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.white}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                Vendor Countered Offer!
-              </Text>
-            </VStack>
-          )}
-
-          {post?.status === "accepted" && !post?.isPaid && (
-            <VStack
-              bg={colors.green}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.white}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                Offer accepted!
-              </Text>
-            </VStack>
-          )}
-
-          {post?.isPaid && (
-            <VStack
-              bg={colors.green}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.white}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                Accepted and paid!
-              </Text>
-            </VStack>
-          )}
-
-          {post?.status === "rejected" && (
-            <VStack
-              bg={colors.red}
-              borderBottomEndRadius={8}
-              borderBottomStartRadius={8}
-              p={"$1"}
-            >
-              <Text
-                color={colors.white}
-                fontSize={15}
-                fontFamily="Urbanist-Bold"
-                textAlign="center"
-              >
-                Offer rejected!
-              </Text>
-            </VStack>
-          )}
 
           <VStack py={"$3"}>
             <Text
@@ -163,6 +72,117 @@ const MyProductCard = ({ post }: any) => {
             </Text>
           </VStack>
         </VStack>
+
+        {post?.status === "pending" && (
+          <VStack
+            bg={colors.secondary}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.primary}
+              fontSize={15}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+              textTransform="capitalize"
+            >
+              pending Vendor response
+            </Text>
+          </VStack>
+        )}
+
+        {post?.status === "counter" && (
+          <VStack
+            bg={colors.green}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.white}
+              fontSize={15}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              Vendor Countered Offer!
+            </Text>
+          </VStack>
+        )}
+
+        {post?.status === "accepted" && !post?.isPaid && (
+          <VStack
+            bg={colors.green}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.white}
+              fontSize={15}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              Offer accepted!
+            </Text>
+          </VStack>
+        )}
+
+        {post?.isPaid && (
+          <VStack
+            bg={colors.green}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.white}
+              fontSize={15}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              Accepted and paid!
+            </Text>
+          </VStack>
+        )}
+
+        {post?.status === "rejected" && (
+          <VStack
+            bg={colors.red}
+            borderBottomEndRadius={8}
+            borderBottomStartRadius={8}
+            p={"$1"}
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+          >
+            <Text
+              color={colors.white}
+              fontSize={15}
+              fontFamily="Urbanist-Bold"
+              textAlign="center"
+            >
+              Offer rejected!
+            </Text>
+          </VStack>
+        )}
       </VStack>
     </TouchableOpacity>
   );

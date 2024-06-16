@@ -140,7 +140,7 @@ const Filter = ({
           <FlatList
             data={categories}
             renderItem={renderItem}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(_, index) => index.toString()}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
           />
@@ -214,7 +214,7 @@ const Filter = ({
               variant="outline"
               bgColor={colors.white}
               color={colors.secondary}
-              style={{ height: 50 }}
+              style={{ height: 40 }}
               onPress={() => handlePriceRange(`${minPrice}-${maxPrice}`)}
               isDisabled={!minPrice || !maxPrice}
             />
@@ -222,7 +222,7 @@ const Filter = ({
         </VStack>
       </VStack>
 
-      <VStack width="100%" mb={"$4"}>
+      <VStack width="100%" my={"$4"}>
         <Button
           title="Clear Filter"
           size="lg"

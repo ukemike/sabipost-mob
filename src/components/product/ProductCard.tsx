@@ -108,6 +108,7 @@ const PostCard = ({
       <Button
         title="Negotiate Price"
         size="lg"
+        fontSize={13}
         variant="outline"
         bgColor={colors.white}
         color={colors.secondary}

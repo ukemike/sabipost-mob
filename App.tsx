@@ -14,14 +14,14 @@ import { TextInput, Text as RNText } from "react-native";
 
 export default function App() {
   // diable font scaling
-  Text.defaultProps = Text.defaultProps || {};
-  Text.defaultProps.allowFontScaling = false;
+  // Text.defaultProps = Text.defaultProps || {};
+  // Text.defaultProps.allowFontScaling = false;
 
-  TextInput.defaultProps = TextInput.defaultProps || {};
-  TextInput.defaultProps.allowFontScaling = false;
+  // TextInput.defaultProps = TextInput.defaultProps || {};
+  // TextInput.defaultProps.allowFontScaling = false;
 
-  RNText.defaultProps = RNText.defaultProps || {};
-  RNText.defaultProps.allowFontScaling = false;
+  // RNText.defaultProps = RNText.defaultProps || {};
+  // RNText.defaultProps.allowFontScaling = false;
   return (
     <Provider store={store}>
       <StatusBar style="light" backgroundColor="#1E2329" />

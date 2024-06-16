@@ -54,7 +54,7 @@ const SearchPosts = ({ navigation, route }: any) => {
   const allProducts = data?.data?.data;
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["25%", "80%"], []);
+  const snapPoints = useMemo(() => ["25%", "70%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -171,7 +171,8 @@ const SearchPosts = ({ navigation, route }: any) => {
 
                   <Button
                     title="Filter"
-                    size="lg"
+                    size="sm"
+                    fontSize={14}
                     variant="outline"
                     bgColor={colors.white}
                     borderColor={colors.transparent}
@@ -186,7 +187,7 @@ const SearchPosts = ({ navigation, route }: any) => {
                 <FlatList
                   data={allProducts}
                   renderItem={renderItem}
-                  keyExtractor={(item) => item.productID}
+                  keyExtractor={(_, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{
                     flexGrow: 1,

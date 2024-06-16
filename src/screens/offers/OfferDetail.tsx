@@ -24,7 +24,7 @@ import Negotiation3 from "../../components/offer/Negotiation3";
 import Negotiation4 from "../../components/offer/Negotiation4";
 import Negotiation5 from "../../components/offer/Negotiation5";
 
-const OfferDetail = ({ route }: any) => {
+const OfferDetail = ({ route, navigation }: any) => {
   const pageRef = useRef<any>(null);
   const negotiationID = route?.params?.negotiationID;
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -214,7 +214,12 @@ const OfferDetail = ({ route }: any) => {
                   </HStack>
 
                   <TouchableOpacity
-                  // product?.seller?.userID
+                    // product?.seller?.userID
+                    onPress={() =>
+                      navigation.navigate("VendorProfile", {
+                        vendorID: product?.seller?.userID,
+                      })
+                    }
                   >
                     <Text
                       color={colors.secondary}
@@ -243,44 +248,6 @@ const OfferDetail = ({ route }: any) => {
                     fontSize={24}
                     color={colors.subText6}
                   />
-                </VStack>
-
-                <VStack space="xs">
-                  <Text
-                    color={colors.subText}
-                    fontSize={14}
-                    fontFamily="Urbanist-Medium"
-                    textAlign="left"
-                    textTransform="uppercase"
-                  >
-                    Delivery Timeline:
-                  </Text>
-                  <Text
-                    color={colors.subText7}
-                    fontSize={15}
-                    fontFamily="Urbanist-Medium"
-                    textAlign="left"
-                  >
-                    Shipping fee within {product?.seller?.state?.stateName}:{" "}
-                    <NairaNumberFormat
-                      value={product?.shippingFee}
-                      fontSize={15}
-                      color={colors.subText7}
-                    />
-                  </Text>
-                  <Text
-                    color={colors.subText7}
-                    fontSize={15}
-                    fontFamily="Urbanist-Medium"
-                    textAlign="left"
-                  >
-                    Shipping fee outside {product?.seller?.state?.stateName}:{" "}
-                    <NairaNumberFormat
-                      value={product?.shippingFeeOutside}
-                      fontSize={15}
-                      color={colors.subText7}
-                    />
-                  </Text>
                 </VStack>
 
                 <Divider

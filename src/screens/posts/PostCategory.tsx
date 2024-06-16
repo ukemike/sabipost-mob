@@ -53,7 +53,7 @@ const PostCategory = ({ route, navigation }: any) => {
   const allPost = data?.data?.data;
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const snapPoints = useMemo(() => ["25%", "70%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -171,7 +171,8 @@ const PostCategory = ({ route, navigation }: any) => {
 
                   <Button
                     title="Filter"
-                    size="lg"
+                    size="sm"
+                    fontSize={14}
                     variant="outline"
                     bgColor={colors.white}
                     borderColor={colors.transparent}
@@ -186,7 +187,7 @@ const PostCategory = ({ route, navigation }: any) => {
                 <FlatList
                   data={allPost}
                   renderItem={renderItem}
-                  keyExtractor={(item) => item.postID}
+                  keyExtractor={(_, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{
                     flexGrow: 1,

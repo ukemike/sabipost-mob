@@ -52,7 +52,7 @@ const ModalC = ({
                 textAlign="center"
                 color="#333333"
                 fontFamily="Urbanist-Bold"
-                fontSize={18}
+                fontSize={16}
               >
                 {modalTitle}
               </Text>

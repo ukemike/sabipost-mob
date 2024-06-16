@@ -191,8 +191,8 @@ const MainTab = () => {
         <DrawerItem
           label="Log Out"
           labelStyle={{
-            fontFamily: "Urbanist-Bold",
-            fontSize: 15,
+            fontFamily: "Urbanist-SemiBold",
+            fontSize: 14,
             lineHeight: 24,
             letterSpacing: -0.15,
             color: colors.red,
@@ -247,8 +247,8 @@ const MainTab = () => {
             drawerInactiveTintColor: colors.white,
             drawerActiveBackgroundColor: colors.primary2,
             drawerLabelStyle: {
-              fontFamily: "Urbanist-Bold",
-              fontSize: 15,
+              fontFamily: "Urbanist-SemiBold",
+              fontSize: 14,
               lineHeight: 24,
               letterSpacing: -0.15,
               color: colors.white,
