@@ -16,7 +16,6 @@ import Loader from "../../components/ui/Loader";
 import Button from "../../components/ui/Button";
 import ProductCard2 from "../../components/product/ProductCard2";
 import OfferItem from "../../components/product/OfferItem";
-import usePushNotifications from "../../hooks/usePushNotifications";
 
 const Dashboard = ({ navigation }: any) => {
   const { userInfo } = useAppSelector((state) => state.app.auth);
@@ -119,17 +118,6 @@ const Dashboard = ({ navigation }: any) => {
     myProductsRefetch();
     negotiationRefetch();
   }, []);
-
-  // notification handler
-  const { refreshPushToken } = usePushNotifications({
-    onMessageReceived: (remoteMessage: any) => {
-      console.log("A new FCM message arrived!", remoteMessage);
-    },
-  });
-
-  useEffect(() => {
-    refreshPushToken();
-  }, [refreshPushToken]);
 
   return (
     <>

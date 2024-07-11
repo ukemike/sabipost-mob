@@ -27,7 +27,6 @@ import Badges from "../ui/Badge";
 import Avatar from "../ui/Avatar";
 
 const NegotiationAccordion = ({ item, post, navigation }: any) => {
-  console.log("item", item?.buyer);
   const [type, setType] = useState("");
 
   const details = [
@@ -349,7 +348,6 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                     </VStack>
 
                     <VStack
-                      height={100}
                       bg={colors.background15}
                       borderRadius={16}
                       py={"$2"}
@@ -558,7 +556,6 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
 
                   {item?.buyer?.status === "counter" && (
                     <VStack
-                      height={100}
                       bg={colors.background15}
                       borderRadius={16}
                       py={"$2"}
@@ -688,26 +685,45 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                     </HStack>
                   )}
 
-                {item?.seller?.status === "accepted" ||
-                  (item?.buyer?.status === "accepted" && (
-                    <VStack space="sm">
-                      <Button
-                        title="Pay Now"
-                        size="lg"
-                        bgColor={colors.secondary}
-                        color={colors.primary}
-                        style={{
-                          height: 45,
-                          borderRadius: 4,
-                        }}
-                        onPress={() => {
-                          navigation.navigate("Accepted", {
-                            postID: post?.postID,
-                          });
-                        }}
-                      />
-                    </VStack>
-                  ))}
+                {item?.seller?.status === "accepted" && (
+                  <VStack space="sm">
+                    <Button
+                      title="Pay Now"
+                      size="lg"
+                      bgColor={colors.secondary}
+                      color={colors.primary}
+                      style={{
+                        height: 45,
+                        borderRadius: 4,
+                      }}
+                      onPress={() => {
+                        navigation.navigate("Accepted", {
+                          postID: post?.postID,
+                        });
+                      }}
+                    />
+                  </VStack>
+                )}
+
+                {item?.buyer?.status === "accepted" && (
+                  <VStack space="sm">
+                    <Button
+                      title="Pay Now"
+                      size="lg"
+                      bgColor={colors.secondary}
+                      color={colors.primary}
+                      style={{
+                        height: 45,
+                        borderRadius: 4,
+                      }}
+                      onPress={() => {
+                        navigation.navigate("Accepted", {
+                          postID: post?.postID,
+                        });
+                      }}
+                    />
+                  </VStack>
+                )}
               </VStack>
             </VStack>
           </AccordionContent>

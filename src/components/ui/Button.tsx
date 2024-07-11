@@ -69,7 +69,7 @@ const Button = ({
           />
         </ButtonIcon>
       )}
-      <ButtonText color={color} fontSize={fontSize} fontFamily="Urbanist-Bold">
+      <ButtonText color={color} fontSize={fontSize} fontFamily="Urbanist-Medium">
         {isLoading ? "Loading..." : title}
       </ButtonText>
       {icon && !isLoading && iconPosition === "right" && (

@@ -18,6 +18,7 @@ const Negotiate = ({ item, onClose }: any) => {
   const [quantity, setQuantity] = useState(0);
   const [amount, setAmount] = useState(0);
   const [discount_percentage, setDiscount_percentage] = useState<number>(0);
+  const [shipping_fee, setShipping_fee] = useState<number>(0);
   const [formErrors, setFormErrors] = useState<any>({});
 
   useEffect(() => {
@@ -48,6 +49,14 @@ const Negotiate = ({ item, onClose }: any) => {
       setFormErrors({
         ...formErrors,
         amount: "You cannot reduce more than the requested discount",
+      });
+      return;
+    }
+
+    if (shipping_fee === 0 || !shipping_fee || shipping_fee < 1) {
+      setFormErrors({
+        ...formErrors,
+        shipping_fee: "Please enter a valid shipping fee",
       });
       return;
     }
@@ -159,6 +168,23 @@ const Negotiate = ({ item, onClose }: any) => {
                 )}
               </Text>
             )}
+          </VStack>
+
+          <VStack>
+            <Input
+              placeholder="Shipping Fee (₦)"
+              type="number"
+              label="Shipping Fee (₦)"
+              onChange={(text: string) => {
+                setShipping_fee(parseInt(text));
+                setFormErrors({ ...formErrors, shipping_fee: "" });
+              }}
+              error={formErrors.shipping_fee}
+              value={shipping_fee}
+            />
+            <Text color={colors.subText9} fontSize={12}>
+              Enter the shipping fee you want to charge
+            </Text>
           </VStack>
 
           <VStack space="sm">

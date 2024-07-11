@@ -1,5 +1,7 @@
 eas build --profile development --platform android
 
+eas build --profile development --platform ios
+
 eas build --profile preview --platform all
 
 eas build -p android --profile preview

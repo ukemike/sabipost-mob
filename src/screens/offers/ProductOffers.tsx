@@ -217,7 +217,7 @@ const ProductOffers = ({ route }: any) => {
                         textAlign="center"
                         mt={"$2"}
                       >
-                        No notification found
+                        No offers received
                       </Text>
                     </VStack>
                   )}

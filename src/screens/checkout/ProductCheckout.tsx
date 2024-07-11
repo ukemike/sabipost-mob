@@ -14,7 +14,6 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import Loader from "../../components/ui/Loader";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import Select from "../../components/ui/Select";
 import NairaNumberFormat from "../../components/ui/NairaNumberFormat";
 import PayStack from "../../components/PayStack";
 import Modal from "../../components/Modal";
@@ -22,7 +21,8 @@ import { useToast } from "react-native-toast-notifications";
 
 const ProductCheckout = ({ route, navigation }: any) => {
   const toast = useToast();
-  const { productID, qty, price, orderID } = route.params;
+  const { productID, qty, price, orderID, shippingFee, address, state } =
+    route.params;
 
   const [isPayStack, setIsPayStack] = useState(false);
   const [delivery_address, setDeliveryAddress] = useState("");
@@ -32,8 +32,6 @@ const ProductCheckout = ({ route, navigation }: any) => {
   const [email, setEmail] = useState<any>("");
   const [showModal, setShowModal] = useState(false);
 
-  const [shippingFee, setShippingFee] = useState<any>("");
-  const [sellerState, setSellerState] = useState<any>(0);
 
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const { data, isLoading, isFetching, refetch } =
@@ -60,16 +58,6 @@ const ProductCheckout = ({ route, navigation }: any) => {
     }
   }, [userInfo]);
 
-  useEffect(() => {
-    if (product) {
-      setShippingFee(+product?.shippingFee);
-      if (+sellerState === +state_id) {
-        setShippingFee(+product?.shippingFee);
-      } else {
-        setShippingFee(+product?.shippingFeeOutside);
-      }
-    }
-  }, [sellerState, state_id, product]);
 
   useEffect(() => {
     if (product || price) {
@@ -78,12 +66,6 @@ const ProductCheckout = ({ route, navigation }: any) => {
       );
     }
   }, [product, qty, shippingFee, price]);
-
-  useEffect(() => {
-    if (product) {
-      setSellerState(+product?.seller?.state?.stateID);
-    }
-  }, [product]);
 
   const onRefresh = useCallback(() => {
     refetch();
@@ -230,21 +212,15 @@ const ProductCheckout = ({ route, navigation }: any) => {
                           label="Delivery Address"
                           placeholder="Delivery Address"
                           type="text"
-                          onChange={(text: string) => {
-                            setDeliveryAddress(text);
-                          }}
-                          value={delivery_address}
+                          value={address}
+                          disabled={true}
                         />
-
-                        <Select
-                          data={allStates}
-                          label="Location"
-                          placeholder="Select location"
-                          search={true}
-                          onChange={(item: any) => {
-                            setState_id(item.value);
-                          }}
-                          value={state_id}
+                        <Input
+                          label="State"
+                          placeholder="State"
+                          type="text"
+                          value={state}
+                          disabled={true}
                         />
 
                         <Input

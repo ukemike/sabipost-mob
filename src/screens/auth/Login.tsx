@@ -13,13 +13,12 @@ import Input from "../../components/ui/Input2";
 import { Formik } from "formik";
 import { loginSchema } from "../../schemas/auth.schema";
 import usePushNotifications from "../../hooks/usePushNotifications";
-import { useEffect } from "react";
 
 const Login = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
   const toast = useToast();
-
-  const { pushToken } = useAppSelector((state) => state.app.auth);
+  const { token } = usePushNotifications();
+  console.log(token, "push token");
 
   const [login, { isLoading }] = useLoginMutation();
 
@@ -27,7 +26,7 @@ const Login = ({ navigation }: any) => {
     await login({
       email: values.email,
       password: values.password,
-      device_token: pushToken,
+      device_token: token,
     })
       .unwrap()
       .then((res) => {
@@ -42,17 +41,6 @@ const Login = ({ navigation }: any) => {
         });
       });
   };
-
-  // notification handler
-  const { refreshPushToken } = usePushNotifications({
-    onMessageReceived: (remoteMessage: any) => {
-      console.log("A new FCM message arrived!", remoteMessage);
-    },
-  });
-
-  useEffect(() => {
-    refreshPushToken();
-  }, [refreshPushToken]);
 
   return (
     <SafeAreaProvider style={styles.constainer}>

@@ -6,16 +6,32 @@ import NairaNumberFormat from "../ui/NairaNumberFormat";
 import { useAcceptNegotiationMutation } from "../../redux/services/product.service";
 import { useToast } from "react-native-toast-notifications";
 import { useAppSelector } from "../../redux/store";
+import { useState } from "react";
+import Input from "../ui/Input";
 
 const Accept = ({ item, onClose }: any) => {
   const toast = useToast();
+
+  const [shipping_fee, setShipping_fee] = useState<number>(0);
+  const [formErrors, setFormErrors] = useState<any>({});
+
   const { userInfo } = useAppSelector((state) => state.app.auth);
   const [acceptNegotiation, { isLoading }] = useAcceptNegotiationMutation();
 
   const handleAccept = async () => {
+    if (shipping_fee === 0 || !shipping_fee || shipping_fee < 1) {
+      setFormErrors({
+        ...formErrors,
+        shipping_fee: "Please enter a valid shipping fee",
+      });
+      return;
+    }
     await acceptNegotiation({
       negotiationID: item?.negotiationID,
       token: userInfo?.token,
+      body: {
+        shipping_fee,
+      },
     })
       .unwrap()
       .then((res) => {
@@ -124,6 +140,23 @@ const Accept = ({ item, onClose }: any) => {
                 />
               </VStack>
             </HStack>
+          </VStack>
+
+          <VStack bg={colors.white} p={"$3"} borderRadius={10} space="md">
+            <Input
+              placeholder="Shipping Fee (₦)"
+              type="number"
+              label="Shipping Fee (₦)"
+              onChange={(text: string) => {
+                setShipping_fee(parseInt(text));
+                setFormErrors({ ...formErrors, shipping_fee: "" });
+              }}
+              error={formErrors.shipping_fee}
+              value={shipping_fee}
+            />
+            <Text color={colors.subText9} fontSize={12}>
+              Enter the shipping fee you want to charge
+            </Text>
           </VStack>
         </VStack>
       </VStack>

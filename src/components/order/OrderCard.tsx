@@ -1,20 +1,17 @@
-import { TouchableOpacity } from "react-native";
 import { VStack, Text, HStack, Image } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
 import Button from "../ui/Button";
-import { useNavigation } from "@react-navigation/native";
 import ConfirmDelivery from "./ConfirmDelivery";
 import {
   BottomSheetModal,
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { useRef, useCallback, useMemo, useState } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import { formatDate2, shortenText } from "../../utils/functions";
 
 const OrderCard = ({ item }: any) => {
-  const navigation = useNavigation<any>();
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["25%", "65%"], []);
@@ -61,18 +58,16 @@ const OrderCard = ({ item }: any) => {
           <HStack space="sm" alignItems="center">
             {/* check if item?.productImage or item?.productImageUrl is prsent */}
             {item?.productImage || item?.productImageUrl ? (
-            <Image
-              source={{
-                uri: item?.productImage || item?.productImageUrl,
-              }}
-              alt="img"
-              h={67}
-              w={46}
-              resizeMode="cover"
-            />
-            ) : (
-             null
-            )}
+              <Image
+                source={{
+                  uri: item?.productImage || item?.productImageUrl,
+                }}
+                alt="img"
+                h={67}
+                w={46}
+                resizeMode="cover"
+              />
+            ) : null}
             <Text fontFamily="Urbanist-Bold" fontSize={16} color={colors.black}>
               {shortenText(item?.productName, 30)}
             </Text>
@@ -202,8 +197,7 @@ const OrderCard = ({ item }: any) => {
         </VStack>
 
         <VStack alignItems="center">
-          {item?.status === "confirmed" ||
-          item?.status === "out_for_delivery" ? (
+          {item?.status === "out_for_delivery" && (
             <Button
               title="Confirm delivery"
               size="lg"
@@ -213,30 +207,6 @@ const OrderCard = ({ item }: any) => {
                 height: 45,
               }}
               onPress={handlePresentModalPress}
-            />
-          ) : (
-            <Button
-              title="Proceed to payment"
-              size="lg"
-              bgColor={colors.secondary}
-              color={colors.primary}
-              style={{
-                height: 45,
-              }}
-              onPress={() => {
-                item?.orderFor === "product" &&
-                  navigation.navigate("ProductCheckout", {
-                    productID: item?.productID,
-                    qty: item?.quantity,
-                    price: item?.amount,
-                    orderID: item?.orderID,
-                  });
-
-                item?.orderFor !== "product" &&
-                  navigation.navigate("PostCheckOut", {
-                    quoteID: item?.quoteID,
-                  });
-              }}
             />
           )}
         </VStack>

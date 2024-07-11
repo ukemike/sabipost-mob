@@ -138,9 +138,10 @@ export const productApi = createApi({
     }),
 
     acceptNegotiation: builder.mutation({
-      query: ({ negotiationID, token }) => ({
+      query: ({ negotiationID, token, body }) => ({
         url: `api/product/negotiation/accept/${negotiationID}`,
         method: "POST",
+        body: body,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

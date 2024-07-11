@@ -40,7 +40,7 @@ const Badge = ({
     >
       <BadgeText
         color={color}
-        fontFamily="Urbanist-Bold"
+        fontFamily="Urbanist-Medium"
         fontSize={fontSize}
         lineHeight={24}
         letterSpacing={-0.15}

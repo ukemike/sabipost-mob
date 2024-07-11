@@ -35,8 +35,26 @@ import OrderDetail from "../screens/orders/vendor/OrderDetail";
 import Business from "../screens/profile/Business";
 import BusinessDoc from "../screens/profile/BusinessDoc";
 
+import messaging from "@react-native-firebase/messaging";
+import notifee, { EventType } from "@notifee/react-native";
+import React, { useEffect, useState, useRef } from "react";
+
+const NotificationTypes = {
+  POST: "post",
+  CALL: "call",
+  JOB: "job",
+  LIVE: "live",
+  COMMENT: "comment",
+  LIKE: "like",
+  FOLLOW: "follow",
+  MESSAGE: "message",
+  DMCALL: "dm-call",
+};
+
 function MainNavigation() {
   const { userInfo } = useAppSelector((state) => state.app.auth);
+  const navigationRef = useRef<any>(null);
+  const [initialNotificationData, setInitialNotificationData] = useState(null);
 
   const [fontsLoaded] = useFonts({
     Urbanist: require("../../assets/fonts/Urbanist-Black.ttf"),
@@ -50,14 +68,156 @@ function MainNavigation() {
     "Urbanist-Thin": require("../../assets/fonts/Urbanist-Thin.ttf"),
   });
 
-  if (!fontsLoaded) {
-    SplashScreen.preventAutoHideAsync();
-    return null;
-  } else {
-    setTimeout(async () => {
-      await SplashScreen.hideAsync();
-    }, 1000);
-  }
+  // if (!fontsLoaded) {
+  //   SplashScreen.preventAutoHideAsync();
+  //   return null;
+  // } else {
+  //   setTimeout(async () => {
+  //     await SplashScreen.hideAsync();
+  //   }, 1000);
+  // }
+
+  useEffect(() => {
+    const requestPermissions = async () => {
+      await notifee.requestPermission();
+    };
+
+    requestPermissions();
+
+    const handleInitialNotification = async () => {
+      try {
+        const initialNotification: any =
+          await messaging().getInitialNotification();
+        if (initialNotification) {
+          setInitialNotificationData(initialNotification.data);
+        }
+        // if (initialNotification?.data?.type === NotificationTypes.CALL) {
+        //   // call action
+        // }
+      } catch (error) {
+        console.error("Failed to get initial notification:", error);
+      }
+    };
+
+    handleInitialNotification();
+
+    const unsubscribeOnMessage = messaging().onMessage(
+      async (remoteMessage: any) => {
+        console.log("Received a new message", remoteMessage);
+        const channelId = await notifee.createChannel({
+          id: "default",
+          name: "Default Channel",
+        });
+
+        await notifee.displayNotification({
+          title: remoteMessage.notification.title,
+          body: remoteMessage.notification.body,
+          android: {
+            channelId,
+            pressAction: {
+              id: "default",
+            },
+          },
+          data: remoteMessage.data,
+        });
+      }
+    );
+
+    const unsubscribeNotifeeEvents = notifee.onForegroundEvent(
+      ({ type, detail }: any) => {
+        if (type === EventType.PRESS) {
+          // handleNavigation(detail.notification.data);
+        }
+      }
+    );
+
+    const unsubscribeOnNotificationOpenedApp =
+      messaging().onNotificationOpenedApp((remoteMessage: any) => {
+        // handleNavigation(remoteMessage.data);
+      });
+
+    messaging().setBackgroundMessageHandler(async (remoteMessage: any) => {
+      // handleNavigation(remoteMessage.data);
+    });
+
+    return () => {
+      unsubscribeOnNotificationOpenedApp();
+      unsubscribeOnMessage();
+      unsubscribeNotifeeEvents();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!fontsLoaded) {
+      SplashScreen.preventAutoHideAsync().catch(console.warn);
+    } else {
+      SplashScreen.hideAsync().catch(console.warn);
+    }
+  }, [fontsLoaded]);
+
+  // const handleNavigation = (data: any) => {
+  //   if (!data?.type) {
+  //     console.warn("No notification type specified:", data);
+  //     return;
+  //   }
+
+  //   switch (data.type) {
+  //     case NotificationTypes.POST:
+  //     case NotificationTypes.COMMENT:
+  //     case NotificationTypes.LIKE:
+  //       navigationRef.current?.navigate("SingleVideo", {
+  //         contentId: data.id,
+  //         from: "singleVideo",
+  //       });
+  //       break;
+  //     case NotificationTypes.CALL:
+  //       navigationRef.current?.navigate("Call", {
+  //         channelName: data.channelName,
+  //         appId: "9099291ec58f4ae1aeee6360dc02add0",
+  //         token: data.callToken,
+  //         userId: data.userId,
+  //         isHostUser: false,
+  //       });
+  //       break;
+  //     case NotificationTypes.JOB:
+  //       navigationRef.current?.navigate("Jobs");
+  //       break;
+  //     case NotificationTypes.FOLLOW:
+  //       navigationRef.current?.navigate("Profile", {
+  //         userName: data.id,
+  //       });
+  //       break;
+  //     case NotificationTypes.MESSAGE:
+  //       navigationRef.current?.navigate("Message", {
+  //         otherPartyUserId: data.otherPartyUserId,
+  //         otherPartyName: data.id,
+  //         conversationId: data.conversationId,
+  //       });
+  //       break;
+  //     case NotificationTypes.LIVE:
+  //       navigationRef.current?.navigate("Live", {
+  //         isHostUser: false,
+  //         liveId: data.id,
+  //         token: data.callToken,
+  //         channelName: data.channelName,
+  //         appId: "9099291ec58f4ae1aeee6360dc02add0",
+  //       });
+  //       break;
+  //     case NotificationTypes.DMCALL:
+  //       navigationRef.current?.navigate("DmCall", {
+  //         channelName: data.channelName,
+  //         appId: "9099291ec58f4ae1aeee6360dc02add0",
+  //         token: data.callToken,
+  //         isHostUser: false,
+  //         callId: data.id,
+  //       });
+  //       break;
+  //     default:
+  //       console.warn("Unhandled notification type:", data.type);
+  //   }
+  // };
+
+
 
   const Stack = createNativeStackNavigator() as any;
 

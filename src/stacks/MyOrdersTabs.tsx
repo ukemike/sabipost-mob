@@ -25,13 +25,13 @@ function MyOrdersTabs() {
         tabBarInactiveTintColor: "#7F83A8",
       }}
     >
-      <Tab.Screen
+      {/* <Tab.Screen
         name="PendingPayment"
         options={{
           tabBarLabel: "Pending Payment",
         }}
         component={PendingPayment}
-      />
+      /> */}
       <Tab.Screen
         name="PendingDelivery"
         options={{

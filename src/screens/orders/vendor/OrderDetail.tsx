@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, RefreshControl } from "react-native";
-import { VStack, Text, Image, HStack } from "@gluestack-ui/themed";
+import { VStack, Text, Image, HStack, Box } from "@gluestack-ui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Header from "../../../components/Header";
 import StatusBar from "../../../components/StatusBar";
@@ -142,6 +142,18 @@ const OrderDetail = ({ route }: any) => {
                 </VStack>
 
                 <VStack space="md">
+                  {order?.status === "completed" && (
+                    <Box bg="rgba(5, 88, 22, 0.10)" p={"$2"} borderRadius={8}>
+                      <Text
+                        color={colors.green}
+                        fontFamily="Urbanist-Bold"
+                        fontSize={14}
+                        textAlign="center"
+                      >
+                        Order Delivered
+                      </Text>
+                    </Box>
+                  )}
                   <VStack
                     space="lg"
                     borderRadius={6}
@@ -271,6 +283,39 @@ const OrderDetail = ({ route }: any) => {
                             color={colors.subText16}
                           >
                             {order?.deliveryAddress}
+                          </Text>
+                        </VStack>
+                      </HStack>
+
+                      <HStack
+                        space="sm"
+                        alignItems="flex-start"
+                        borderBottomWidth={1}
+                        borderBottomColor={colors.background}
+                        pb={"$2"}
+                      >
+                        <Image
+                          source={require("../../../../assets/images/order.png")}
+                          alt="img"
+                          w={20}
+                          h={20}
+                          resizeMode="cover"
+                        />
+
+                        <VStack>
+                          <Text
+                            fontFamily="Urbanist-Medium"
+                            fontSize={14}
+                            color={colors.subText16}
+                          >
+                            Customer Phone
+                          </Text>
+                          <Text
+                            fontFamily="Urbanist-Bold"
+                            fontSize={14}
+                            color={colors.subText16}
+                          >
+                            {order?.buyerPhone}
                           </Text>
                         </VStack>
                       </HStack>

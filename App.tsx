@@ -11,8 +11,11 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { StatusBar } from "expo-status-bar";
 import { Text } from "@gluestack-ui/themed";
 import { TextInput, Text as RNText } from "react-native";
+import usePushNotifications from "./src/hooks/usePushNotifications";
 
 export default function App() {
+  const {token}=usePushNotifications();
+  console.log(token);
   // diable font scaling
   // Text.defaultProps = Text.defaultProps || {};
   // Text.defaultProps.allowFontScaling = false;

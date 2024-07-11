@@ -1,4 +1,4 @@
-import { VStack, Text } from "@gluestack-ui/themed";
+import { VStack, Text, Spinner } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
@@ -8,6 +8,8 @@ import { useAppSelector } from "../../redux/store";
 import { calculateDiscountPercentage } from "../../utils/functions";
 import { useState, useEffect } from "react";
 import NairaNumberFormat from "../ui/NairaNumberFormat";
+import { useGetStatesQuery } from "../../redux/services/general.service";
+import Select from "../ui/Select";
 
 const NegotiateProduct = ({ product, navigation, qty, onClose }: any) => {
   const toast = useToast();
@@ -16,6 +18,24 @@ const NegotiateProduct = ({ product, navigation, qty, onClose }: any) => {
   const [amount, setAmount] = useState(0);
   const [discount_percentage, setDiscount_percentage] = useState<number>(0);
   const [formErrors, setFormErrors] = useState<any>({});
+  const [state_id, setState_id] = useState("");
+  const [address, setAddress] = useState<string>("");
+
+  const { data: statesData, isLoading: statesLoading } = useGetStatesQuery("");
+
+  const allStates = statesData?.data.map((state: any) => {
+    return {
+      value: state.stateID,
+      label: state.stateName,
+    };
+  });
+
+  useEffect(() => {
+    if (userInfo) {
+      setAddress(userInfo?.data?.address);
+      setState_id(userInfo?.data?.state?.stateID);
+    }
+  }, [userInfo]);
 
   useEffect(() => {
     if (amount) {
@@ -47,6 +67,17 @@ const NegotiateProduct = ({ product, navigation, qty, onClose }: any) => {
       });
       return;
     }
+
+    if (!address) {
+      setFormErrors({ ...formErrors, address: "Please enter a valid address" });
+      return;
+    }
+
+    if (!state_id) {
+      setFormErrors({ ...formErrors, state_id: "Please select a state" });
+      return;
+    }
+
     if (amount > (product?.price * product?.quantity) / 2) {
       setFormErrors({
         ...formErrors,
@@ -66,6 +97,8 @@ const NegotiateProduct = ({ product, navigation, qty, onClose }: any) => {
       body: {
         quantity,
         discount_percentage,
+        address,
+        state_id,
       },
       token: userInfo?.token,
     })
@@ -156,6 +189,35 @@ const NegotiateProduct = ({ product, navigation, qty, onClose }: any) => {
             error={formErrors.quantity}
             value={quantity.toString()}
           />
+
+          <Input
+            label="Delivery Address"
+            placeholder="Enter delivery address"
+            type="text"
+            onChange={(text: string) => {
+              setAddress(text);
+              setFormErrors({ ...formErrors, address: "" });
+            }}
+            error={formErrors.address}
+            value={address}
+          />
+
+          {statesLoading ? (
+            <Spinner color={colors.secondary} />
+          ) : (
+            <Select
+              data={allStates}
+              label="Location"
+              placeholder="Select location"
+              search={true}
+              onChange={(item: any) => {
+                setState_id(item.value);
+                setFormErrors({ ...formErrors, state_id: "" });
+              }}
+              error={formErrors.state_id}
+              value={state_id}
+            />
+          )}
         </VStack>
       </VStack>
 

@@ -2,7 +2,7 @@
   "expo": {
     "name": "sabipost",
     "slug": "sabipost",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,7 +21,8 @@
         "NSPhotoLibraryUsageDescription": "Sabipost needs access to your photos so you can upload photos of your waste"
       },
       "bundleIdentifier": "com.sabipost.app",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "buildNumber": "1.0.2"
     },
     "android": {
       "package": "com.sabipost.app",
@@ -30,7 +31,8 @@
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -61,7 +63,8 @@
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+             "deploymentTarget": "14.0"
           }
         }
       ]

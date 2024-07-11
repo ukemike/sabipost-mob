@@ -26,7 +26,6 @@ const Sell = ({ navigation }: any) => {
     });
 
   const allPost = data?.data?.data;
-  // console.log("allPost", allPost[0]);
 
   const renderItem = ({ item }: any) => (
     <PostCard

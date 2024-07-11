@@ -1,63 +1,19 @@
-import { VStack, Text, HStack } from "@gluestack-ui/themed";
-import NairaNumberFormat from "../ui/NairaNumberFormat";
+import { VStack, Text } from "@gluestack-ui/themed";
 import { colors } from "../../constants";
+import Offer from "./Offer";
 
 const Negotiation5 = ({ negotiation, product }: any) => {
   return (
-    <VStack space="xs">
-      <Text
-        fontSize={14}
-        fontFamily="Urbanist-Medium"
-        textAlign="left"
-        color={colors.primary}
-      >
-        Your Offer
-      </Text>
-      <HStack alignItems={"center"} space="md">
-        <NairaNumberFormat
-          value={negotiation?.desiredAmount}
-          fontSize={18}
-          color={colors.subText6}
-        />
-        <Text fontSize={14} fontFamily="Urbanist-Bold" color={colors.black}>
-          QTY: {negotiation.desiredQuantity}
-        </Text>
-      </HStack>
+    <VStack space="md">
+      <Offer negotiation={negotiation} />
 
       <Text
-        fontSize={14}
-        fontFamily="Urbanist-Medium"
-        textAlign="left"
-        color={colors.primary}
-      >
-        Total Amount
-      </Text>
-
-      <NairaNumberFormat
-        value={negotiation?.desiredAmount * +negotiation?.desiredQuantity}
         fontSize={18}
-        color={colors.subText6}
-      />
-
-      <Text
-        fontSize={15}
-        fontFamily="Urbanist-Medium"
-        color="#B9B9B9"
-        textDecorationLine="line-through"
-      >
-        <NairaNumberFormat
-          value={product?.price * +negotiation?.desiredQuantity}
-          fontSize={15}
-          color="#B9B9B9"
-        />
-        {"  "}({negotiation.discountPercentage}%)
-      </Text>
-
-      <Text
-        fontSize={14}
         fontFamily="Urbanist-Bold"
         textAlign="left"
         color={colors.red}
+        mt={"$5"}
+        mb={"$4"}
       >
         Offer rejected
       </Text>

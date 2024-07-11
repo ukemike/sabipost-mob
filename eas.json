@@ -8,7 +8,8 @@
       "distribution": "internal",
       "channel": "development",
       "ios": {
-        "enterpriseProvisioning": "universal"
+        "enterpriseProvisioning": "universal",
+        "simulator": true
       }
     },
     "preview": {

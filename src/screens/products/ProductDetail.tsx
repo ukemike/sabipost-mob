@@ -11,7 +11,7 @@ import { colors } from "../../constants";
 import Loader from "../../components/ui/Loader";
 import {
   useGetSingleProductQuery,
-  useGetProductsByCategoryQuery
+  useGetProductsByCategoryQuery,
 } from "../../redux/services/product.service";
 import StatusBar from "../../components/StatusBar";
 import Header from "../../components/Header";
@@ -39,7 +39,7 @@ const ProductDetail = ({ route, navigation }: any) => {
   const { data, isLoading, isFetching, refetch } =
     useGetSingleProductQuery(productID);
   const product = data?.data;
-  
+
   const productCategoryID = product?.category?.categoryID;
 
   const {
@@ -119,7 +119,7 @@ const ProductDetail = ({ route, navigation }: any) => {
   };
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["25%", "60%"], []);
+  const snapPoints = useMemo(() => ["25%", "70%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -338,44 +338,6 @@ const ProductDetail = ({ route, navigation }: any) => {
                     />
                   </VStack>
 
-                  <VStack space="xs">
-                    <Text
-                      color={colors.subText}
-                      fontSize={14}
-                      fontFamily="Urbanist-Medium"
-                      textAlign="left"
-                      textTransform="uppercase"
-                    >
-                      Delivery Timeline:
-                    </Text>
-                    <Text
-                      color={colors.subText7}
-                      fontSize={15}
-                      fontFamily="Urbanist-Medium"
-                      textAlign="left"
-                    >
-                      Shipping fee within {product?.seller?.state?.stateName}:{" "}
-                      <NairaNumberFormat
-                        value={product?.shippingFee}
-                        fontSize={15}
-                        color={colors.subText7}
-                      />
-                    </Text>
-                    <Text
-                      color={colors.subText7}
-                      fontSize={15}
-                      fontFamily="Urbanist-Medium"
-                      textAlign="left"
-                    >
-                      Shipping fee outside {product?.seller?.state?.stateName}:{" "}
-                      <NairaNumberFormat
-                        value={product?.shippingFeeOutside}
-                        fontSize={15}
-                        color={colors.subText7}
-                      />
-                    </Text>
-                  </VStack>
-
                   <VStack space="sm" alignItems="flex-start">
                     <Text
                       color={colors.subText6}
@@ -452,6 +414,7 @@ const ProductDetail = ({ route, navigation }: any) => {
                       justifyContent="space-between"
                       alignItems="center"
                       width="100%"
+                      display="none"
                     >
                       <Button
                         title="Negotiate Price"
@@ -487,6 +450,19 @@ const ProductDetail = ({ route, navigation }: any) => {
                         }
                       />
                     </HStack>
+
+                    <VStack width="100%">
+                      <Button
+                        title="Negotiate Price"
+                        size="lg"
+                        variant="outline"
+                        bgColor={colors.white}
+                        color={colors.secondary}
+                        width="100%"
+                        style={{ height: 50 }}
+                        onPress={handlePresentModalPress}
+                      />
+                    </VStack>
                     <Divider bg={colors.border2} />
                   </VStack>
 

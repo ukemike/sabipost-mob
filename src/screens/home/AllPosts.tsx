@@ -40,6 +40,25 @@ const AllPosts = ({ navigation }: any) => {
   return (
     <>
       <SafeAreaProvider style={styles.container}>
+        <VStack m={"$5"} space="lg">
+          <Input
+            placeholder="Search Posts"
+            rightIconName="search"
+            iconColor={"#4A5264"}
+            onChange={(text: string) => onSearch(text)}
+            value={search}
+            onPress={sendSearch}
+          />
+
+          <Text
+            color={colors.primary}
+            fontSize={15}
+            fontFamily="Urbanist-Bold"
+            textAlign="left"
+          >
+            All Categories
+          </Text>
+        </VStack>
         <ScrollView
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
@@ -58,7 +77,7 @@ const AllPosts = ({ navigation }: any) => {
           ) : (
             <VStack m={"$5"} space="lg" flex={1}>
               <VStack flex={1} space="lg">
-                <Input
+                {/* <Input
                   placeholder="Search Posts"
                   rightIconName="search"
                   iconColor={"#4A5264"}
@@ -74,7 +93,7 @@ const AllPosts = ({ navigation }: any) => {
                   textAlign="left"
                 >
                   All Categories
-                </Text>
+                </Text> */}
 
                 <CategoryItem categories={allCategories} />
 

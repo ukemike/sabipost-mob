@@ -42,6 +42,25 @@ const AllProduct = ({ navigation }: any) => {
   return (
     <>
       <SafeAreaProvider style={styles.container}>
+        <VStack m={"$5"} space="lg">
+          <Input
+            placeholder="Search Products"
+            iconColor={"#4A5264"}
+            rightIconName="search"
+            onChange={(text: string) => onSearch(text)}
+            value={search}
+            onPress={sendSearch}
+          />
+
+          <Text
+            color={colors.primary}
+            fontSize={15}
+            fontFamily="Urbanist-Bold"
+            textAlign="left"
+          >
+            All Categories
+          </Text>
+        </VStack>
         <ScrollView
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
@@ -60,24 +79,6 @@ const AllProduct = ({ navigation }: any) => {
           ) : (
             <VStack m={"$5"} space="lg" flex={1}>
               <VStack flex={1} space="lg">
-                <Input
-                  placeholder="Search Products"
-                  iconColor={"#4A5264"}
-                  rightIconName="search"
-                  onChange={(text: string) => onSearch(text)}
-                  value={search}
-                  onPress={sendSearch}
-                />
-
-                <Text
-                  color={colors.primary}
-                  fontSize={15}
-                  fontFamily="Urbanist-Bold"
-                  textAlign="left"
-                >
-                  All Categories
-                </Text>
-
                 <CategoryItem categories={allCategories} isProduct={true} />
 
                 <Slider />

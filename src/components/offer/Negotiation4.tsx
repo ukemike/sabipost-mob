@@ -10,6 +10,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useRef, useCallback, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
+import Offer from "./Offer";
 
 const Negotiation4 = ({ negotiation, product }: any) => {
   const navigation = useNavigation<any>();
@@ -38,68 +39,61 @@ const Negotiation4 = ({ negotiation, product }: any) => {
     []
   );
 
-  const renderContent = () => <Pay4Me item={negotiation} onClose={handleCloseModalPress} />;
+  const renderContent = () => (
+    <Pay4Me item={negotiation} onClose={handleCloseModalPress} />
+  );
+
+  console.log(negotiation?.shippingFee);
+
   return (
     <>
-      <VStack space="xs">
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Medium"
-          textAlign="left"
-          color={colors.primary}
-        >
-          Your Offer
-        </Text>
-        <HStack alignItems={"center"} space="md">
-          <NairaNumberFormat
-            value={negotiation?.desiredAmount}
+      <VStack space="md">
+        <Offer negotiation={negotiation} />
+
+        <VStack space="md" mt={"$5"}>
+          <Text
             fontSize={18}
-            color={colors.subText6}
-          />
-          <Text fontSize={14} fontFamily="Urbanist-Bold" color={colors.black}>
-            QTY: {negotiation.desiredQuantity}
+            fontFamily="Urbanist-Bold"
+            textAlign="left"
+            color={colors.green}
+          >
+            Offer Approved
           </Text>
-        </HStack>
+          <HStack alignItems={"center"} space="md">
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.black}
+            >
+              Shipping Fee:
+            </Text>
+            <NairaNumberFormat
+              value={negotiation?.shippingFee}
+              fontSize={16}
+              color={colors.subText6}
+            />
+          </HStack>
 
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Medium"
-          textAlign="left"
-          color={colors.primary}
-        >
-          Total Amount
-        </Text>
+          <HStack alignItems={"center"} space="md">
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.black}
+            >
+              Total amount:
+            </Text>
+            <NairaNumberFormat
+              value={
+                negotiation?.desiredAmount * +negotiation?.desiredQuantity +
+                negotiation?.shippingFee
+              }
+              fontSize={16}
+              color={colors.subText6}
+            />
+          </HStack>
+        </VStack>
 
-        <NairaNumberFormat
-          value={negotiation?.desiredAmount * +negotiation?.desiredQuantity}
-          fontSize={18}
-          color={colors.subText6}
-        />
-
-        <Text
-          fontSize={15}
-          fontFamily="Urbanist-Medium"
-          color="#B9B9B9"
-          textDecorationLine="line-through"
-        >
-          <NairaNumberFormat
-            value={product?.price * +negotiation?.desiredQuantity}
-            fontSize={15}
-            color="#B9B9B9"
-          />
-          {"  "}({negotiation.discountPercentage}%)
-        </Text>
-
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Bold"
-          textAlign="left"
-          color={colors.green}
-        >
-          Offer Approved
-        </Text>
-
-        <VStack space="xs">
+        <VStack space="xs" mt={"$5"} mb={"$4"}>
           <HStack
             justifyContent="space-between"
             alignItems="center"
@@ -119,6 +113,7 @@ const Negotiation4 = ({ negotiation, product }: any) => {
                 borderRadius: 4,
               }}
               onPress={handlePresentModalPress}
+              isDisabled={negotiation?.isPaid}
             />
             <Button
               title="Pay Now"
@@ -137,8 +132,12 @@ const Negotiation4 = ({ negotiation, product }: any) => {
                   qty: negotiation?.desiredQuantity,
                   price: negotiation?.desiredAmount,
                   orderID: negotiation?.orderID,
+                  shippingFee: negotiation?.shippingFee,
+                  address: negotiation?.address,
+                  state: negotiation?.state?.stateName,
                 })
               }
+              isDisabled={negotiation?.isPaid}
             />
           </HStack>
         </VStack>

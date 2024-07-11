@@ -63,8 +63,6 @@ const CreateProduct = ({ route, navigation }: any) => {
   const [images, setImages] = useState<any[]>([]);
   const [images2, setImages2] = useState<any[]>([]);
   const [description, setDescription] = useState<string>("");
-  const [shipping_fee, setShipping_fee] = useState<any>("");
-  const [shipping_fee_outside, setShipping_fee_outside] = useState<any>("");
   const [formErrors, setFormErrors] = useState<any>({});
   const [formError, setFormError] = useState<any>({});
 
@@ -89,8 +87,6 @@ const CreateProduct = ({ route, navigation }: any) => {
       );
       setPrice(singLeProduct?.price);
       setDescription(singLeProduct?.description);
-      setShipping_fee(singLeProduct?.shippingFee);
-      setShipping_fee_outside(singLeProduct?.shippingFeeOutside);
       setImages(singLeProduct?.images?.map((image: any) => image));
     }
   }, [singLeProduct]);
@@ -224,33 +220,19 @@ const CreateProduct = ({ route, navigation }: any) => {
     setFeatures([]);
     setPrice("");
     setDescription("");
-    setShipping_fee("");
-    setShipping_fee_outside("");
     setImages([]);
     setSelectedImage(null);
     setBase64(null);
   };
 
   const handleCreateProduct = async () => {
-    if (
-      !name ||
-      !quantity ||
-      !category_id ||
-      !price ||
-      !description ||
-      !shipping_fee ||
-      !shipping_fee_outside
-    ) {
+    if (!name || !quantity || !category_id || !price || !description) {
       return setFormErrors({
         name: !name ? "Please enter product name" : "",
         quantity: !quantity ? "Please enter quantity" : "",
         category_id: !category_id ? "Please select category" : "",
         price: !price ? "Please enter price" : "",
         description: !description ? "Please enter description" : "",
-        shipping_fee: !shipping_fee ? "Please enter shipping fee" : "",
-        shipping_fee_outside: !shipping_fee_outside
-          ? "Please enter shipping fee"
-          : "",
       });
     }
     if (images2.length < 1) {
@@ -273,8 +255,6 @@ const CreateProduct = ({ route, navigation }: any) => {
         features,
         price,
         description,
-        shipping_fee,
-        shipping_fee_outside,
         images: images2,
         free_delivery: "No",
       },
@@ -289,6 +269,7 @@ const CreateProduct = ({ route, navigation }: any) => {
         navigation.goBack();
       })
       .catch((error) => {
+        console.log(error);
         toast.show(error.message, {
           type: "danger",
         });
@@ -296,25 +277,13 @@ const CreateProduct = ({ route, navigation }: any) => {
   };
 
   const handleUpdateProduct = async () => {
-    if (
-      !name ||
-      !quantity ||
-      !category_id ||
-      !price ||
-      !description ||
-      !shipping_fee ||
-      !shipping_fee_outside
-    ) {
+    if (!name || !quantity || !category_id || !price || !description) {
       return setFormErrors({
         name: !name ? "Please enter product name" : "",
         quantity: !quantity ? "Please enter quantity" : "",
         category_id: !category_id ? "Please select category" : "",
         price: !price ? "Please enter price" : "",
         description: !description ? "Please enter description" : "",
-        shipping_fee: !shipping_fee ? "Please enter shipping fee" : "",
-        shipping_fee_outside: !shipping_fee_outside
-          ? "Please enter shipping fee"
-          : "",
       });
     }
     // if (images2.length < 1) {
@@ -337,8 +306,6 @@ const CreateProduct = ({ route, navigation }: any) => {
         features,
         price,
         description,
-        shipping_fee,
-        shipping_fee_outside,
         images: images2,
         free_delivery: "No",
       },
@@ -503,30 +470,6 @@ const CreateProduct = ({ route, navigation }: any) => {
                   }}
                   error={formErrors.description}
                   value={description}
-                />
-
-                <Input
-                  label={`Delivery fee within ${user?.profile?.state?.stateName}`}
-                  placeholder="Enter delivery fee"
-                  type="number"
-                  onChange={(text: string) => {
-                    setShipping_fee(text);
-                    setFormErrors({ ...formErrors, shipping_fee: "" });
-                  }}
-                  error={formErrors.shipping_fee}
-                  value={shipping_fee}
-                />
-
-                <Input
-                  label={`Delivery fee outside ${user?.profile?.state?.stateName}`}
-                  placeholder="Enter delivery fee"
-                  type="number"
-                  onChange={(text: string) => {
-                    setShipping_fee_outside(text);
-                    setFormErrors({ ...formErrors, shipping_fee_outside: "" });
-                  }}
-                  error={formErrors.shipping_fee_outside}
-                  value={shipping_fee_outside}
                 />
 
                 <VStack space="sm">

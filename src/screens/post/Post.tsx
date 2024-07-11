@@ -73,14 +73,11 @@ const Post = ({ route, navigation }: any) => {
     useGetCategoriesQuery("");
   const categories = categoriesData?.data;
 
-  const allCategories = categoriesData?.data.map((category: any) => {
-    return {
-      value: category.categoryID,
-      label: category.name,
-    };
-  });
+  const allCategories = categoriesData?.data?.filter(
+    (category: any) => category?.isActive === 1
+  );
 
-  // statess
+  // states
   const [name, setName] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
   const [category_id, setCategory_id] = useState<string>("");
@@ -310,7 +307,7 @@ const Post = ({ route, navigation }: any) => {
                   </Text>
                 </VStack>
 
-                <VStack space="md">
+                <VStack space="lg">
                   <Input
                     label="Item Name"
                     placeholder="Enter name"
@@ -335,7 +332,14 @@ const Post = ({ route, navigation }: any) => {
                   />
 
                   <Select
-                    data={allCategories}
+                    data={
+                      allCategories?.map((category: any) => {
+                        return {
+                          value: category.categoryID,
+                          label: category.name,
+                        };
+                      }) || []
+                    }
                     label="Category"
                     placeholder="Select category"
                     search={true}

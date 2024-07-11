@@ -152,7 +152,7 @@ const OfferDetail = ({ route, navigation }: any) => {
                           alt="product"
                           h={200}
                           w={"100%"}
-                          resizeMode="cover"
+                          resizeMode="contain"
                           borderRadius={20}
                         />
                       </TouchableOpacity>

@@ -12,6 +12,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useRef, useCallback, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import Offer from "./Offer";
 
 const Negotiation3 = ({ negotiation, product }: any) => {
   const [type, setType] = useState("");
@@ -64,97 +65,114 @@ const Negotiation3 = ({ negotiation, product }: any) => {
   );
   return (
     <>
-      <VStack space="xs">
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Medium"
-          textAlign="left"
-          color={colors.primary}
-        >
-          Your Offer
-        </Text>
-        <HStack alignItems={"center"} space="md">
-          <NairaNumberFormat
-            value={negotiation?.desiredAmount}
+      <VStack space="md">
+        <Offer negotiation={negotiation} />
+
+        <VStack space="md" mt={"$5"}>
+          {negotiation?.status === "accepted" && (
+            <Text
+              fontSize={18}
+              fontFamily="Urbanist-Bold"
+              textAlign="left"
+              color={colors.green}
+            >
+              Accepted
+            </Text>
+          )}
+
+          <Text
             fontSize={18}
-            color={colors.subText6}
-          />
-          <Text fontSize={14} fontFamily="Urbanist-Bold" color={colors.black}>
-            QTY: {negotiation.desiredQuantity}
+            fontFamily="Urbanist-Bold"
+            textAlign="left"
+            color={colors.green}
+          >
+            Vendor Counter Offer
           </Text>
-        </HStack>
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Medium"
-          textAlign="left"
-          color={colors.primary}
-        >
-          Total Amount
-        </Text>
-        <NairaNumberFormat
-          value={negotiation?.desiredAmount * +negotiation?.desiredQuantity}
-          fontSize={18}
-          color={colors.subText6}
-        />
-        <Text
-          fontSize={15}
-          fontFamily="Urbanist-Medium"
-          color="#B9B9B9"
-          textDecorationLine="line-through"
-        >
-          <NairaNumberFormat
-            value={product?.price * +negotiation?.desiredQuantity}
-            fontSize={15}
-            color="#B9B9B9"
-          />
-          {"  "}({negotiation.discountPercentage}%)
-        </Text>
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Bold"
-          textAlign="left"
-          color={colors.green}
-        >
-          Vendor Counter Offer
-        </Text>
-        <HStack alignItems={"center"} space="md">
-          <NairaNumberFormat
-            value={negotiation?.sellerAmount}
-            fontSize={18}
-            color={colors.subText6}
-          />
-          <Text fontSize={14} fontFamily="Urbanist-Bold" color={colors.black}>
-            QTY: {negotiation.sellerQuantity}
-          </Text>
-        </HStack>
-        <Text
-          fontSize={14}
-          fontFamily="Urbanist-Medium"
-          textAlign="left"
-          color={colors.primary}
-        >
-          Total Amount
-        </Text>
-        <NairaNumberFormat
-          value={negotiation?.sellerAmount * +negotiation?.sellerQuantity}
-          fontSize={18}
-          color={colors.subText6}
-        />
-        <Text
-          fontSize={15}
-          fontFamily="Urbanist-Medium"
-          color="#B9B9B9"
-          textDecorationLine="line-through"
-        >
-          <NairaNumberFormat
-            value={product?.price * +negotiation?.sellerQuantity}
-            fontSize={15}
-            color="#B9B9B9"
-          />
-          {"  "}({negotiation.sellerDiscountPercentage}%)
-        </Text>
+          <HStack alignItems={"center"} space="md">
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.black}
+            >
+              Amount offered:
+            </Text>
+            <NairaNumberFormat
+              value={negotiation?.sellerAmount}
+              fontSize={16}
+              color={colors.subText6}
+            />
+          </HStack>
+
+          <HStack alignItems={"center"} space="md">
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.black}
+            >
+              Available Quantity:
+            </Text>
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.subText6}
+            >
+              {negotiation?.sellerQuantity}
+            </Text>
+          </HStack>
+
+          <HStack alignItems={"center"} space="md">
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.black}
+            >
+              Shipping Fee:
+            </Text>
+            <NairaNumberFormat
+              value={negotiation?.shippingFee}
+              fontSize={16}
+              color={colors.subText6}
+            />
+          </HStack>
+
+          <HStack alignItems={"center"} space="md">
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.black}
+            >
+              Discount Percentage:
+            </Text>
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.subText6}
+            >
+              {negotiation?.sellerDiscountPercentage}%
+            </Text>
+          </HStack>
+
+          <HStack alignItems={"center"} space="md">
+            <Text
+              fontSize={16}
+              fontFamily="Urbanist-Regular"
+              color={colors.black}
+            >
+              Total amount:
+            </Text>
+            <NairaNumberFormat
+              value={
+                negotiation?.sellerAmount * +negotiation?.sellerQuantity +
+                negotiation?.shippingFee
+              }
+              fontSize={16}
+              color={colors.subText6}
+            />
+          </HStack>
+        </VStack>
+
         {negotiation?.status === "counter" && (
-          <VStack space="xs" mt={"$5"}>
+          <VStack space="xs" mt={"$5"} mb={"$4"}>
             <HStack
               justifyContent="space-between"
               alignItems="center"
@@ -197,19 +215,9 @@ const Negotiation3 = ({ negotiation, product }: any) => {
             </HStack>
           </VStack>
         )}
-        {negotiation?.status === "accepted" && (
-          <Text
-            fontSize={14}
-            fontFamily="Urbanist-Bold"
-            textAlign="left"
-            color={colors.green}
-          >
-            Accepted
-          </Text>
-        )}
 
         {negotiation?.status === "accepted" && (
-          <VStack space="xs" mt={"$5"}>
+          <VStack space="xs" mt={"$5"} mb={"$4"}>
             <HStack
               justifyContent="space-between"
               alignItems="center"
@@ -232,6 +240,7 @@ const Negotiation3 = ({ negotiation, product }: any) => {
                   setType("pay4me");
                   handlePresentModalPress();
                 }}
+                isDisabled={negotiation?.isPaid}
               />
 
               <Button
@@ -254,8 +263,12 @@ const Negotiation3 = ({ negotiation, product }: any) => {
                     price:
                       negotiation?.sellerAmount || negotiation?.desiredAmount,
                     orderID: negotiation?.orderID,
+                    shippingFee: negotiation?.shippingFee,
+                    address: negotiation?.address,
+                    state: negotiation?.state?.stateName,
                   })
                 }
+                isDisabled={negotiation?.isPaid}
               />
             </HStack>
           </VStack>
