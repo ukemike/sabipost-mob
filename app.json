@@ -2,7 +2,7 @@
   "expo": {
     "name": "sabipost",
     "slug": "sabipost",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,7 @@
       },
       "bundleIdentifier": "com.sabipost.app",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "1.0.2"
+      "buildNumber": "1.0.3"
     },
     "android": {
       "package": "com.sabipost.app",
@@ -50,7 +50,7 @@
         "projectId": "026106ea-a85d-4b02-8ed0-87c71f33407b"
       }
     },
-    "owner": "mikie446",
+    "owner": "sabipost",
     "plugins": [
       [
         "expo-image-picker",

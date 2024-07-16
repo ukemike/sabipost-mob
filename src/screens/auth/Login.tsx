@@ -18,7 +18,6 @@ const Login = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
   const toast = useToast();
   const { token } = usePushNotifications();
-  console.log(token, "push token");
 
   const [login, { isLoading }] = useLoginMutation();
 

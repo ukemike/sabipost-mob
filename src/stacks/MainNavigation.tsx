@@ -34,6 +34,7 @@ import QuoteDetail from "../screens/sell/QuoteDetail";
 import OrderDetail from "../screens/orders/vendor/OrderDetail";
 import Business from "../screens/profile/Business";
 import BusinessDoc from "../screens/profile/BusinessDoc";
+import DeactivateOrDelete from "../screens/profile/DeactivateOrDelete";
 
 import messaging from "@react-native-firebase/messaging";
 import notifee, { EventType } from "@notifee/react-native";
@@ -265,6 +266,7 @@ function MainNavigation() {
             <Stack.Screen name="OrderDetail" component={OrderDetail} />
             <Stack.Screen name="Business" component={Business} />
             <Stack.Screen name="BusinessDoc" component={BusinessDoc} />
+            <Stack.Screen name="DeactivateOrDelete" component={DeactivateOrDelete} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

@@ -15,3 +15,5 @@ eas submit -p android --latest
 
 <!-- To publish a new change -->
 expo update
+
+alwaysrizon@gmail.com
