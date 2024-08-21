@@ -34,4 +34,4 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-/sabi-post-firebase-adminsdk-8mh5v-3869a62638.json
+sabi-post-firebase-adminsdk-8mh5v-3869a62638.json
