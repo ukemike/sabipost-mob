@@ -6,23 +6,27 @@ interface Image {
   snippet: string;
 }
 
-const useImageSearch = (searchTerm: string): [Image[], boolean] => {
+interface UseImageSearch {
+  searchTerm: string;
+  triggerSearch: boolean;
+}
+
+const useImageSearch = ({ searchTerm, triggerSearch }: UseImageSearch) => {
   const [images, setImages] = useState<Image[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (searchTerm === "") {
+    if (!triggerSearch || searchTerm === "") {
       setImages([]);
       return;
     }
 
     const fetchImages = async () => {
       setIsLoading(true);
-      // trim the white space at the beginning and end of the search term eg samsung s10 -> samsung s10
-      const trimmedSearchTerm = searchTerm.trim();
       try {
         const response = await fetch(
-          `https://www.googleapis.com/customsearch/v1?key=AIzaSyAf2Mz7Pt_hCBXi796LQP-NjlfukPKXOC4&cx=5697f074664c31024&q=${trimmedSearchTerm}&searchType=image&fileType=jpg`
+          `https://www.googleapis.com/customsearch/v1?key=AIzaSyAf2Mz7Pt_hCBXi796LQP-NjlfukPKXOC4&cx=5697f074664c31024&q=${searchTerm?.trim()}&searchType=image&fileType=jpg`
         );
         const data = await response.json();
 
@@ -36,15 +40,16 @@ const useImageSearch = (searchTerm: string): [Image[], boolean] => {
         }
       } catch (error) {
         console.error("Error fetching images:", error);
+        setError("Error fetching images");
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchImages();
-  }, [searchTerm]);
+  }, [searchTerm, triggerSearch]);
 
-  return [images, isLoading];
+  return [images, isLoading, error] as const;
 };
 
 export default useImageSearch;

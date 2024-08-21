@@ -91,6 +91,7 @@ const Post = ({ route, navigation }: any) => {
   const [formErrors, setFormErrors] = useState<any>({});
   const [selectedCategory, setSelectedCategory] = useState<any>({});
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [triggerSearch, setTriggerSearch] = useState<boolean>(false);
 
   useEffect(() => {
     if (post) {
@@ -111,7 +112,7 @@ const Post = ({ route, navigation }: any) => {
       setSelectedCategory(
         categories?.find(
           (category: any) => category?.categoryID === post?.category?.categoryID
-        )
+        ) ?? {}
       );
     }
   }, [post, allCategories]);
@@ -134,7 +135,10 @@ const Post = ({ route, navigation }: any) => {
 
   const debouncedSearchName = useDebounce(name, 900);
 
-  const [images, isLoading] = useImageSearch(debouncedSearchName);
+  const [images, isLoading, error] = useImageSearch({
+    searchTerm: debouncedSearchName,
+    triggerSearch,
+  });
 
   useEffect(() => {
     if (userInfo) {
@@ -197,10 +201,11 @@ const Post = ({ route, navigation }: any) => {
       return toast.show(
         "Please add item name, quantity and category before uploading image",
         {
-          type: "danger",
+          type: "info",
         }
       );
     }
+    setTriggerSearch(true);
     setShowModal(true);
   };
 
@@ -611,7 +616,7 @@ const Post = ({ route, navigation }: any) => {
                   fontFamily="Urbanist-Regular"
                   textAlign="center"
                 >
-                  No image found
+                  No image found please upload from gallery
                 </Text>
               }
             />
