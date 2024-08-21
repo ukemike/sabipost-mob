@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import messaging from "@react-native-firebase/messaging";
+// import { Alert } from "react-native";
+// import * as Clipboard from "expo-clipboard";
 
 const usePushNotifications = () => {
   const [token, setToken] = useState<any>(null);
   const [error, setError] = useState<any>(null);
+
+  // const copyToClipboard = (token: string) => {
+  //   Clipboard.setStringAsync(token);
+  //   Alert.alert("Copied to clipboard", token);
+  // };
 
   useEffect(() => {
     const requestUserPermission = async () => {

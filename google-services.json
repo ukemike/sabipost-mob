@@ -8,6 +8,58 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:685010180778:android:b741f77868e1122b2a4ed3",
+        "android_client_info": {
+          "package_name": "com.sabipost"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685010180778-2b5o3i15qpm2iefu9jqvavfdubpodu8i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sabipost",
+            "certificate_hash": "50dc2e8b844f2f55c1547e37547605d925ffbf17"
+          }
+        },
+        {
+          "client_id": "685010180778-7pet4302raqmnqeudgp6is0eq1plvr4j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sabipost",
+            "certificate_hash": "a88d5ea66ee32df980bd8223b7fd1e242dec88be"
+          }
+        },
+        {
+          "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIDoFPyWiJSc_UUTz7gzGxu3RFlUlMbNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "685010180778-7788lhinplbc00tkosdrgrsa72d7kh69.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sabipost.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:685010180778:android:81b9a5fe0ef4e27e2a4ed3",
         "android_client_info": {
           "package_name": "com.sabipost.app"
@@ -48,46 +100,10 @@
               "client_type": 3
             },
             {
-              "client_id": "685010180778-l59spbuqqusl9c5738v60pdo8igj5e9v.apps.googleusercontent.com",
+              "client_id": "685010180778-7788lhinplbc00tkosdrgrsa72d7kh69.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "io.ionic.starter"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:685010180778:android:502e7d9464e284702a4ed3",
-        "android_client_info": {
-          "package_name": "io.ionic.starter"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBIDoFPyWiJSc_UUTz7gzGxu3RFlUlMbNg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "685010180778-l59spbuqqusl9c5738v60pdo8igj5e9v.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "io.ionic.starter"
+                "bundle_id": "com.sabipost.app"
               }
             }
           ]

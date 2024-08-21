@@ -69,15 +69,6 @@ function MainNavigation() {
     "Urbanist-Thin": require("../../assets/fonts/Urbanist-Thin.ttf"),
   });
 
-  // if (!fontsLoaded) {
-  //   SplashScreen.preventAutoHideAsync();
-  //   return null;
-  // } else {
-  //   setTimeout(async () => {
-  //     await SplashScreen.hideAsync();
-  //   }, 1000);
-  // }
-
   useEffect(() => {
     const requestPermissions = async () => {
       await notifee.requestPermission();
@@ -92,9 +83,6 @@ function MainNavigation() {
         if (initialNotification) {
           setInitialNotificationData(initialNotification.data);
         }
-        // if (initialNotification?.data?.type === NotificationTypes.CALL) {
-        //   // call action
-        // }
       } catch (error) {
         console.error("Failed to get initial notification:", error);
       }
@@ -104,7 +92,7 @@ function MainNavigation() {
 
     const unsubscribeOnMessage = messaging().onMessage(
       async (remoteMessage: any) => {
-        console.log("Received a new message", remoteMessage);
+        // console.log("Received a new message", remoteMessage);
         const channelId = await notifee.createChannel({
           id: "default",
           name: "Default Channel",
@@ -127,18 +115,18 @@ function MainNavigation() {
     const unsubscribeNotifeeEvents = notifee.onForegroundEvent(
       ({ type, detail }: any) => {
         if (type === EventType.PRESS) {
-          // handleNavigation(detail.notification.data);
+          handleNavigation(detail.notification.data);
         }
       }
     );
 
     const unsubscribeOnNotificationOpenedApp =
       messaging().onNotificationOpenedApp((remoteMessage: any) => {
-        // handleNavigation(remoteMessage.data);
+        handleNavigation(remoteMessage.data);
       });
 
     messaging().setBackgroundMessageHandler(async (remoteMessage: any) => {
-      // handleNavigation(remoteMessage.data);
+      handleNavigation(remoteMessage.data);
     });
 
     return () => {
@@ -156,75 +144,37 @@ function MainNavigation() {
     }
   }, [fontsLoaded]);
 
-  // const handleNavigation = (data: any) => {
-  //   if (!data?.type) {
-  //     console.warn("No notification type specified:", data);
-  //     return;
-  //   }
+  const handleNavigation = (data: any) => {
+    console.log("Handling navigation:", data);
+    if (!data?.mobile_action) {
+      console.warn("No mobile action specified:", data);
+      return;
+    }
 
-  //   switch (data.type) {
-  //     case NotificationTypes.POST:
-  //     case NotificationTypes.COMMENT:
-  //     case NotificationTypes.LIKE:
-  //       navigationRef.current?.navigate("SingleVideo", {
-  //         contentId: data.id,
-  //         from: "singleVideo",
-  //       });
-  //       break;
-  //     case NotificationTypes.CALL:
-  //       navigationRef.current?.navigate("Call", {
-  //         channelName: data.channelName,
-  //         appId: "9099291ec58f4ae1aeee6360dc02add0",
-  //         token: data.callToken,
-  //         userId: data.userId,
-  //         isHostUser: false,
-  //       });
-  //       break;
-  //     case NotificationTypes.JOB:
-  //       navigationRef.current?.navigate("Jobs");
-  //       break;
-  //     case NotificationTypes.FOLLOW:
-  //       navigationRef.current?.navigate("Profile", {
-  //         userName: data.id,
-  //       });
-  //       break;
-  //     case NotificationTypes.MESSAGE:
-  //       navigationRef.current?.navigate("Message", {
-  //         otherPartyUserId: data.otherPartyUserId,
-  //         otherPartyName: data.id,
-  //         conversationId: data.conversationId,
-  //       });
-  //       break;
-  //     case NotificationTypes.LIVE:
-  //       navigationRef.current?.navigate("Live", {
-  //         isHostUser: false,
-  //         liveId: data.id,
-  //         token: data.callToken,
-  //         channelName: data.channelName,
-  //         appId: "9099291ec58f4ae1aeee6360dc02add0",
-  //       });
-  //       break;
-  //     case NotificationTypes.DMCALL:
-  //       navigationRef.current?.navigate("DmCall", {
-  //         channelName: data.channelName,
-  //         appId: "9099291ec58f4ae1aeee6360dc02add0",
-  //         token: data.callToken,
-  //         isHostUser: false,
-  //         callId: data.id,
-  //       });
-  //       break;
-  //     default:
-  //       console.warn("Unhandled notification type:", data.type);
-  //   }
-  // };
+    const mobileAction = JSON.parse(data.mobile_action);
+    console.log("Mobile action:", mobileAction);
+    if (!mobileAction?.screen) {
+      console.warn("No screen specified in mobile action:", mobileAction);
+      return;
+    }
 
-
+    navigationRef.current?.navigate(mobileAction.screen, mobileAction.params);
+    console.log("Navigated to:", mobileAction.screen, mobileAction.params);
+  };
 
   const Stack = createNativeStackNavigator() as any;
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => {
+          if (initialNotificationData) {
+            handleNavigation(initialNotificationData);
+            setInitialNotificationData(null);
+          }
+        }}
+      >
         {!userInfo ? (
           <AuthStack />
         ) : (
@@ -266,7 +216,10 @@ function MainNavigation() {
             <Stack.Screen name="OrderDetail" component={OrderDetail} />
             <Stack.Screen name="Business" component={Business} />
             <Stack.Screen name="BusinessDoc" component={BusinessDoc} />
-            <Stack.Screen name="DeactivateOrDelete" component={DeactivateOrDelete} />
+            <Stack.Screen
+              name="DeactivateOrDelete"
+              component={DeactivateOrDelete}
+            />
           </Stack.Navigator>
         )}
       </NavigationContainer>
