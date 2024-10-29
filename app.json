@@ -2,7 +2,7 @@
   "expo": {
     "name": "sabipost",
     "slug": "sabipost",
-    "version": "1.0.4",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -25,14 +25,14 @@
       "buildNumber": "1.0.4"
     },
     "android": {
-      "package": "com.sabipost",
+      "package": "com.sabipost.mobile",
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 4
+      "versionCode": 7
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -65,6 +65,15 @@
           "ios": {
             "useFrameworks": "static",
              "deploymentTarget": "14.0"
+          },
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0",
+            "minSdkVersion": 24,
+            "extraMavenRepos": [
+              "./node_modules/@notifee/react-native/android/libs"
+            ]
           }
         }
       ]

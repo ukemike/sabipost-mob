@@ -60,6 +60,50 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:685010180778:android:deef6b88f69c6b552a4ed3",
+        "android_client_info": {
+          "package_name": "com.sabipost.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685010180778-7fsbr4se0befh445njtp17vpemdg2e54.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sabipost.android",
+            "certificate_hash": "69b56853ac440ed973b5dca35e3f4450cf83c203"
+          }
+        },
+        {
+          "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIDoFPyWiJSc_UUTz7gzGxu3RFlUlMbNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "685010180778-7788lhinplbc00tkosdrgrsa72d7kh69.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sabipost.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:685010180778:android:81b9a5fe0ef4e27e2a4ed3",
         "android_client_info": {
           "package_name": "com.sabipost.app"
@@ -80,6 +124,50 @@
           "android_info": {
             "package_name": "com.sabipost.app",
             "certificate_hash": "419961c6c01796acdc74ac4606d8b5cd454dad9b"
+          }
+        },
+        {
+          "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIDoFPyWiJSc_UUTz7gzGxu3RFlUlMbNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685010180778-nd1tqc3aaalhtsikpjfijh6o7ipue9fk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "685010180778-7788lhinplbc00tkosdrgrsa72d7kh69.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sabipost.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685010180778:android:711d91004c329eef2a4ed3",
+        "android_client_info": {
+          "package_name": "com.sabipost.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685010180778-r7nh8gekml42tfmt2n8gh2641pdei3v5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sabipost.mobile",
+            "certificate_hash": "1c24154be0ab8c1e16e259ea67442c060eb7f131"
           }
         },
         {
