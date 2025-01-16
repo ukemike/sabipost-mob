@@ -507,7 +507,7 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                         fontSize={14}
                         color={colors.green}
                       >
-                        Vendor approved offer
+                        You approved offer
                       </Text>
                     )}
 
@@ -549,7 +549,7 @@ const NegotiationAccordion = ({ item, post, navigation }: any) => {
                         fontSize={14}
                         color={colors.green}
                       >
-                        You accepted offer
+                        Vendor approved offer
                       </Text>
                     )}
                   </HStack>
